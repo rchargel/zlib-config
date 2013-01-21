@@ -20,8 +20,8 @@ package net.zcarioca.zcommons.config.util;
 
 import java.io.InputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a few utility methods to simplify IO procedures.  These methods are also provided by the apache commons-io
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ConfigurationIOUtilities 
 {
-   private static Log logger = LogFactory.getLog(ConfigurationIOUtilities.class);
+   private static Logger logger = LoggerFactory.getLogger(ConfigurationIOUtilities.class);
    
    public static void closeQuietly(InputStream inputStream)
    {

@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a factory class used to load the {@link ConfigurationSourceProvider}
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
 public class ConfigurationSourceProviderFactory
 {
    private static ConfigurationSourceProviderFactory spiFactory;
-   private static final Log logger = LogFactory.getLog(ConfigurationSourceProviderFactory.class);
+   private static final Logger logger = LoggerFactory.getLogger(ConfigurationSourceProviderFactory.class);
 
    private Map<String, ConfigurationSourceProvider> providerMap;
 

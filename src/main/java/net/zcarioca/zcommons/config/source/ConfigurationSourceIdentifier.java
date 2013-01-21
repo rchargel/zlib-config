@@ -26,8 +26,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses a reference class and a resource location to point to a configuration
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class ConfigurationSourceIdentifier
 {
-   private static final Log logger = LogFactory.getLog(ConfigurationSourceIdentifier.class);
+   private static final Logger logger = LoggerFactory.getLogger(ConfigurationSourceIdentifier.class);
    private Class<?> referenceClass;
    private String resourceName;
    
