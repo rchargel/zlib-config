@@ -14,24 +14,30 @@
   <url>http://zcarioca.net/</url>
   <packaging>jar</packaging>
   <properties>
-     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-     <commons.lang.version>[2.5,]</commons.lang.version>
-     <commons.collections.version>[3.2,]</commons.collections.version>
-     <spring.version>[3.0,]</spring.version>
-     <aspectj.version>[1.6,]</aspectj.version>
-     <slf4j.version>[1.7,]</slf4j.version>
-     <junit.version>4.11</junit.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <commons.lang.version>[2.5,]</commons.lang.version>
+    <commons.collections.version>[3.2,]</commons.collections.version>
+    <spring.version>[3.0,]</spring.version>
+    <aspectj.version>[1.6,]</aspectj.version>
+    <slf4j.version>[1.7,]</slf4j.version>
+    <junit.version>4.11</junit.version>
 
-     <!-- plugin versions -->
-     <maven.compiler.plugin.version>3.0</maven.compiler.plugin.version>
-     <maven.surefire.plugin.version>2.13</maven.surefire.plugin.version>
-     <maven.jxr.plugin.version>2.3</maven.jxr.plugin.version>
-     <maven.site.plugin.version>3.2</maven.site.plugin.version>
-     <maven.project.info.reports.plugin.version>2.6</maven.project.info.reports.plugin.version>
-     <maven.changes.plugin.version>2.8</maven.changes.plugin.version>
-     <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
-     <maven.cobertura.plugin.version>2.5.2</maven.cobertura.plugin.version>
+    <!-- plugin versions -->
+    <maven.compiler.plugin.version>3.0</maven.compiler.plugin.version>
+    <maven.surefire.plugin.version>2.13</maven.surefire.plugin.version>
+    <maven.jxr.plugin.version>2.3</maven.jxr.plugin.version>
+    <maven.site.plugin.version>3.2</maven.site.plugin.version>
+    <maven.project.info.reports.plugin.version>2.6</maven.project.info.reports.plugin.version>
+    <maven.changes.plugin.version>2.8</maven.changes.plugin.version>
+    <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
+    <maven.cobertura.plugin.version>2.5.2</maven.cobertura.plugin.version>
   </properties>
+  <distributionManagement>
+    <site>
+      <id>zcarioca.net</id>
+      <url>scp://zcarioca.net/var/www/projects/${project.artifactId}/${project.version}/</url>
+    </site>
+  </distributionManagement>
   <licenses>
     <license>
       <name>GPL</name>
@@ -161,6 +167,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>${maven.site.plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>RELEASE</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
