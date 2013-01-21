@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/DECORATION/1.0.0"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  <body>
+    <breadcrumbs>
+      <item name="zcarioca.net" href="../../../" />
+      <item name="zcommons" href="../../zcommons" />
+      <item name="Sourceforge" href="https://sourceforge.net/projects/zcommons/" />
+    </breadcrumbs>
+    <menu name="Overview">
+      <item name="Purpose" href="index.html" />
+      <item name="Usage" href="usage.html"/>
+      <item name="Custom Providers" href="spi_tut.html"/>
+      <item name="FAQ" href="faq.html"/>
+    </menu>
+    <menu ref="parent" />
+    <menu ref="reports" />
+  </body>
+</project>

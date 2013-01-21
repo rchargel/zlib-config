@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Usage</title>
+    <author email="zcarioca@zcarioca.net">zcarioca</author>
+  </properties>
+  
+  <body>
+    <section name="Table of Contents">
+      <ul>
+        <li><a href="#Installation">Installation</a>
+          <ul>
+            <li><a href="#Using_Maven">Using Maven</a></li>
+            <li><a href="#Downloading_the_JAR">Downloading the JAR</a></li>
+          </ul>
+        </li>
+        <li><a href="#Basic_Configuration">Basic Configuration</a></li>
+        <li><a href="#Annotations">Annotations</a>
+          <ul>
+            <li><a href="#aConfigurable">&#64;Configurable</a></li>
+            <li><a href="#aConfigurableAttribute">&#64;ConfigurableAttribute</a></li>
+          </ul>
+        </li>
+        <li><a href="#Advanced_Spring_Configuration">Advanced Spring Configuration</a>
+          <ul>
+            <li><a href="#Reconfiguration_on_Update">Reconfiguration on Update</a></li>
+            <li><a href="#Adding_Configuration_Source_Providers">Adding Configuration Source Providers</a></li>
+            <li><a href="#Setting_Default_Configuration_Source_Provider">Setting Default Configuration Source Provider</a></li>
+          </ul>
+        </li>
+        <li><a href="#Supported_Property_Types">Property Types</a></li>
+        <li><a href="#Variable_Substitution">Variable Substitution</a></li>
+        <li><a href="#Using_the_Library_Without_Spring">Using the Library Without Spring</a></li>
+      </ul>
+    </section>
+    <section name="Installation">
+      <subsection name="Using Maven">
+        <p>
+          Adding this library to your maven project is as simple as adding the following
+          to your dependencies set:
+        </p>
+        <source>
+<![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>net.zcarioca.zcommons</groupId>
+    <artifactId>zlib-config</artifactId>
+    <version>1.1</version>
+  </dependency>
+</dependencies>]]>
+        </source>
+      </subsection>
+      <subsection name="Downloading the JAR">
+        <p>
+          Simply download the JAR file from 
+          <a href="https://sourceforge.net/projects/zcommons/files/">Sourceforge.net</a>.
+          Then simply include the jar file in your classpath.
+        </p>
+      </subsection>
+    </section>
+    <section name="Basic Configuration">
+      <p>
+        The first step is to initialize the ConfigurationInjectionPostProcessor in Spring's
+        application context file.  The simplest possible configuration is as follows:
+      </p>
+      <source>
+<![CDATA[<bean id="confPostProcessor" 
+      class="net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor"/>]]>
+      </source>
+      <p>
+        The next step is to simply annotate your classes and fields.  To do this there are two
+        basic annotations, &#64;Configurable and &#64;ConfigurableAttribute.  The 
+        first of these tells the post processor that this class has been marked for 
+        configuration.  The second, &#64;ConfigurableAttribute, marks a field
+        for configuration and which property to inject.  Additionally, this annotation can be
+        used to define default values for the fields. Here is a simple example:
+      </p>
+      <source>
+package my.application;
+
+&#64;Configurable
+public class MyConfigurableClass 
+{
+   &#64;ConfigurableAttribute
+   private String objectId;
+   
+   &#64;ConfigurableAttribute
+   private URL serverUrl;
+}
+      </source>
+      <p>
+         In the above example, the configuration injector will automatically find the 
+         Properties associated to that class, and insert a String with the property name
+         <code>objectId</code> and a URL with the property name <code>serverUrl</code>.
+      </p>
+    </section>
+    <section name="Annotations">
+      <subsection name="&#64;Configurable">
+        <p>
+          The &#64;Configurable annotation may take two parameters, a <code>referenceClass</code>
+          and a <code>resourceName</code>.  If either of these two values are not
+          supplied, the default referenceClass is the class which was annotated, and the 
+          default reference implementation is lowercase name of the reference class.
+          These two values are used by the <code>ConfigurationSourceProviders</code> to 
+          locate the configuration data.  
+        </p>
+        <p>
+          While it is entirely up to the implementations of 
+          the ConfigurationSourceProvider interface to use this data to determine how to load 
+          the configuration data, a default implementation has been provided with this library.  
+          This implementation works by loading the properties file directly out of the 
+          classpath, where the reference class' package is the directory location of the 
+          properties file, and the resource location is the relative path to the properties
+          file from that location.  So in the example above, the configuration injector will
+          look for a properties file in the classpath located at 
+          <code>/my/application/myconfigurableclass.properties</code>.
+        </p>
+        <p>
+          With the default implementation it is also possible to provide relative paths to the 
+          configuration data.  For instance the following could have been provided, 
+          <code>&#64;Configurable(resourceName = "/log4j")</code>.  In this case, the properties
+          file would be located at <code>/log4j.properties</code>.
+        </p>
+      </subsection>
+      <subsection name="&#64;ConfigurableAttribute">
+        <p>
+          The &#64;ConfigurableAttribute can also take two additional parameters, 
+          <code>propertyName</code> and <code>defaultValue</code>. The propertyName
+          will default to the name of the property being annotated (defined by the POJO design
+          pattern).  This value of this parameter tells the configuration injector which property
+          maps to the annotated property.  This can be used if the property does not match the
+          configured field.  The defaultValue will be used only if the property's value cannot
+          be found in the data source.  This will not be used if there is a problem injecting
+          the value into the property.
+        </p>
+        <p>
+          The &#64;ConfigurableAttribute annotation can be placed on either the field, or its 
+          getter or setter.  Regardless of where the annotation is placed, the configuration
+          injector will always use the setter, if the setter is available (even if the setter 
+          is private).  In this way it is possible to modify the content of the property, or
+          take further action in relation to the property.  If no setter is available the value
+          will be injected directly into the field value.
+        </p>
+      </subsection>
+    </section>
+    <section name="Advanced Spring Configuration">
+      <subsection name="Reconfiguration on Update">
+        <p>
+          Some implementations of the <code>ConfigurationSourceProvider</code> interface can send
+          alerts if the original configuration data source is updated outside of the context of the
+          application.  In this case it is possible to allow the Configuration Utilities to
+          automatically reconfigure your beans.  To do this, simply set the 
+          <code>reconfigureOnUpdateEnabled</code> flag to <code>true</code> in your application 
+          context file:
+        </p>
+        <source>
+<![CDATA[<bean id="configurationUtilities" 
+      class="net.zcarioca.zcommons.config.util.ConfigurationUtilities" factory-method="getInstance">
+  <property key="reconfigureOnUpdateEnabled" value="true"/>
+</bean>]]>        
+        </source>
+      </subsection>
+      <subsection name="Adding Configuration Source Providers">
+        <p>
+          By default, the configuration injector will only use the bundled configuration source provider, 
+          however, it is possible to provide external configuration source providers, and tell the 
+          injector to use those external providers for certain packages.  Simply add the following to your 
+          application context file:
+        </p>
+        <source>
+<![CDATA[<bean class="net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper" factory-method="getInstance">
+  <property name="associations">
+    <map>
+      <entry key="your.package.name" value="your-provider-id"/>
+    </map>
+  </property>
+</bean>]]>
+        </source>
+        <p>
+          Please see the <a href="spi_tut.html">tutorial</a> for creating
+          new Configuration Source Providers for more information. 
+        </p>
+      </subsection>
+      <subsection name="Setting Default Configuration Source Provider">
+        <p>
+          Beyond simply mapping configuration source providers, it is also possible to change
+          the default configuration source provider.  This can also be in the application
+          context file for Spring:
+        </p>
+        <source>
+<![CDATA[<bean class="net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper" factory-method="getInstance">
+  <property name="defaultConfigurationSourceProviderID" value="your_config_source_provider_id"/>
+</bean>]]>
+        </source>
+        <p>
+          This property will allow you to override the default behavior of the
+          configuration injector and supply a completely new provider for all
+          of your classes.  
+        </p>
+      </subsection>
+    </section>
+    <section name="Supported Property Types">
+      <p>
+        The configuration injector can automatically convert properties into strings, primitive 
+        types and any object which takes a single string as a constructor (eg: java.io.File and java.net.URL).  
+        Additionally, an array of any of the above is also available by providing the values as a comma-separated
+        list.
+      </p>
+    </section>
+    <section name="Variable Substitution">
+      <p>
+        Additionally, the configuration injector will handle the automatic replacement of variables
+        within properties.  This is done using the <code>net.zcarioca.zcommons.config.util.PropertiesBuilder</code>
+        class.
+      </p>
+      <source>
+file.dir=/etc/conf
+file.path=${file.dir}/filename.properties
+      </source>
+      <p>
+        The property substitution mechanism can also take advantage of Environment and JVM Properties by assigning a 
+        custom <code>net.zcarioca.zcommons.config.util.PropertiesBuilderFactory</code> to the ConfigurationUtilities object.
+        This object allows the user to make these system and environment wide properties available for substitution or use directly
+        in the configuration.  As an example the user could have the following runtime command:
+      </p>
+      <source>
+export APP_HOME="/etc/app/home"
+
+/usr/bin/java -Dmy.custom.prop="Awesome Property" ......
+      </source>
+      <p>
+        In order to access these properties within the application, the use can simply add the following to their Application Context file:
+      </p>
+      <source>
+<![CDATA[<bean id="configurationUtilities" class="net.zcarioca.zcommons.config.util.ConfigurationUtilities"
+   factory-method="getInstance">
+  <property name="propertiesBuilderFactory">
+    <bean class="net.zcarioca.zcommons.config.util.PropertiesBuilderFactory">
+      <!-- Adds all the environment variables -->
+      <property name="addEnvironmentProperties" value="true"/>
+      <!-- Adds all the JVM variables -->
+      <property name="addSystemProperties" value="true"/>
+    </bean>
+  </property>
+</bean>]]>
+      </source>
+    </section>
+    <section name="Using the Library Without Spring">
+      <p>
+        Finally, it is even possible to take advantage of this library without the use of Spring.
+        All of the functionality provided by the zlib-config library is available for use 
+        programmatically.  Most of the main classes in use are singletons (yes I know it's an 
+        overused pattern), and they are accessible via a <code>getInstance()</code> method.  For
+        instance the ConfigurationSourceProviderMapper can be configured as follows:
+      </p>
+      <source>
+ConfigurationSourceProviderMapper mapper = ConfigurationSourceProviderMapper.getInstance();
+mapper.setDefaultConfigurationSourceProviderID("my.source.provider::ID");
+mapper.addAssociation("com.my.organization.config", "my.source.provider::ID");
+      </source>
+      <p>
+        Similarly the configurable objects may be passed to the <code>ConfigurationUtilities</code>
+        singleton as follows:
+      </p>
+      <source>
+ConfigurationUtilities confUtils = ConfigurationUtilities.getInstance();
+
+MyConfigClass myConf = new MyConfigClass();
+confUtils.configureBean(myConf);
+      </source>
+      <p>
+        There is even a convenience method to automatically call methods annotated with
+        &#64;PostConstruct after the object is configured (which is normally handled by 
+        Spring).
+      </p>
+      <source>
+ConfigurationUtilities confUtils = ConfigurationUtilities.getInstance();
+
+MyConfigClass myConf = new MyConfigClass();
+confUtils.configureBean(myConf, true); // call &#64;PostConstruct method(s)
+      </source>
+    </section>
+  </body>
+</document>

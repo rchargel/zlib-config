@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+  <properties>
+    <title>Change Report</title>
+    <author email="zcarioca@zcarioca.net">zcarioca</author>
+  </properties>
+  <body>
+    <release date="2010-08-22" version="1.0" description="First Release">
+      <action date="2010-08-22" dev="zcarioca" type="add">
+        Cut the first official release.
+      </action>
+    </release>
+    <release date="2012-xx-xx" version="1.1" description="Release 1.1">
+      <action date="2012-01-26" dev="zcarioca" type="add">
+        Added a PropertiesBuilder in place of Configuration object. This allows the user to specify properties in any order
+        and still allows for keyword swapping.
+      </action>
+      <action date="2012-01-26" dev="zcarioca" type="fix">
+        Removed the use of ExecutorServices and internal threading.  This will allow this library to be used with Application Servers 
+        that prefer to manage their own threads. Instead the ConfigurationUtilities object has a "forceReconfigure" method that will
+        reconfigure all of the beans associated to a given source.
+      </action>
+      <action date="2012-02-01" dev="zcarioca" type="add">
+        Added a PropertiesBuilder factory to increase flexibility of library configurations.
+      </action>
+      <action date="2012-02-01" dev="zcarioca" type="update">
+        Changed the logging framework to Apache Commons Logging. This removes the dependency on Log4J from the user.
+      </action>
+      <action date="2012-02-01" dev="zcarioca" type="remove">
+        Removed unnecessary external dependencies.
+      </action>
+      <action date="2012-04-26" dev="zcarioca" type="update">
+        Moved to Maven Central Repository in order to remove dependency on an additional repository.
+      </action>
+    </release>
+  </body>
+</document>

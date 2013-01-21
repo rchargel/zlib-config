@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+  title="Frequently Asked Questions"
+  toplink="false">
+  
+  <part id="faq">
+    <title>FAQ</title>
+    <faq id="whatisit">
+      <question>
+        What is the zlib-config library for?
+      </question>
+      <answer>
+        The zlib-config library is a tool which may be combined with the Spring Framework in order to
+        simplify prepopulating classes with data from properties or other configuration sources.
+      </answer>
+    </faq>
+    <faq id="whichsources">
+      <question>
+        What different sources of configuration data can be used?
+      </question>
+      <answer>
+        Theoretically, anything can be a source of configuration information.  By default, this library
+        is packaged with a simple Configuration Source Provider that will fetch configuration information
+        out of a properties file in the classpath.  However, the Configuration Source Provider follows the
+        Service Provider Interface pattern, and the zlib-config library can discover new providers at runtime in 
+        order to fulfill custom requirements.  Please see the <a href="spi_tut.html">tutorial</a> for creating
+        new Configuration Source Providers for more information. 
+      </answer>
+    </faq>
+    <faq id="othersources">
+      <question>
+        Are you planning on providing any other Configuration Source Providers, or will all other's 
+        need to be custom built?
+      </question>
+      <answer>
+        I am planning on developing at least one other provider, but it will be provided as a separate library.
+        That said, for really custom requirements, like database based configuration where table and column
+        structure would have to be defined, it just isn't practical to have a generic provider that could
+        be used by everyone for all scenarios.  
+      </answer>
+    </faq>
+    <faq id="withoutspring">
+      <question>
+        Can I use this library without using the Spring Framework?
+      </question>
+      <answer>
+        Yes, this library uses the Service Provider Interface pattern for precisely that reason.  Both the
+        SPI framework and the Spring Framework are dependency injection engines, and this library can be 
+        used through Spring's autowiring, or programmatically. Please see the <a href="usage.html#Using_the_Library_Without_Spring">section</a>
+        for using the zlib-config library without Spring.
+      </answer>
+    </faq>
+    <faq id="ordering">
+      <question>
+        When do the configuration properties get injected into the objects?
+      </question>
+      <answer>
+        When using Spring, the configuration properties will be injected into the class during the 
+        Bean Post Processing phase of loading the Spring Application Context.  This occurs between the point
+        when the beans are instantiated and when the methods annotated with &#64;PostConstruct are called. 
+        This means that any initialization method for your bean should be annotated with the &#64;PostConstruct
+        annotation.
+      </answer>
+    </faq>
+    <faq id="reconfig">
+      <question>
+        Is there a way to reconfigure beans if the properties file has been modified?
+      </question>
+      <answer>
+        Yes and no.  The <code>ConfigurationUtilities</code> class provides a method
+        to send properties update information to a set of 
+        Configuration Update Listeners. However, it is up to the Configuration
+        Source Provider implementations to actually call this method if and when
+        the source of the configuration has changed.  Please see the <a href="spi_tut.html">tutorial</a> for creating
+        new Configuration Source Providers for more information.
+      </answer>
+    </faq>
+    <faq id="jmx">
+      <question>
+        What level of monitoring is built into the zlib-config library?
+      </question>
+      <answer>
+        Because the functionality is mostly active only when the classes are first initialized, there isn't
+        much need to provide monitoring into this framework.  However, there is one MBean exposed for
+        configuration purposes, the <code>ConfigurationSourceProviderMapper</code>.  This MBean is exposed in the 
+        Configuration group to provide some insite into the current configuration.  However, the bean 
+        is immutable through JMX interface.
+        
+        <source>
+&lt;bean class="net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper" factory-method="getInstance"/>
+        </source>
+      </answer>
+    </faq>
+  </part>
+  
+</faqs>
