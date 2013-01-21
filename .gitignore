@@ -1,1 +1,12 @@
 target/
+.project
+.metadata
+.classpath
+bin/
+tmp/
+*.tmp
+*.bak
+.settings/
+.externalToolBuilders/
+.launch
+.buildpath
