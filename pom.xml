@@ -42,7 +42,7 @@
   <scm>
     <connection>scm:git:git@github.com:rchargel/zlib-config.git</connection>
     <developerConnection>scm:git:git@github.com:rchargel/zlib-config.git</developerConnection>
-    <url>scm:git:git@github.com:rchargel/zlib-config.git</url>
+    <url>https://github.com/rchargel/zlib-config</url>
   </scm>
   <organization>
     <name>zcarioca.net</name>
