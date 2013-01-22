@@ -55,14 +55,17 @@ import org.springframework.core.PriorityOrdered;
  * 
  * @author zcarioca
  */
+@SuppressWarnings("rawtypes")
 public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, PriorityOrdered, ConfigurationProcessListener, ApplicationListener, ApplicationContextAware
 {
    private Set<Object> processedBeans;
+   private ConfigurationUtilities configurationUtilities;
    
    public ConfigurationInjectionPostProcessor()
    {
       this.processedBeans = new HashSet<Object>();
-      ConfigurationUtilities.getInstance().addConfigurationProcessListener(this);
+      this.configurationUtilities = ConfigurationUtilities.getInstance();
+      this.configurationUtilities.addConfigurationProcessListener(this);
    }
 
    /**
@@ -94,7 +97,7 @@ public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, P
             {
                try
                {
-                  ConfigurationUtilities.getInstance().configureBean(bean);
+                  this.configurationUtilities.configureBean(bean);
                }
                catch(ConfigurationException exc)
                {

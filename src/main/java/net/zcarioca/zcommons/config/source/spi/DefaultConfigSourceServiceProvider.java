@@ -23,10 +23,11 @@ import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
+
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
-import net.zcarioca.zcommons.config.util.ConfigurationIOUtilities;
 import net.zcarioca.zcommons.config.util.PropertiesBuilder;
 
 /**
@@ -71,7 +72,7 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
       }
       finally
       {
-         ConfigurationIOUtilities.closeQuietly(in);
+         IOUtils.closeQuietly(in);
       }
    }
 }

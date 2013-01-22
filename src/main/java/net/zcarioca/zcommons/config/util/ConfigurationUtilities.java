@@ -60,7 +60,7 @@ import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper;
  * 
  * @author zcarioca
  */
-public final class ConfigurationUtilities
+public class ConfigurationUtilities
 {
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtilities.class);
    private static ConfigurationUtilities configUtil;
@@ -702,7 +702,7 @@ public final class ConfigurationUtilities
       configUtil = new ConfigurationUtilities();
    }
 
-   private ConfigurationUtilities()
+   protected ConfigurationUtilities()
    {
       this.procListeners = new HashSet<ConfigurationProcessListener>();
       this.updateListeners = new HashSet<ConfigurationUpdateListener>();

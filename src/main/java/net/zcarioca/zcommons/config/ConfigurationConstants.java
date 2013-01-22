@@ -35,6 +35,12 @@ public interface ConfigurationConstants
     * requested provider is unavailable, or unless the default provider was overridden.
     */
    public static String DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER = "net.zcarioca.zommons.config.default";
+   
+   /**
+    * This is the ID of the file-system based provider for the 
+    * {@link ConfigurationSourceProvider} service. 
+    */
+   public static String FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER = "net.zcarioca.zommons.config.filesystem";
 
    /**
     * If the {@link Configurable} annotation has its resourceName set to

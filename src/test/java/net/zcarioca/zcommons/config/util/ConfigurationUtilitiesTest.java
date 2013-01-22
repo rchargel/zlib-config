@@ -64,7 +64,6 @@ public class ConfigurationUtilitiesTest
    @Test
    public void testGetInstance()
    {
-      assertNotNull(ConfigurationUtilities.getInstance());
       assertSame(ConfigurationUtilities.getInstance(), ConfigurationUtilities.getInstance());
    }
 
@@ -314,7 +313,7 @@ public class ConfigurationUtilitiesTest
    @Test
    public void testLoadProperties() throws Exception
    {
-      Properties props = ConfigurationUtilities.getInstance().loadProperties(ConfigurableObject.class, "configurableobject.properties");
+      Properties props = utils.loadProperties(ConfigurableObject.class, "configurableobject.properties");
       assertNotNull(props);
       assertEquals("There is a field which states: This is a simple message - 0.34 ${along}", props.getProperty("property.message"));
    }
@@ -322,7 +321,7 @@ public class ConfigurationUtilitiesTest
    @Test(expected = ConfigurationException.class)
    public void testLoadPropertiesBadProps() throws Exception
    {
-      ConfigurationUtilities.getInstance().loadProperties(ConfigurableObject.class, "unconfigurableobject.properties");
+      utils.loadProperties(ConfigurableObject.class, "unconfigurableobject.properties");
    }
 
    private static class MockProcessListener implements ConfigurationProcessListener
@@ -342,5 +341,4 @@ public class ConfigurationUtilitiesTest
          this.count ++;
       }
    }
-
 }

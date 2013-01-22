@@ -142,9 +142,16 @@ public class ConfigurationSourceProviderFactory
             logger.debug(String.format("Setting up provider: %s", spi.getProviderID()));
          }
          
-         providerMap.put(spi.getProviderID(), spi);
+         try
+         {
+            spi.postInit();
          
-         spi.postInit();
+            providerMap.put(spi.getProviderID(), spi);
+         }
+         catch (IllegalArgumentException exc)
+         {
+            logger.warn(String.format("Could not add configuration source provider %s: %s", spi.getProviderID(), exc.getMessage()), exc);
+         }
       }
    }
 }

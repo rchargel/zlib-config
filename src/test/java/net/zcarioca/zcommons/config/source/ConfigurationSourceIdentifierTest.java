@@ -18,8 +18,10 @@
  */
 package net.zcarioca.zcommons.config.source;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 
