@@ -18,13 +18,17 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
+import net.zcarioca.zcommons.config.BaseTestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,35 +37,19 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class PropertiesBuilderTest {
+public class PropertiesBuilderTest extends BaseTestCase
+{
 
    private PropertiesBuilder builder;
-   private String environmentProperty;
-   private String systemProperty;
-   private String fakeEnvProperty = "fakeEnvPropertyXYZ";
-   private String fakeSysProperty = "fakeSysPropertyXYZ";
+   private String environmentProperty = "fake-env-prop";
+   private String systemProperty = "fake.system.property";
+   private String fakeEnvProperty = "fakeEnvPropXYZ";
+   private String fakeSysProperty = "fakeSysPropXYZ";
    
    @Before
    public void setUp()
    {
       this.builder = new PropertiesBuilder();
-      for (String envProp : System.getenv().keySet())
-      {
-         if (StringUtils.isNotEmpty(System.getenv(envProp)))
-         {
-            this.environmentProperty = envProp;
-            break;
-         }
-      }
-      for (Object sysPropObj : System.getProperties().keySet())
-      {
-         String sysProp = sysPropObj.toString();
-         if (StringUtils.isNotEmpty(System.getProperty(sysProp)))
-         {
-            this.systemProperty = sysProp;
-            break;
-         }
-      }
    }
    
    @Test
@@ -112,7 +100,7 @@ public class PropertiesBuilderTest {
    {
       assertEquals(0, builder.size());
       assertEquals(this.builder, builder.addEnvironmentProperty(environmentProperty));
-      assertEquals(System.getenv(environmentProperty), builder.getProperty(environmentProperty));
+      assertEquals("fake env value", builder.getProperty(environmentProperty));
       assertEquals(1, builder.size());
    }
    
@@ -130,7 +118,7 @@ public class PropertiesBuilderTest {
    {
       assertEquals(0, builder.size());
       assertEquals(this.builder, builder.addEnvironmentProperty(environmentProperty, "defaultValue"));
-      assertEquals(System.getenv(environmentProperty), builder.getProperty(environmentProperty));
+      assertEquals("fake env value", builder.getProperty(environmentProperty));
       assertEquals(1, builder.size());
    }
    
@@ -155,7 +143,7 @@ public class PropertiesBuilderTest {
    {
       assertEquals(0, builder.size());
       assertEquals(this.builder, builder.addSystemProperty(systemProperty));
-      assertEquals(System.getProperty(systemProperty), builder.getProperty(systemProperty));
+      assertEquals("fake value", builder.getProperty(systemProperty));
       assertEquals(1, builder.size());
    }
    
@@ -173,7 +161,7 @@ public class PropertiesBuilderTest {
    {
       assertEquals(0, builder.size());
       assertEquals(this.builder, builder.addSystemProperty(systemProperty, "defaultValue"));
-      assertEquals(System.getProperty(systemProperty), builder.getProperty(systemProperty));
+      assertEquals("fake value", builder.getProperty(systemProperty));
       assertEquals(1, builder.size());
    }
    
@@ -233,10 +221,10 @@ public class PropertiesBuilderTest {
       assertEquals(0, builder.size());
       assertEquals(this.builder, builder.addAll(props));
       assertEquals(this.builder, builder.addAllEnvironmentProperties());
-      assertEquals(2 + System.getenv().size(), builder.size());
+      assertEquals(4, builder.size());
       assertEquals("v1", builder.getProperty("p1"));
       assertEquals("v2", builder.getProperty("p2"));
-      assertEquals(System.getenv(environmentProperty), builder.getProperty(environmentProperty));
+      assertEquals("fake env value", builder.getProperty(environmentProperty));
    }
    
    @Test
@@ -249,10 +237,10 @@ public class PropertiesBuilderTest {
       assertEquals(0, builder.size());
       assertEquals(this.builder, builder.addAll(props));
       assertEquals(this.builder, builder.addAllSystemProperties());
-      assertEquals(2 + System.getProperties().size(), builder.size());
+      assertEquals(3, builder.size());
       assertEquals("v1", builder.getProperty("p1"));
       assertEquals("v2", builder.getProperty("p2"));
-      assertEquals(System.getProperty(systemProperty), builder.getProperty(systemProperty));
+      assertEquals("fake value", builder.getProperty(systemProperty));
    }
    
    @Test

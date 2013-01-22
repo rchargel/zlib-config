@@ -24,8 +24,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.zcarioca.zcommons.config.DefaultEnvironment;
 import net.zcarioca.zcommons.config.Environment;
+import net.zcarioca.zcommons.config.EnvironmentAccessor;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -50,7 +50,7 @@ public class PropertiesBuilder
 {
    private static final Pattern pattern = Pattern.compile("\\$\\{[^\\s]+\\}");
    
-   private Environment environment = new DefaultEnvironment();
+   private Environment environment;
    protected Map<String, String> props;
    protected boolean generated;
    
@@ -59,6 +59,7 @@ public class PropertiesBuilder
     */
    public PropertiesBuilder() 
    {
+      this.environment = EnvironmentAccessor.getInstance().getEnvironment();
       this.props = new HashMap<String, String>();
       this.generated = false;
    }
@@ -126,7 +127,7 @@ public class PropertiesBuilder
       {
          throw new IllegalArgumentException("Empty or NULL property name");
       }
-      return addProperty(propertyName, System.getProperty(propertyName, defaultValue));
+      return addProperty(propertyName, environment.getSystemProperty(propertyName, defaultValue));
    }
    
    /**
@@ -174,7 +175,7 @@ public class PropertiesBuilder
     */
    public PropertiesBuilder addAllSystemProperties()
    {
-      return addAll(System.getProperties());
+      return addAll(environment.getAllSystemProperties());
    }
    
    /**

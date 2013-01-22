@@ -21,6 +21,8 @@ package net.zcarioca.zcommons.config.source;
 import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
 import static org.junit.Assert.*;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
+
 import org.junit.Test;
 
 /**
@@ -29,7 +31,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class ConfigurationSourceProviderFactoryTest
+public class ConfigurationSourceProviderFactoryTest extends BaseTestCase
 {
 
    @Test

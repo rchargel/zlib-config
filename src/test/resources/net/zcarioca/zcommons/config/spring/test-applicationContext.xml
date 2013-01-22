@@ -16,6 +16,12 @@
   <context:annotation-config />
   <context:spring-configured />
   
+  <bean class="net.zcarioca.zcommons.config.EnvironmentAccessor" factory-method="getInstance">
+     <property name="environment">
+        <bean class="net.zcarioca.zcommons.config.util.MockEnvironment"/>
+     </property>
+  </bean>
+  
   <import resource="classpath:zlib-config-default-context.xml"/>
   
   <bean id="configuredObject" class="net.zcarioca.zcommons.config.util.ConfigurableObject"/>

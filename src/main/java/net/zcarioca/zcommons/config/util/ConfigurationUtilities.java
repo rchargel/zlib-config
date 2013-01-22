@@ -228,37 +228,30 @@ public class ConfigurationUtilities
    {
       Class<?> beanClass = bean.getClass();
 
-      try
+      do
       {
-         do
+         for(Method method: beanClass.getDeclaredMethods())
          {
-            for(Method method: beanClass.getDeclaredMethods())
+            if(method.isAnnotationPresent(PostConstruct.class))
             {
-               if(method.isAnnotationPresent(PostConstruct.class))
+               Type[] types = method.getGenericParameterTypes();
+               if(types.length == 0)
                {
-                  Type[] types = method.getGenericParameterTypes();
-                  if(types.length == 0)
+                  // cannot be called on method that takes arguments
+                  try
                   {
-                     // cannot be called on method that takes arguments
-                     try
-                     {
-                        method.invoke(bean, (Object[])null);
-                     }
-                     catch(Exception exc)
-                     {
-                        throw new ConfigurationException(
-                              String.format("Could not call method %s on the class %s", method.getName(), bean.getClass().getName()), exc, bean.getClass());
-                     }
+                     method.invoke(bean, (Object[])null);
+                  }
+                  catch(Exception exc)
+                  {
+                     throw new ConfigurationException(
+                           String.format("Could not call method %s on the class %s", method.getName(), bean.getClass().getName()), exc, bean.getClass());
                   }
                }
             }
          }
-         while((beanClass = beanClass.getSuperclass()) != null);
       }
-      catch(SecurityException exc)
-      {
-         throw new ConfigurationException("A security manager has blocked access to the private fields in the class: " + bean.getClass(), exc);
-      }
+      while((beanClass = beanClass.getSuperclass()) != null);
    }
 
    /**
@@ -519,10 +512,7 @@ public class ConfigurationUtilities
 
    private void invokeStartConfig(Object bean)
    {
-      if (logger.isDebugEnabled()) 
-      {
-         logger.debug(String.format("Configuration of bean '%s' started", bean.toString()));
-      }
+      if (logger.isDebugEnabled()) logger.debug(String.format("Configuration of bean '%s' started", bean.toString()));
       synchronized(this.procListeners)
       {
          for(ConfigurationProcessListener listener: this.procListeners)
@@ -534,10 +524,7 @@ public class ConfigurationUtilities
 
    private void invokeCompleteConfig(Object bean)
    {
-      if (logger.isDebugEnabled()) 
-      {
-         logger.debug(String.format("Configuration of bean '%s' completed", bean.toString()));
-      }
+      if (logger.isDebugEnabled()) logger.debug(String.format("Configuration of bean '%s' completed", bean.toString()));
       synchronized(this.procListeners)
       {
          for(ConfigurationProcessListener listener: this.procListeners)
@@ -549,10 +536,7 @@ public class ConfigurationUtilities
 
    private void invokeStartUpdate(Object bean)
    {
-      if (logger.isDebugEnabled()) 
-      {
-         logger.debug(String.format("Update of bean '%s' started", bean.toString()));
-      }
+      if (logger.isDebugEnabled()) logger.debug(String.format("Update of bean '%s' started", bean.toString()));
       synchronized(updateListeners)
       {
          for(ConfigurationUpdateListener listener: updateListeners)
@@ -564,10 +548,7 @@ public class ConfigurationUtilities
 
    private void invokeCompleteUpdate(Object bean)
    {
-      if (logger.isDebugEnabled()) 
-      {
-         logger.debug(String.format("Update of bean '%s' completed", bean.toString()));
-      }
+      if (logger.isDebugEnabled()) logger.debug(String.format("Update of bean '%s' completed", bean.toString()));
       synchronized(updateListeners)
       {
          for(ConfigurationUpdateListener listener: updateListeners)
@@ -620,9 +601,7 @@ public class ConfigurationUtilities
          String defaultVal = attr.defaultValue();
          
          if (logger.isTraceEnabled()) 
-         {
             logger.trace(String.format("Setting property '%s' with value '%s' for bean '%s'", propName, defaultVal, bean.toString()));
-         }
 
          if(StringUtils.isEmpty(defaultVal))
          {
@@ -671,9 +650,7 @@ public class ConfigurationUtilities
          String defaultVal = attr.defaultValue();
          
          if (logger.isTraceEnabled()) 
-         {
             logger.trace(String.format("Setting property '%s' with value '%s' for bean '%s'", propName, defaultVal, bean.toString()));
-         }
 
          if(StringUtils.isEmpty(defaultVal))
          {

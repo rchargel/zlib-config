@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Properties;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.ConfigurationProcessListener;
 import net.zcarioca.zcommons.config.ConfigurationUpdateListener;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
@@ -44,7 +45,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class ConfigurationUtilitiesTest
+public class ConfigurationUtilitiesTest extends BaseTestCase
 {
    private ConfigurationUtilities utils;
    

@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import net.zcarioca.zcommons.config.DefaultEnvironment;
 import net.zcarioca.zcommons.config.Environment;
+import net.zcarioca.zcommons.config.EnvironmentAccessor;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
@@ -73,7 +73,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
    public FilesystemConfigurationSourceServiceProvider()
    {
-      this(new DefaultEnvironment());
+      this(EnvironmentAccessor.getInstance().getEnvironment());
    }
    
    FilesystemConfigurationSourceServiceProvider(Environment environment)
@@ -304,9 +304,9 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       FilesystemConfiguration(Environment environment)
       {
          this.environment = environment;
-         this.confDir = System.getProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR);
-         this.rootDirEnvironmentVar = System.getProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR);
-         this.rootDir = System.getProperty(ROOT_DIR_OVERRIDE, null);
+         this.confDir = this.environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR);
+         this.rootDirEnvironmentVar = this.environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR);
+         this.rootDir = this.environment.getSystemProperty(ROOT_DIR_OVERRIDE, null);
       }
       
       /**

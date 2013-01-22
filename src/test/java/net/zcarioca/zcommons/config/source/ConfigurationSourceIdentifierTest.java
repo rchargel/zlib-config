@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 
@@ -33,7 +34,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class ConfigurationSourceIdentifierTest
+public class ConfigurationSourceIdentifierTest extends BaseTestCase
 {
    @Test
    public void testHashCode()

@@ -35,11 +35,24 @@ public interface Environment
    public Map<String, String> getAllEnvProperties();
    
    /**
+    * Gets a map of all the system properties.
+    * @return Returns a map of every system property.
+    */
+   public Map<String, String> getAllSystemProperties();
+   
+   /**
     * Gets a value out of the system environment.
     * @param envVar The environment variable.
     * @return Returns the value as a string, or NULL if none can be found.
     */
    public String getEnvVariable(String envVar);
+   
+   /**
+    * Gets a system property name.
+    * @param propertyName The property name.
+    * @return Returns the system property.
+    */
+   public String getSystemProperty(String propertyName);
    
    /**
     * Gets a value out of the system environment. 
@@ -48,4 +61,12 @@ public interface Environment
     * @return Returns the value of the variable or the default value.
     */
    public String getEnvVariable(String envVar, String defaultValue);
+   
+   /**
+    * Gets a value out of the system properties, or the default value if none is found.
+    * @param propertyName The system property name.
+    * @param defaultValue The default value.
+    * @return Returns the value of the system property, or the default value.
+    */
+   public String getSystemProperty(String propertyName, String defaultValue);
 }

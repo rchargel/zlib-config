@@ -22,6 +22,7 @@ import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
 
 import static org.junit.Assert.*;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
@@ -35,7 +36,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class DefaultConfigSourceServiceProviderTest
+public class DefaultConfigSourceServiceProviderTest extends BaseTestCase
 {
    private PropertiesBuilderFactory factory = new PropertiesBuilderFactory();
 

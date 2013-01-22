@@ -20,6 +20,8 @@ package net.zcarioca.zcommons.config.util;
 
 import static org.junit.Assert.*;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
+
 import org.junit.Test;
 
 /**
@@ -28,7 +30,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class PropertiesBuilderFactoryTest
+public class PropertiesBuilderFactoryTest extends BaseTestCase
 {
 
    @Test
@@ -78,10 +80,10 @@ public class PropertiesBuilderFactoryTest
       assertEquals(0, emptyBuilder.size());
       
       PropertiesBuilder envBuilder = new PropertiesBuilderFactory(true, false).newPropertiesBuilder();
-      assertTrue(emptyBuilder.size() < envBuilder.size());
+      assertEquals(2, envBuilder.size());
       
       PropertiesBuilder fullBuilder = new PropertiesBuilderFactory(true, true).newPropertiesBuilder();
-      assertTrue(envBuilder.size() < fullBuilder.size());
+      assertEquals(3, fullBuilder.size());
    }
 
 }

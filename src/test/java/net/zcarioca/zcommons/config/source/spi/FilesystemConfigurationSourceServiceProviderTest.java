@@ -20,6 +20,7 @@ package net.zcarioca.zcommons.config.source.spi;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -28,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.Environment;
@@ -49,7 +51,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class FilesystemConfigurationSourceServiceProviderTest
+public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCase
 {
    private static File appDir;
    private static File confDir;
@@ -94,6 +96,9 @@ public class FilesystemConfigurationSourceServiceProviderTest
    {
       environment = mock(Environment.class);
       when(environment.getEnvVariable("APP_ROOT")).thenReturn(appDir.getAbsolutePath());
+      when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
+      when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);
+      when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
    }
 
    @Test
@@ -129,14 +134,16 @@ public class FilesystemConfigurationSourceServiceProviderTest
    @Test
    public void testBadMonitoredConfigurationDirectory()
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider();
+      when(environment.getEnvVariable("APP_ROOT")).thenReturn(null);
+      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       assertNull(fcsp.getMonitoredConfigurationDirectory());
    }
    
    @Test(expected = ConfigurationException.class)
    public void testBadGetProperties() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider();
+      when(environment.getEnvVariable("APP_ROOT")).thenReturn(null);
+      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory());
    }
    

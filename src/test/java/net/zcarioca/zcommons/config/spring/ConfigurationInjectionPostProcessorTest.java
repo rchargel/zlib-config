@@ -20,6 +20,7 @@ package net.zcarioca.zcommons.config.spring;
 
 import static org.junit.Assert.*;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.util.ConfigurableObject;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 
@@ -39,7 +40,7 @@ import org.springframework.core.Ordered;
  *
  * @author zcarioca
  */
-public class ConfigurationInjectionPostProcessorTest
+public class ConfigurationInjectionPostProcessorTest extends BaseTestCase
 {
    private ClassPathXmlApplicationContext ctx;
    

@@ -1,7 +1,7 @@
 /*
  * Project: zlib-config
  * 
- * Copyright (C) 2012 zcarioca.net
+ * Copyright (C) 2013 zcarioca.net
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,31 @@
  */
 package net.zcarioca.zcommons.config;
 
-import java.util.Map;
+import net.zcarioca.zcommons.config.util.MockEnvironment;
 
-public class DefaultEnvironment implements Environment 
+import net.zcarioca.zcommons.config.EnvironmentAccessor;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
+/**
+ * A base for test classes.
+ * 
+ * 
+ * @author zcarioca
+ */
+public class BaseTestCase
 {
-   @Override
-   public Map<String, String> getAllEnvProperties() 
+   @BeforeClass
+   public static void setupMockEnvironment()
    {
-      return System.getenv();
+      EnvironmentAccessor.getInstance().setEnvironment(new MockEnvironment());
    }
    
-   @Override
-   public String getEnvVariable(String envVar) 
+   @AfterClass
+   public static void resetNormalEnvironment()
    {
-      return getEnvVariable(envVar, null);
-   }
-
-   @Override
-   public String getEnvVariable(String envVar, String defaultValue) 
-   {
-      String value = System.getenv(envVar);
-      if (value == null)
-      {
-          value = defaultValue;
-      }
-      return value;
+      EnvironmentAccessor.getInstance().setEnvironment(new EnvironmentAccessor.DefaultEnvironment());
    }
 
 }

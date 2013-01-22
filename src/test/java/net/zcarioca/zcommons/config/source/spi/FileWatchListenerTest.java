@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Collection;
 
+import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener;
@@ -38,7 +39,7 @@ import org.junit.Test;
  * 
  * @author zcarioca
  */
-public class FileWatchListenerTest
+public class FileWatchListenerTest extends BaseTestCase
 {
    private ConfigurationUtilitiesMock configurationUtilities;
    
