@@ -512,7 +512,9 @@ public class ConfigurationUtilities
 
    private void invokeStartConfig(Object bean)
    {
-      if (logger.isDebugEnabled()) logger.debug(String.format("Configuration of bean '%s' started", bean.toString()));
+      if (logger.isDebugEnabled()) 
+         logger.debug(String.format("Configuration of bean '%s' started", bean.toString()));
+      
       synchronized(this.procListeners)
       {
          for(ConfigurationProcessListener listener: this.procListeners)
@@ -524,7 +526,9 @@ public class ConfigurationUtilities
 
    private void invokeCompleteConfig(Object bean)
    {
-      if (logger.isDebugEnabled()) logger.debug(String.format("Configuration of bean '%s' completed", bean.toString()));
+      if (logger.isDebugEnabled()) 
+         logger.debug(String.format("Configuration of bean '%s' completed", bean.toString()));
+      
       synchronized(this.procListeners)
       {
          for(ConfigurationProcessListener listener: this.procListeners)
@@ -536,7 +540,9 @@ public class ConfigurationUtilities
 
    private void invokeStartUpdate(Object bean)
    {
-      if (logger.isDebugEnabled()) logger.debug(String.format("Update of bean '%s' started", bean.toString()));
+      if (logger.isDebugEnabled()) 
+         logger.debug(String.format("Update of bean '%s' started", bean.toString()));
+      
       synchronized(updateListeners)
       {
          for(ConfigurationUpdateListener listener: updateListeners)
@@ -548,7 +554,9 @@ public class ConfigurationUtilities
 
    private void invokeCompleteUpdate(Object bean)
    {
-      if (logger.isDebugEnabled()) logger.debug(String.format("Update of bean '%s' completed", bean.toString()));
+      if (logger.isDebugEnabled()) 
+         logger.debug(String.format("Update of bean '%s' completed", bean.toString()));
+      
       synchronized(updateListeners)
       {
          for(ConfigurationUpdateListener listener: updateListeners)
