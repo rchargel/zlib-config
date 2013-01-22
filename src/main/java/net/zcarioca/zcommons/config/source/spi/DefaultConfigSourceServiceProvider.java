@@ -53,6 +53,29 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
       return resourceName;
    }
    
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   {
+      String resourceName = getResourceName(configurationSourceIdentifier);
+      InputStream in = null;
+      try
+      {
+         in = configurationSourceIdentifier.getReferenceClass().getResourceAsStream(resourceName);
+         return in != null;
+      }
+      catch (Throwable t)
+      {
+         return false;
+      }
+      finally
+      {
+         IOUtils.closeQuietly(in);
+      }
+   }
+   
    @Override
    protected Properties buildPropertiesFromValidInputs(Class<?> referenceClass, String resourceName, PropertiesBuilder propertiesBuilder) throws ConfigurationException
    {

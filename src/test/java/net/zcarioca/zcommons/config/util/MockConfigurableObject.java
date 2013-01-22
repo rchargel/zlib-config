@@ -16,13 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.zcarioca.zcommons.config.spring;
+package net.zcarioca.zcommons.config.util;
 
 import java.io.File;
 
 import javax.annotation.PostConstruct;
-
-import org.springframework.stereotype.Component;
 
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
@@ -32,9 +30,8 @@ import net.zcarioca.zcommons.config.ConfigurableAttribute;
  * 
  * @author zcarioca
  */
-@Component
 @Configurable
-public class ConfigurableObject
+public class MockConfigurableObject
 {
    @ConfigurableAttribute(propertyName = "myFiles")
    private File[] files;
@@ -169,4 +166,5 @@ public class ConfigurableObject
    {
       this.bigNum = this.number + this.floatingPointNumber;
    }
+
 }

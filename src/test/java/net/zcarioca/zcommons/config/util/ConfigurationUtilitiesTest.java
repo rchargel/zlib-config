@@ -32,6 +32,7 @@ import net.zcarioca.zcommons.config.ConfigurationProcessListener;
 import net.zcarioca.zcommons.config.ConfigurationUpdateListener;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
+import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderFactory;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;

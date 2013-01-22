@@ -20,6 +20,7 @@ package net.zcarioca.zcommons.config.source;
 
 import java.util.Properties;
 
+import net.zcarioca.zcommons.config.util.MockConfigurableObject;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 
 /**
@@ -41,7 +42,7 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
       props.setProperty("trueFalse", "true");
       props.setProperty("name", "Z Carioca");
       props.setProperty("oneMoreFloat", "0.34");
-      props.setProperty("aBySystem.getProperties()te", "120");
+      props.setProperty("aByte", "120");
       props.setProperty("fieldMessage", "This is a simple message");
       props.setProperty("aCharacter", "S");
       props.setProperty("property.message", "This is a simple property message");
@@ -53,6 +54,11 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
    public String getProviderID()
    {
       return ID;
+   }
+   
+   public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   {
+      return configurationSourceIdentifier.equals(new ConfigurationSourceIdentifier(new MockConfigurableObject()));
    }
    
    public void postInit() { }

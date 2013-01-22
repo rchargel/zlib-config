@@ -39,28 +39,38 @@ public interface ConfigurationSourceProvider
     * @return Returns a unique Provider ID.
     */
    public String getProviderID();
-   
+
    /**
     * Runs this method immediately after initializing this class.
     */
    public void postInit();
-   
+
    /**
-    * Runs this method immediately before destroying this class.  Note: this method is not guaranteed to run.
+    * Runs this method immediately before destroying this class. Note: this
+    * method is not guaranteed to run.
     */
    public void preDestroy();
 
    /**
-    * Uses the {@link ConfigurationSourceIdentifier} to locate and parse the data into a
-    * properties map.
+    * Uses the {@link ConfigurationSourceIdentifier} to locate and parse the
+    * data into a properties map.
     * 
-    * @param configurationSourceIdentifier
-    *           The source of the configuration data.
-    *           
-    * @param propertiesBuilderFactory The properties builder factory used to create 
-    *           the properties object.
+    * @param configurationSourceIdentifier The source of the configuration data.
+    * 
+    * @param propertiesBuilderFactory The properties builder factory used to
+    *        create the properties object.
     * 
     * @return Returns a {@link Configuration} object.
     */
-   public Properties getProperties(ConfigurationSourceIdentifier configurationSourceIdentifier, PropertiesBuilderFactory propertiesBuilderFactory) throws ConfigurationException;
+   public Properties getProperties(ConfigurationSourceIdentifier configurationSourceIdentifier, PropertiesBuilderFactory propertiesBuilderFactory)
+         throws ConfigurationException;
+
+   /**
+    * Determines whether this source provider will support the configuration
+    * source identifier.
+    * 
+    * @param configurationSourceIdentifier The source of the configuration data.
+    * @return Returns true if this provider supports the provided identifier.
+    */
+   public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier);
 }

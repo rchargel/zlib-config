@@ -20,6 +20,7 @@ package net.zcarioca.zcommons.config.spring;
 
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
+import net.zcarioca.zcommons.config.util.ConfigurableObject;
 
 /**
  * A fake object that is not configurable.

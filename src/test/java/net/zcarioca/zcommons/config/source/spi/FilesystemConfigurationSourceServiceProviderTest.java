@@ -33,7 +33,7 @@ import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.Environment;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
-import net.zcarioca.zcommons.config.spring.ConfigurableObject;
+import net.zcarioca.zcommons.config.util.ConfigurableObject;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 import net.zcarioca.zcommons.config.util.UnconfigurableObject;
 

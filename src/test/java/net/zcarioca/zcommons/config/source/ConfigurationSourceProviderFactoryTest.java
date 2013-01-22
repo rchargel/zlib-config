@@ -40,21 +40,13 @@ public class ConfigurationSourceProviderFactoryTest
    }
 
    @Test
-   public void testGetConfigurationSourceProvider()
-   {
-      ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider();
-      assertNotNull(provider);
-      assertEquals(provider.getProviderID(), DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER);
-   }
-
-   @Test
    public void testGetConfigurationSourceProviderString()
    {
       ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER);
       assertNotNull(provider);
       assertEquals(provider.getProviderID(), DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER);
       
-      provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(null);
+      provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider((String)null);
       assertNotNull(provider);
       assertEquals(provider.getProviderID(), DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER);
       

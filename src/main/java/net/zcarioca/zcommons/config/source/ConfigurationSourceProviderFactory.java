@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import net.zcarioca.zcommons.config.ConfigurationConstants;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,7 @@ public class ConfigurationSourceProviderFactory
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationSourceProviderFactory.class);
 
    private Map<String, ConfigurationSourceProvider> providerMap;
+   private Map<ConfigurationSourceIdentifier, String> identifierMap;
 
    /**
     * Gets access to the singleton instance.
@@ -54,15 +57,17 @@ public class ConfigurationSourceProviderFactory
       }
       return spiFactory;
    }
-
+   
    /**
-    * Gets the default {@link ConfigurationSourceProvider} provider.
-    * 
-    * @return Returns the default provider.
+    * Gets the configuration source provider for a given source identifier.
+    * @param configurationSourceIdentifier
+    * @return Returns the source provider for an identifier.
     */
-   public ConfigurationSourceProvider getConfigurationSourceProvider()
+   public ConfigurationSourceProvider getConfigurationSourceProvider(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
-      return getConfigurationSourceProvider(ConfigurationSourceProviderMapper.getInstance().getDefaultConfigurationSourceProviderID());
+      mapConfigurationSourceIdentifier(configurationSourceIdentifier);
+      String providerId = identifierMap.get(configurationSourceIdentifier);
+      return getConfigurationSourceProvider(providerId);
    }
 
    /**
@@ -74,11 +79,11 @@ public class ConfigurationSourceProviderFactory
     * @return Returns either the requested provider, or the default provider if
     *         the requested provider could not be found.
     */
-   public ConfigurationSourceProvider getConfigurationSourceProvider(String providerId)
+   ConfigurationSourceProvider getConfigurationSourceProvider(String providerId)
    {
-      if (StringUtils.isEmpty(providerId))
+      if (StringUtils.isBlank(providerId))
       {
-         providerId = ConfigurationSourceProviderMapper.getInstance().getDefaultConfigurationSourceProviderID();
+         providerId = ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
       }
 
       if (providerMap.containsKey(providerId))
@@ -86,7 +91,7 @@ public class ConfigurationSourceProviderFactory
          return providerMap.get(providerId);
       }
 
-      return providerMap.get(ConfigurationSourceProviderMapper.getInstance().getDefaultConfigurationSourceProviderID());
+      return providerMap.get(ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER);
    }
    
    /**
@@ -110,12 +115,35 @@ public class ConfigurationSourceProviderFactory
       this.providerMap.putAll(providerMap);
    }
    
+   public void clearAssociations()
+   {
+      identifierMap.clear();
+   }
+   
    public void clearProviders()
    {
        for (String providerId : providerMap.keySet())
        {
            providerMap.get(providerId).preDestroy();
        }
+   }
+   
+   protected void mapConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   {
+      if (StringUtils.isNotBlank(identifierMap.get(configurationSourceIdentifier))) 
+      {
+         return;
+      }
+      Iterator<ConfigurationSourceProvider> providers = getConfigurationSourceProviders();
+      while (providers.hasNext())
+      {
+         ConfigurationSourceProvider provider = providers.next();
+         if (provider.supportsIdentifier(configurationSourceIdentifier))
+         {
+            identifierMap.put(configurationSourceIdentifier, provider.getProviderID());
+            return;
+         }
+      }
    }
 
    /**
@@ -132,6 +160,8 @@ public class ConfigurationSourceProviderFactory
    private ConfigurationSourceProviderFactory()
    {
       providerMap = new HashMap<String, ConfigurationSourceProvider>();
+      identifierMap = new HashMap<ConfigurationSourceIdentifier, String>();
+      
       Iterator<ConfigurationSourceProvider> iterator = getConfigurationSourceProviders();
       while (iterator.hasNext())
       {

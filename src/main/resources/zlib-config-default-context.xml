@@ -28,23 +28,12 @@
     <property name="reconfigureOnUpdateEnabled" value="true" />
   </bean>
   
-  <!--  This adds the mock provider to the mapping  -->
-  <bean class="net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper" factory-method="getInstance">
-    <property name="associations">
-      <map>
-        <entry key="net.zcarioca" value="MOCK-PROVIDER"/>
-      </map>
-    </property>
-  </bean>
-  
   <!--  This will trigger processing of @PostConstruct and @PreDestroy -->
   <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
   
   <!--  This processes the @ConfiguredAttribute annotations -->
   <bean id="confPostProcessor" class="net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor"/>
 
-  <context:component-scan base-package="net.zcarioca" />
+  <context:component-scan base-package="net.zcarioca.zcommons.config" />
   
-  <bean id="configuredObject" class="net.zcarioca.zcommons.config.spring.ConfigurableObject"/>
-
 </beans>

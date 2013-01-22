@@ -18,9 +18,9 @@
  */
 package net.zcarioca.zcommons.config.spring;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import net.zcarioca.zcommons.config.util.ConfigurableObject;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 
 import org.junit.After;
@@ -53,7 +53,7 @@ public class ConfigurationInjectionPostProcessorTest
    @Before
    public void setUp() throws Exception
    {
-      ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml", getClass());
+      ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("test-applicationContext.xml", getClass());
       ctx.registerShutdownHook();
       this.ctx = ctx;
       this.configUtils = (ConfigurationUtilities)ctx.getBean("configurationUtilities");

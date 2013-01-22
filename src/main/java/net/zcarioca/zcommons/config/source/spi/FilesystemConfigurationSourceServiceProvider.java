@@ -137,6 +137,23 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
          logger.warn("Could not add file to watch list", exc);
       }
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   {
+      try
+      {
+         File file = getConfigurationFile(configurationSourceIdentifier.getReferenceClass(), getResourceName(configurationSourceIdentifier));
+         return file.exists();
+      }
+      catch(ConfigurationException exc)
+      {
+         return false;
+      }
+   }
 
    /**
     * {@inheritDoc}

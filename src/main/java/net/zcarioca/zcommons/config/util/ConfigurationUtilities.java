@@ -53,7 +53,6 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderFactory;
-import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper;
 
 /**
  * This singleton works as the configuration injection engine.
@@ -183,8 +182,7 @@ public class ConfigurationUtilities
       try
       {
          ConfigurationSourceIdentifier sourceId = new ConfigurationSourceIdentifier(referenceClass, resourceLocation);
-         String providerId = ConfigurationSourceProviderMapper.getInstance().getProviderID(sourceId.getReferenceClass());
-         ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(providerId);
+         ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(sourceId);
 
          return provider.getProperties(sourceId, getPropertiesBuilderFactory());
       }
@@ -215,7 +213,8 @@ public class ConfigurationUtilities
    @PreDestroy
    public void invokePreDestroyAll() throws ConfigurationException
    {
-       ConfigurationSourceProviderFactory.getInstance().clearProviders();
+      ConfigurationSourceProviderFactory.getInstance().clearAssociations();
+      ConfigurationSourceProviderFactory.getInstance().clearProviders();
    }
 
    /**
@@ -511,8 +510,7 @@ public class ConfigurationUtilities
    private void configureBeanObject(Object bean) throws ConfigurationException
    {
       ConfigurationSourceIdentifier sourceId = new ConfigurationSourceIdentifier(bean);
-      String providerId = ConfigurationSourceProviderMapper.getInstance().getProviderID(sourceId.getReferenceClass());
-      ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(providerId);
+      ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(sourceId);
 
       Properties props = provider.getProperties(sourceId, getPropertiesBuilderFactory());
       setProperties(bean, props);

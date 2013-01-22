@@ -167,9 +167,4 @@ public class ConfigurableObject
       this.bigNum = this.number + this.floatingPointNumber;
    }
 
-   @PostConstruct
-   public void wontRun(String message)
-   {
-      throw new RuntimeException(message);
-   }
 }
