@@ -109,10 +109,14 @@ public class FileWatchListenerTest
    {
       FileWatchListener listener = new FileWatchListener(configurationUtilities);
       listener.addFile(new File("file1.txt"), new ConfigurationSourceIdentifier(this));
+      listener.addFile(new File("file2.txt"), new ConfigurationSourceIdentifier(this));
+      assertEquals(2, listener.getMappedFiles().size());
+      
+      listener.onFileDelete(new File("file1.txt"));
       assertEquals(1, listener.getMappedFiles().size());
       
       listener.onFileDelete(new File("file1.txt"));
-      assertEquals(0, listener.getMappedFiles().size());
+      assertEquals(1, listener.getMappedFiles().size());
    }
    
    private static class ConfigurationUtilitiesMock extends ConfigurationUtilities

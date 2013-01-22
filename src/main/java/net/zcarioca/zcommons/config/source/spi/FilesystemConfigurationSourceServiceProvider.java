@@ -18,8 +18,8 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
 import static java.lang.String.format;
+import static net.zcarioca.zcommons.config.ConfigurationConstants.FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import net.zcarioca.zcommons.config.DefaultEnvironment;
+import net.zcarioca.zcommons.config.Environment;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
+import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
+import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
+import net.zcarioca.zcommons.config.util.PropertiesBuilder;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -42,14 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
-
-import net.zcarioca.zcommons.config.DefaultEnvironment;
-import net.zcarioca.zcommons.config.Environment;
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
-import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
-import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
-import net.zcarioca.zcommons.config.util.PropertiesBuilder;
 
 /**
  * A {@link ConfigurationSourceProvider} tasked with pulling configuration
@@ -111,7 +108,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    protected String getResourceName(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       String resourceName = super.getResourceName(configurationSourceIdentifier);
-      if (!resourceName.endsWith(".properties") || !resourceName.endsWith(".xml"))
+      if (!resourceName.endsWith(".properties") && !resourceName.endsWith(".xml"))
       {
          resourceName += ".properties";
       }
@@ -123,15 +120,22 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
     * {@inheritDoc}
     */
    @Override
-   public void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   public void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier) 
    {
       super.runPostProcessAction(configurationSourceIdentifier);
 
       Class<?> referenceClass = configurationSourceIdentifier.getReferenceClass();
       String resourceName = getResourceName(configurationSourceIdentifier);
 
-      File confFile = getConfigurationFile(referenceClass, resourceName);
-      this.fileWatchListener.addFile(confFile, configurationSourceIdentifier);
+      try
+      {
+         File confFile = getConfigurationFile(referenceClass, resourceName);
+         this.fileWatchListener.addFile(confFile, configurationSourceIdentifier);
+      }
+      catch (ConfigurationException exc)
+      {
+         logger.warn("Could not add file to watch list", exc);
+      }
    }
 
    /**
@@ -162,7 +166,6 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       }
    }
 
-   @PostConstruct
    public void postInit()
    {
       if (this.fileAlterationMonitor != null)
@@ -186,7 +189,6 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       }
    }
 
-   @PreDestroy
    public void preDestroy()
    {
       try
@@ -210,11 +212,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    {
       try 
       {
-         File confDir = getFilesystemConfiguration().getConfigurationDirectory();
-         if (confDir != null)
-         {
-            return confDir.getAbsolutePath();
-         }
+         return getFilesystemConfiguration().getConfigurationDirectory().getAbsolutePath();
       }
       catch (IllegalArgumentException exc) 
       {
@@ -223,18 +221,26 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       return null;
    }
 
-   private File getConfigurationFile(Class<?> referenceClass, String resourceName)
+   private File getConfigurationFile(Class<?> referenceClass, String resourceName) throws ConfigurationException
    {
-      File confDir = getFilesystemConfiguration().getConfigurationDirectory();
-      File file = getConfigurationFileInSubDirs(confDir, referenceClass, resourceName);
+      File file = null;
+      try
+      {
+         File confDir = getFilesystemConfiguration().getConfigurationDirectory();
+         file = getConfigurationFileInSubDirs(confDir, referenceClass, resourceName);
 
-      if (file == null)
-      {
-         file = getConfigurationFileInBaseDir(confDir, resourceName);
+         if (file == null)
+         {
+            file = getConfigurationFileInBaseDir(confDir, resourceName);
+         }
+         if (file == null)
+         {
+            throw new ConfigurationException(format("Could not find file for %s:%s", referenceClass, resourceName));
+         }
       }
-      if (file == null)
+      catch (IllegalArgumentException exc) 
       {
-         throw new IllegalArgumentException(format("Could not find file for %s:%s", referenceClass, resourceName));
+         throw new ConfigurationException(format("Could not find file for %s:%s", referenceClass, resourceName), exc);
       }
       return file;
    }
