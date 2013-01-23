@@ -26,6 +26,8 @@ import net.zcarioca.zcommons.config.ConfigurationProcessListener;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -55,9 +57,10 @@ import org.springframework.core.PriorityOrdered;
  * 
  * @author zcarioca
  */
-@SuppressWarnings("rawtypes")
 public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, PriorityOrdered, ConfigurationProcessListener, ApplicationListener, ApplicationContextAware
 {
+   private static final Logger logger = LoggerFactory.getLogger(ConfigurationInjectionPostProcessor.class);
+   
    private Set<Object> processedBeans;
    private ConfigurationUtilities configurationUtilities;
    
@@ -91,6 +94,9 @@ public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, P
    {
       if (bean.getClass().isAnnotationPresent(Configurable.class))
       {
+         if (logger.isDebugEnabled())
+            logger.debug(String.format("Processing bean %s of type %s", bean, bean.getClass()));
+         
          synchronized(processedBeans)
          {
             if(!this.processedBeans.contains(bean))
@@ -101,6 +107,10 @@ public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, P
                }
                catch(ConfigurationException exc)
                {
+                  logger.warn(String.format("Could not configure bean %s: %s", bean, exc.getMessage()));
+                  if (logger.isTraceEnabled())
+                     logger.trace(exc.getMessage(), exc);
+                  
                   throw new InvalidPropertyException(bean.getClass(), exc.getPropertyName() != null ? exc.getPropertyName() : "unknown",
                         "Error occured while performing bean configuration", exc);
                }

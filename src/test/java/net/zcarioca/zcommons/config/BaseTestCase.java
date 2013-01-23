@@ -18,10 +18,14 @@
  */
 package net.zcarioca.zcommons.config;
 
+import java.io.File;
+import java.io.IOException;
+
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 import net.zcarioca.zcommons.config.util.MockEnvironment;
 
-import net.zcarioca.zcommons.config.EnvironmentAccessor;
-
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -42,7 +46,43 @@ public class BaseTestCase
    @AfterClass
    public static void resetNormalEnvironment()
    {
+      try
+      {
+         ConfigurationUtilities.getInstance().invokePreDestroyAll();
+      }
+      catch (ConfigurationException exc)
+      {
+         // do nothing
+      }
+      deleteConfDir();
       EnvironmentAccessor.getInstance().setEnvironment(new EnvironmentAccessor.DefaultEnvironment());
+   }
+   
+   public static File getConfDir()
+   {
+      String appRoot = EnvironmentAccessor.getInstance().getEnvironment().getEnvVariable("APP_ROOT");
+      return new File(System.getProperty("java.io.tmpDir"), String.format("%s/conf", appRoot));
+   }
+   
+   public static void createConfDir()
+   {
+      getConfDir().mkdirs();
+   }
+   
+   public static void deleteConfDir()
+   {
+      File confDir = getConfDir();
+      try
+      {
+         if (confDir.exists())
+         {
+            FileUtils.deleteDirectory(confDir);
+         }
+      }
+      catch (IOException exc)
+      {
+         //do nothing
+      }
    }
 
 }

@@ -71,21 +71,7 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
    @Override
    public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
-      String resourceName = getResourceName(configurationSourceIdentifier);
-      InputStream in = null;
-      try
-      {
-         in = configurationSourceIdentifier.getReferenceClass().getResourceAsStream(resourceName);
-         return in != null;
-      }
-      catch (Throwable t)
-      {
-         return false;
-      }
-      finally
-      {
-         IOUtils.closeQuietly(in);
-      }
+      return true;
    }
    
    @Override

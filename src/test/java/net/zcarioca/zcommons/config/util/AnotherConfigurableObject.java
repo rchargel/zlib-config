@@ -16,28 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.zcarioca.zcommons.config.source;
+package net.zcarioca.zcommons.config.util;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import net.zcarioca.zcommons.config.BaseTestCase;
-
-import org.junit.Test;
+import net.zcarioca.zcommons.config.Configurable;
+import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
 /**
- * Tests the {@link ConfigurationSourceProviderFactory}.
- * 
+ * A fake object that is configurable.
  * 
  * @author zcarioca
  */
-public class ConfigurationSourceProviderFactoryTest extends BaseTestCase
+@Configurable(resourceName="test")
+public class AnotherConfigurableObject
 {
-
-   @Test
-   public void testGetInstance()
+   @ConfigurableAttribute(propertyName = "value.1")
+   private String firstValue;
+   
+   @ConfigurableAttribute(propertyName = "value.2")
+   private String secondValue;
+   
+   public String getFirstValue()
    {
-      assertNotNull(ConfigurationSourceProviderFactory.getInstance());
-      assertSame(ConfigurationSourceProviderFactory.getInstance(), ConfigurationSourceProviderFactory.getInstance());
+      return this.firstValue;
    }
-
+   
+   public String getSecondValue()
+   {
+      return this.secondValue;
+   }
 }

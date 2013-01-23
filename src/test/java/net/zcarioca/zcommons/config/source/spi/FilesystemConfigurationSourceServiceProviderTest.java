@@ -18,9 +18,17 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.CONF_DIR_OVERRIDE;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_CONF_DIR;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_ROOT_DIR_ENV_VAR;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_ENV_OVERRIDE;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_OVERRIDE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,6 +49,7 @@ import net.zcarioca.zcommons.config.util.UnconfigurableObject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -57,6 +66,7 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
    private static File confDir;
    
    private Environment environment;
+   private FilesystemConfigurationSourceServiceProvider fcsp;
    
    @BeforeClass
    public static void setupFiles() throws Exception
@@ -99,12 +109,19 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
+      
+      fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
+   }
+   
+   @After
+   public void cleanup() throws Exception
+   {
+      fcsp.preDestroy();
    }
 
    @Test
    public void testGetResourceName()
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       assertEquals("filesystemconfigurationsourceserviceprovidertest.properties", fcsp.getResourceName(new ConfigurationSourceIdentifier(this)));
       assertEquals("configuration.properties", fcsp.getResourceName(new ConfigurationSourceIdentifier(getClass(), "configuration.properties")));
       assertEquals("configuration.xml", fcsp.getResourceName(new ConfigurationSourceIdentifier(getClass(), "configuration.xml")));
@@ -113,21 +130,18 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
    @Test
    public void testGetProperties() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       assertNotNull(fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory(false, false)));
    }
    
    @Test
    public void testGetPropertiesNested() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       assertNotNull(fcsp.getProperties(new ConfigurationSourceIdentifier(new TestOne()), new PropertiesBuilderFactory(false, false)));
    }
    
    @Test
    public void testGetMonitoredConfigurationDirectory()
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       assertEquals(confDir.getAbsolutePath(), fcsp.getMonitoredConfigurationDirectory());
    }
    
@@ -135,7 +149,6 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
    public void testBadMonitoredConfigurationDirectory()
    {
       when(environment.getEnvVariable("APP_ROOT")).thenReturn(null);
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       assertNull(fcsp.getMonitoredConfigurationDirectory());
    }
    
@@ -143,14 +156,12 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
    public void testBadGetProperties() throws ConfigurationException
    {
       when(environment.getEnvVariable("APP_ROOT")).thenReturn(null);
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory());
    }
    
    @Test
    public void testGetMonitoredFiles() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory(false, false));
       Collection<File> monitoredFiles = fcsp.getMonitoredFiles();
       
@@ -161,34 +172,27 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
    @Test
    public void testPostInit() 
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
-      
       // should be able to call as many times as a want
       fcsp.postInit();
       fcsp.postInit();
       fcsp.postInit();
-      
-      fcsp.preDestroy();
    }
    
    @Test(expected = ConfigurationException.class)
    public void testNoConfigurationFile() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       fcsp.getProperties(new ConfigurationSourceIdentifier(new UnconfigurableObject()), new PropertiesBuilderFactory());
    }
    
    @Test(expected = ConfigurationException.class)
    public void testBadConfigurationFile() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       fcsp.getProperties(new ConfigurationSourceIdentifier(getClass(), "baddata.properties"), new PropertiesBuilderFactory());
    }
    
    @Test(expected = ConfigurationException.class)
    public void testMissingConfigurationFile() throws ConfigurationException
    {
-      FilesystemConfigurationSourceServiceProvider fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
       fcsp.getProperties(new ConfigurationSourceIdentifier(new TestTwo()), new PropertiesBuilderFactory());
    }
    

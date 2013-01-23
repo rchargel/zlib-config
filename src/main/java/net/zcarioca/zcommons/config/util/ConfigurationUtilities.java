@@ -214,7 +214,6 @@ public class ConfigurationUtilities
    public void invokePreDestroyAll() throws ConfigurationException
    {
       ConfigurationSourceProviderFactory.getInstance().clearAssociations();
-      ConfigurationSourceProviderFactory.getInstance().clearProviders();
    }
 
    /**
@@ -244,8 +243,8 @@ public class ConfigurationUtilities
                   }
                   catch(Exception exc)
                   {
-                     throw new ConfigurationException(
-                           String.format("Could not call method %s on the class %s", method.getName(), bean.getClass().getName()), exc, bean.getClass());
+                     throw new ConfigurationException(String.format("Could not call method %s on the class %s", 
+                           method.getName(), bean.getClass().getName()), exc, bean.getClass());
                   }
                }
             }
@@ -504,6 +503,12 @@ public class ConfigurationUtilities
    {
       ConfigurationSourceIdentifier sourceId = new ConfigurationSourceIdentifier(bean);
       ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(sourceId);
+      
+      if (logger.isDebugEnabled())
+      {
+         logger.debug(String.format("Bean %s of type %s, has the source id %s", bean, bean.getClass(), sourceId));
+         logger.debug(String.format("Source ID %s being processed by provider type %s", sourceId, provider.getProviderID()));
+      }
 
       Properties props = provider.getProperties(sourceId, getPropertiesBuilderFactory());
       setProperties(bean, props);

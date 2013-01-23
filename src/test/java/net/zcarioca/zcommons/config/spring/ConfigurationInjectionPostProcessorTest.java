@@ -18,21 +18,22 @@
  */
 package net.zcarioca.zcommons.config.spring;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.util.ConfigurableObject;
-import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.Ordered;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests the {@link ConfigurationInjectionPostProcessor}
@@ -40,35 +41,25 @@ import org.springframework.core.Ordered;
  *
  * @author zcarioca
  */
-public class ConfigurationInjectionPostProcessorTest extends BaseTestCase
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"test-applicationContext.xml"})
+public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implements ApplicationContextAware
 {
-   private ClassPathXmlApplicationContext ctx;
+   private ApplicationContext ctx;
    
-   private ConfigurationUtilities configUtils;
+   @Autowired
    private ConfigurationInjectionPostProcessor proc;
+   
+   @Autowired
    private ConfigurableObject obj;
    
    /**
-    * @throws java.lang.Exception
+    * {@inheritDoc}
     */
-   @Before
-   public void setUp() throws Exception
+   @Override
+   public void setApplicationContext(ApplicationContext ctx) throws BeansException
    {
-      ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("test-applicationContext.xml", getClass());
-      ctx.registerShutdownHook();
       this.ctx = ctx;
-      this.configUtils = (ConfigurationUtilities)ctx.getBean("configurationUtilities");
-      
-      assertTrue(this.configUtils.getPropertiesBuilderFactory().isAddEnvironmentProperties());
-      assertTrue(this.configUtils.getPropertiesBuilderFactory().isAddSystemProperties());
-      this.obj = (ConfigurableObject)ctx.getBean("configuredObject");
-      this.proc = (ConfigurationInjectionPostProcessor)ctx.getBean("confPostProcessor");
-   }
-   
-   @After
-   public void tearDown() throws Exception
-   {
-      this.ctx.close();
    }
 
    /**

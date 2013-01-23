@@ -22,6 +22,8 @@ import java.io.File;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.stereotype.Component;
+
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
@@ -30,7 +32,8 @@ import net.zcarioca.zcommons.config.ConfigurableAttribute;
  * 
  * @author zcarioca
  */
-@Configurable
+@Component
+@Configurable(referenceClass=MockConfigurableObject.class)
 public class MockConfigurableObject
 {
    @ConfigurableAttribute(propertyName = "myFiles")

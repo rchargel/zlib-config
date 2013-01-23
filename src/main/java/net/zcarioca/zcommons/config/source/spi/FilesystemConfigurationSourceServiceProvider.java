@@ -21,6 +21,7 @@ package net.zcarioca.zcommons.config.source.spi;
 import static java.lang.String.format;
 import static net.zcarioca.zcommons.config.ConfigurationConstants.FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -45,8 +46,6 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * A {@link ConfigurationSourceProvider} tasked with pulling configuration
@@ -54,7 +53,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * 
  * @author zcarioca
  */
-@ManagedResource(objectName = "Configuration:group=Configuration,name=FilesystemConfigurationSourceServiceProvider")
 public class FilesystemConfigurationSourceServiceProvider extends AbstractConfigurationSourceServiceProvider
 {
    private static final Logger logger = LoggerFactory.getLogger(FilesystemConfigurationSourceServiceProvider.class);
@@ -68,8 +66,8 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
    private final FilesystemConfiguration filesystemConfiguration;
 
-   private final FileWatchListener fileWatchListener;
-   private FileAlterationMonitor fileAlterationMonitor;
+   private static FileWatchListener fileWatchListener;
+   private static FileAlterationMonitor fileAlterationMonitor;
 
    public FilesystemConfigurationSourceServiceProvider()
    {
@@ -79,7 +77,6 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    FilesystemConfigurationSourceServiceProvider(Environment environment)
    {
       this.filesystemConfiguration = new FilesystemConfiguration(environment);
-      this.fileWatchListener = new FileWatchListener(ConfigurationUtilities.getInstance());
    }
    
    public FilesystemConfiguration getFilesystemConfiguration()
@@ -87,11 +84,6 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       return this.filesystemConfiguration;
    }
    
-   public FileWatchListener getFileWatchListener()
-   {
-      return this.fileWatchListener;
-   }
-
    /**
     * {@inheritDoc}
     */
@@ -141,11 +133,13 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       try
       {
          File confFile = getConfigurationFile(referenceClass, resourceName);
-         this.fileWatchListener.addFile(confFile, configurationSourceIdentifier);
+         getFileWatchListener().addFile(confFile, configurationSourceIdentifier);
       }
       catch (ConfigurationException exc)
       {
-         logger.warn("Could not add file to watch list", exc);
+         logger.warn("Could not add file to watch list: " + exc.getMessage());
+         if (logger.isTraceEnabled())
+            logger.trace(exc.getMessage(), exc);
       }
    }
    
@@ -177,7 +171,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       InputStream in = null;
       try
       {
-         in = new FileInputStream(file);
+         in = new BufferedInputStream(new FileInputStream(file), 4096);
          Properties props = new Properties();
          props.load(in);
          propertiesBuilder.addAll(props);
@@ -194,34 +188,48 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       }
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public void postInit()
    {
-      if (this.fileAlterationMonitor != null)
+      super.postInit();
+      if (fileAlterationMonitor == null)
       {
-         preDestroy();
-      }
-      this.fileAlterationMonitor = new FileAlterationMonitor();
-      File confDir = getFilesystemConfiguration().getConfigurationDirectory();
-      FileAlterationObserver observer = new FileAlterationObserver(confDir);
+         fileWatchListener = new FileWatchListener(ConfigurationUtilities.getInstance());
+         fileAlterationMonitor = new FileAlterationMonitor();
+         File confDir = getFilesystemConfiguration().getConfigurationDirectory();
+         FileAlterationObserver observer = new FileAlterationObserver(confDir);
 
-      observer.addListener(this.fileWatchListener);
-      this.fileAlterationMonitor.addObserver(observer);
+         observer.addListener(getFileWatchListener());
+         fileAlterationMonitor.addObserver(observer);
 
-      try
-      {
-         this.fileAlterationMonitor.start();
-      }
-      catch (Exception exc)
-      {
-         logger.error("Could not stop file monitor", exc);
+         try
+         {
+            fileAlterationMonitor.start();
+         }
+         catch (Exception exc)
+         {
+            logger.error("Could not start file monitor", exc);
+         }
       }
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public void preDestroy()
    {
+      super.preDestroy();
       try
       {
-         this.fileAlterationMonitor.stop();
+         if (fileAlterationMonitor != null) fileAlterationMonitor.stop(10);
+         if (fileWatchListener != null) fileWatchListener.clear();
+         
+         fileAlterationMonitor = null;
+         fileWatchListener = null;
       }
       catch (Exception exc)
       {
@@ -229,13 +237,11 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       }
    }
    
-   @ManagedAttribute(description = "The set of monitored files")
    public Collection<File> getMonitoredFiles()
    {
       return getFileWatchListener().getMappedFiles();
    }
    
-   @ManagedAttribute(description = "The directory containing the application's configuration files")
    public String getMonitoredConfigurationDirectory() 
    {
       try 
@@ -244,9 +250,21 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       }
       catch (IllegalArgumentException exc) 
       {
-         logger.warn(format("Could not determine configuration directory: %s", exc.getMessage()), exc);
+         logger.warn(format("Could not determine configuration directory: %s", exc.getMessage()));
+         if (logger.isTraceEnabled())
+            logger.trace(exc.getMessage(), exc);
       }
       return null;
+   }
+
+   
+   private static FileWatchListener getFileWatchListener()
+   {
+      if (fileWatchListener == null)
+      {
+         fileWatchListener = new FileWatchListener(ConfigurationUtilities.getInstance());
+      }
+      return fileWatchListener;
    }
 
    private File getConfigurationFile(Class<?> referenceClass, String resourceName) throws ConfigurationException
@@ -412,6 +430,14 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
          this.mapper = new HashMap<File, ConfigurationSourceIdentifier>();
          this.configurationUtilities = configurationUtilities;
       }
+      
+      public void clear()
+      {
+         synchronized (this.mapper)
+         {
+            this.mapper.clear();
+         }
+      }
 
       public void addFile(File file, ConfigurationSourceIdentifier configurationSourceIdentifier)
       {
@@ -452,10 +478,13 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       @Override
       public void onFileDelete(File file)
       {
-         if (this.mapper.containsKey(file))
+         synchronized (this.mapper)
          {
-            logger.info(format("The file '%s' has been deleted", file));
-            this.mapper.remove(file);
+            if (this.mapper.containsKey(file))
+            {
+               logger.info(format("The file '%s' has been deleted", file));
+               this.mapper.remove(file);
+            }
          }
       }
 

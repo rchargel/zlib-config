@@ -19,14 +19,14 @@
 package net.zcarioca.zcommons.config.source;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
-import net.zcarioca.zcommons.config.ConfigurationConstants;
 import net.zcarioca.zcommons.config.source.spi.DefaultConfigSourceServiceProvider;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +42,8 @@ public class ConfigurationSourceProviderFactory
    private static ConfigurationSourceProviderFactory spiFactory;
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationSourceProviderFactory.class);
 
-   private Map<String, ConfigurationSourceProvider> providerMap;
-   private Map<ConfigurationSourceIdentifier, String> identifierMap;
+   private Map<ConfigurationSourceIdentifier, ConfigurationSourceProvider> identifierMap;
+   private Set<ConfigurationSourceProvider> initializedProviders;
 
    /**
     * Gets access to the singleton instance.
@@ -67,74 +67,31 @@ public class ConfigurationSourceProviderFactory
    public ConfigurationSourceProvider getConfigurationSourceProvider(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       mapConfigurationSourceIdentifier(configurationSourceIdentifier);
-      String providerId = identifierMap.get(configurationSourceIdentifier);
-      return getConfigurationSourceProvider(providerId);
-   }
-
-   /**
-    * Gets the service provider for the specified Provider ID.
-    * 
-    * @param providerId
-    *           The Provider ID.
-    * 
-    * @return Returns either the requested provider, or the default provider if
-    *         the requested provider could not be found.
-    */
-   ConfigurationSourceProvider getConfigurationSourceProvider(String providerId)
-   {
-      if (StringUtils.isBlank(providerId))
-      {
-         providerId = ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
-      }
-
-      if (providerMap.containsKey(providerId))
-      {
-         return providerMap.get(providerId);
-      }
-
-      return providerMap.get(ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER);
-   }
-   
-   /**
-    * Determines whether the inserted provider ID is available.
-    * 
-    * @param configurationSourceProviderID The provider ID to test.
-    * 
-    * @return Returns true if the provider ID is available; false otherwise.
-    */
-   public boolean isConfigurationSourceProviderAvailable(String configurationSourceProviderID)
-   {
-      return providerMap.containsKey(configurationSourceProviderID);
-   }
-   
-   /**
-    * Overrides the provider map.
-    * @param providerMap The provider map to override.
-    */
-   public void setProviderMap(Map<String, ConfigurationSourceProvider> providerMap) 
-   {
-      this.providerMap.putAll(providerMap);
+      return identifierMap.get(configurationSourceIdentifier);
    }
    
    public void clearAssociations()
    {
+      for (ConfigurationSourceProvider provider : identifierMap.values())
+      {
+         if (initializedProviders.contains(provider))
+         {
+            provider.preDestroy();
+         }
+      }
+      initializedProviders.clear();
       identifierMap.clear();
-   }
-   
-   public void clearProviders()
-   {
-       for (String providerId : providerMap.keySet())
-       {
-           providerMap.get(providerId).preDestroy();
-       }
    }
    
    protected void mapConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
-      if (StringUtils.isNotBlank(identifierMap.get(configurationSourceIdentifier))) 
+      if (identifierMap.get(configurationSourceIdentifier) != null) 
       {
          return;
       }
+      if (logger.isTraceEnabled())
+         logger.trace(String.format("Mapping provider for %s", configurationSourceIdentifier));
+      
       Iterator<ConfigurationSourceProvider> providers = getConfigurationSourceProviders();
       
       ConfigurationSourceProvider chosenProvider = new DefaultConfigSourceServiceProvider();
@@ -147,7 +104,16 @@ public class ConfigurationSourceProviderFactory
             chosenProvider = provider;
          }
       }
-      identifierMap.put(configurationSourceIdentifier, chosenProvider.getProviderID());
+      identifierMap.put(configurationSourceIdentifier, chosenProvider);
+      
+      if (!initializedProviders.contains(chosenProvider)) 
+      {
+         chosenProvider.postInit();
+         initializedProviders.add(chosenProvider);
+      }
+      
+      if (logger.isDebugEnabled())
+         logger.debug(String.format("Mapped the provider %s to the identifier %s", chosenProvider.getProviderID(), configurationSourceIdentifier));
    }
 
    /**
@@ -163,29 +129,7 @@ public class ConfigurationSourceProviderFactory
    
    private ConfigurationSourceProviderFactory()
    {
-      providerMap = new HashMap<String, ConfigurationSourceProvider>();
-      identifierMap = new HashMap<ConfigurationSourceIdentifier, String>();
-      
-      Iterator<ConfigurationSourceProvider> iterator = getConfigurationSourceProviders();
-      while (iterator.hasNext())
-      {
-         ConfigurationSourceProvider spi = iterator.next();
-         
-         if (logger.isDebugEnabled()) 
-         {
-            logger.debug(String.format("Setting up provider: %s", spi.getProviderID()));
-         }
-         
-         try
-         {
-            spi.postInit();
-         
-            providerMap.put(spi.getProviderID(), spi);
-         }
-         catch (IllegalArgumentException exc)
-         {
-            logger.warn(String.format("Could not add configuration source provider %s: %s", spi.getProviderID(), exc.getMessage()), exc);
-         }
-      }
+      identifierMap = new HashMap<ConfigurationSourceIdentifier, ConfigurationSourceProvider>();
+      initializedProviders = new HashSet<ConfigurationSourceProvider>();
    }
 }
