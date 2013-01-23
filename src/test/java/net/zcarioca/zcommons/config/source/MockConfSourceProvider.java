@@ -56,6 +56,15 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
       return ID;
    }
    
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Priority getPriorityLevel()
+   {
+      return Priority.HIGH;
+   }
+   
    public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       return configurationSourceIdentifier.equals(new ConfigurationSourceIdentifier(new MockConfigurableObject()));

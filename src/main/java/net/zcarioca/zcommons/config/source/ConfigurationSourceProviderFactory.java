@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import net.zcarioca.zcommons.config.ConfigurationConstants;
+import net.zcarioca.zcommons.config.source.spi.DefaultConfigSourceServiceProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -135,15 +136,18 @@ public class ConfigurationSourceProviderFactory
          return;
       }
       Iterator<ConfigurationSourceProvider> providers = getConfigurationSourceProviders();
+      
+      ConfigurationSourceProvider chosenProvider = new DefaultConfigSourceServiceProvider();
       while (providers.hasNext())
       {
          ConfigurationSourceProvider provider = providers.next();
-         if (provider.supportsIdentifier(configurationSourceIdentifier))
+         if (provider.supportsIdentifier(configurationSourceIdentifier)
+               && chosenProvider.getPriorityLevel().ordinal() < provider.getPriorityLevel().ordinal())
          {
-            identifierMap.put(configurationSourceIdentifier, provider.getProviderID());
-            return;
+            chosenProvider = provider;
          }
       }
+      identifierMap.put(configurationSourceIdentifier, chosenProvider.getProviderID());
    }
 
    /**

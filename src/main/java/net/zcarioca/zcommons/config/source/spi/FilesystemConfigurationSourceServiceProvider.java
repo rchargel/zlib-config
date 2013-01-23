@@ -100,6 +100,17 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    {
       return FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
    }
+   
+   /**
+    * This provider is marked as a {@link Priority#MEDIUM} provider.
+    * 
+    * {@inheritDoc}
+    */
+   @Override
+   public Priority getPriorityLevel()
+   {
+      return Priority.MEDIUM;
+   }
 
    /**
     * {@inheritDoc}

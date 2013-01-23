@@ -42,6 +42,18 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
       return DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
    }
    
+   /**
+    * This provider is marked as a {@link Priority#BACKUP} provider.
+    * 
+    * {@inheritDoc}
+    * 
+    */
+   @Override
+   public Priority getPriorityLevel()
+   {
+      return Priority.BACKUP;
+   }
+   
    @Override
    protected String getResourceName(ConfigurationSourceIdentifier configurationSourceIdentifier) 
    {
