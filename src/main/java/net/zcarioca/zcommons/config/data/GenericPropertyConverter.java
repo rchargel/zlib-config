@@ -44,20 +44,20 @@ public class GenericPropertyConverter implements PropertyConverter<Object>
     * {@inheritDoc}
     */
    @Override
-   public Object convertPropertyValue(String value, PropertyInfo propertyInfo) throws ConfigurationException
+   public Object convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       try
       {
-         Constructor<?> constructor = propertyInfo.getPropertyType().getConstructor(String.class);
+         Constructor<?> constructor = beanPropertyInfo.getPropertyType().getConstructor(String.class);
          return constructor.newInstance(value);
       }
       catch (NullPointerException exc)
       {
-         throw new ConfigurationException(String.format("There is no constructor for the class %s that takes a single string", propertyInfo.getPropertyType()));
+         throw new ConfigurationException(String.format("There is no constructor for the class %s that takes a single string", beanPropertyInfo.getPropertyType()));
       }
       catch (Exception exc)
       {
-         throw new ConfigurationException(String.format("Could instantiate instance of class %s: %s", propertyInfo.getPropertyType(), exc.getMessage()), exc);
+         throw new ConfigurationException(String.format("Could instantiate instance of class %s: %s", beanPropertyInfo.getPropertyType(), exc.getMessage()), exc);
       }
    }
 

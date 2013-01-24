@@ -18,6 +18,8 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,9 +84,8 @@ public class ValueConverterRegistry
     * @return Returns a {@link PropertyConverter} for the supplied type.
     * 
     * @throws IllegalArgumentException if the type is null.
-    * @throws ConfigurationException if a converter cannot be found for the supplied type.
     */
-   public PropertyConverter<?> getPropertyConverter(Class<?> type) throws ConfigurationException
+   public PropertyConverter<?> getPropertyConverter(Class<?> type) 
    {
       if (type == null)
       {
@@ -134,7 +135,7 @@ public class ValueConverterRegistry
       return null;
    }
    
-   private ValueConverterRegistry()
+   ValueConverterRegistry()
    {
       registry = new HashMap<Class<?>, PropertyConverter<?>>();
       registry.put(String.class, new StringPropertyConverter());
@@ -146,5 +147,7 @@ public class ValueConverterRegistry
       registry.put(Long.class, new NumberPropertyConverter<Long>(Long.class));
       registry.put(Float.class, new NumberPropertyConverter<Float>(Float.class));
       registry.put(Double.class, new NumberPropertyConverter<Double>(Double.class));
+      registry.put(Date.class, new DatePropertyConverter());
+      registry.put(Calendar.class, new CalendarPropertyConverter());
    }
 }

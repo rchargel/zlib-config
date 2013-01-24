@@ -18,29 +18,45 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 /**
- * Converts the String value into the desired class type for your converter;
+ * {@link PropertyConverter} for {@link Calendar} values.
  * 
  * @author zcarioca
  */
-public interface PropertyConverter<T>
+class CalendarPropertyConverter implements PropertyConverter<Calendar>
 {
+
    /**
-    * The class supported by the converter.
-    * 
-    * @return Returns the class supported by the converter.
+    * {@inheritDoc}
     */
-   public Class<T> getSupportedClass();
-   
+   @Override
+   public Class<Calendar> getSupportedClass()
+   {
+      return Calendar.class;
+   }
+
    /**
-    * Converts the value to type supported by this converter.
-    * 
-    * @param value The value to convert.
-    * @param beanPropertyInfo The information about the property.
-    * 
-    * @return Returns the value as the correct type.
+    * {@inheritDoc}
     */
-   public T convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException;
+   @Override
+   public Calendar convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
+   {
+      Calendar calendar = null;
+      
+      DatePropertyConverter converter = new DatePropertyConverter();
+      Date date = converter.convertPropertyValue(value, beanPropertyInfo);
+      
+      if (date != null)
+      {
+         calendar = Calendar.getInstance();
+         calendar.setTime(date);
+      }
+      return calendar;
+   }
+
 }

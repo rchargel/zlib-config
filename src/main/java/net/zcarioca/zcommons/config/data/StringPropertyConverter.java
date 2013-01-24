@@ -41,7 +41,7 @@ class StringPropertyConverter implements PropertyConverter<String>
     * {@inheritDoc}
     */
    @Override
-   public String convertPropertyValue(String value, PropertyInfo propertyInfo) throws ConfigurationException
+   public String convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       return value;
    }

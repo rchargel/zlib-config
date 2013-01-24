@@ -43,7 +43,7 @@ class BooleanPropertyConverter implements PropertyConverter<Boolean>
     * {@inheritDoc}
     */
    @Override
-   public Boolean convertPropertyValue(String value, PropertyInfo propertyInfo) throws ConfigurationException
+   public Boolean convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       return StringUtils.isBlank(value) ? null : Boolean.parseBoolean(value);
    }

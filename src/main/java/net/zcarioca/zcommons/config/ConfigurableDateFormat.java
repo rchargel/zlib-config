@@ -16,38 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.zcarioca.zcommons.config.data;
+package net.zcarioca.zcommons.config;
 
-import org.apache.commons.lang.StringUtils;
-
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
- * Converter for {@link Character} class.
- * 
+ * A date format for configurable attributes which are either of the type {@link Date}
+ * or {@link Calendar}. Date format follows the rules supplied by the {@link SimpleDateFormat}.
  * 
  * @author zcarioca
  */
-class CharacterPropertyConverter implements PropertyConverter<Character>
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@Documented
+public @interface ConfigurableDateFormat
 {
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public Class<Character> getSupportedClass()
-   {
-      return Character.class;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public Character convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
-   {
-      // blank is okay, but empty is not
-      return StringUtils.isEmpty(value) ? null : value.charAt(0);
-   }
-
+   String value();
 }

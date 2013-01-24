@@ -26,7 +26,7 @@ import java.util.Collection;
  * 
  * @author zcarioca
  */
-public interface PropertyInfo
+public interface BeanPropertyInfo
 {
    /**
     * Gets the property name.
@@ -34,6 +34,13 @@ public interface PropertyInfo
     * @return Returns the property name.
     */
    public String getPropertyName();
+   
+   /**
+    * Gets the type of the bean.
+    * 
+    * @return Returns the bean's class.
+    */
+   public Class<?> getBeanType();
 
    /**
     * Gets the property type, or the component type if it is an array.
@@ -61,17 +68,15 @@ public interface PropertyInfo
     * These annotations may be on the field, the getter or the setter method of
     * the property.
     * 
-    * @param bean The bean.
     * @return Returns the property annotations.
     */
-   public Collection<Annotation> getPropertyAnnotations(Object bean);
+   public Collection<Annotation> getPropertyAnnotations();
 
    /**
     * Gets an immutable collection of the bean annotations.
     * 
-    * @param bean Returns the bean annotations.
     * @return Returns the annotations on the class of the bean, or any of its
     *         super classes.
     */
-   public Collection<Annotation> getBeanAnnotations(Object bean);
+   public Collection<Annotation> getBeanAnnotations();
 }

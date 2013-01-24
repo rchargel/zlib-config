@@ -51,7 +51,7 @@ class NumberPropertyConverter<T extends Number> implements PropertyConverter<T>
     * {@inheritDoc}
     */
    @Override
-   public T convertPropertyValue(String value, PropertyInfo propertyInfo) throws ConfigurationException
+   public T convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       if (StringUtils.isBlank(value))
          return null;
