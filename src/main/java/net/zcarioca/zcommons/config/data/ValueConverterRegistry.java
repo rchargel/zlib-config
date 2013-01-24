@@ -129,10 +129,9 @@ public class ValueConverterRegistry
          return Long.class;
       if (float.class == type)
          return Float.class;
-      if (double.class == type)
-         return Double.class;
       
-      return null;
+      //this is all that's left
+      return Double.class;
    }
    
    ValueConverterRegistry()

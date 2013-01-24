@@ -42,7 +42,7 @@ class DatePropertyConverter implements PropertyConverter<Date>
     * {@inheritDoc}
     */
    @Override
-   public Class<Date> getSupportedClass()
+   public Class<?> getSupportedClass()
    {
       return Date.class;
    }
@@ -74,18 +74,30 @@ class DatePropertyConverter implements PropertyConverter<Date>
    
    protected SimpleDateFormat getSimpleDateFormat(BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
-      SimpleDateFormat simpleDateFormat = null;
-      ConfigurableDateFormat format = getConfigurableDateFormat(beanPropertyInfo.getPropertyAnnotations());
-      if (format == null)
+      ConfigurableDateFormat format = null;
+      try
       {
-         format = getConfigurableDateFormat(beanPropertyInfo.getBeanAnnotations());
+         SimpleDateFormat simpleDateFormat = null;
+         format = getConfigurableDateFormat(beanPropertyInfo.getPropertyAnnotations());
+         if (format == null)
+         {
+            format = getConfigurableDateFormat(beanPropertyInfo.getBeanAnnotations());
+         }
+
+         if (format != null)
+         {
+            simpleDateFormat = new SimpleDateFormat(format.value());
+         }
+         return simpleDateFormat;
       }
-      
-      if (format != null)
+      catch (NullPointerException exc)
       {
-         simpleDateFormat = new SimpleDateFormat(format.value());
+         throw new ConfigurationException(String.format("@ConfigurableDateFormat requires a format to be specified for property %s.%s", beanPropertyInfo.getBeanType().getSimpleName(), beanPropertyInfo.getPropertyName()));
       }
-      return simpleDateFormat;
+      catch (IllegalArgumentException exc)
+      {
+         throw new ConfigurationException(String.format("%s is not a valid format for the @ConfigurableDateFormat for property %s.%s", format.value(), beanPropertyInfo.getBeanType().getSimpleName(), beanPropertyInfo.getPropertyName()));
+      }
    }
    
    protected ConfigurableDateFormat getConfigurableDateFormat(Collection<Annotation> annotations)

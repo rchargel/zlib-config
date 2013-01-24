@@ -18,7 +18,6 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +27,7 @@ import java.util.Collection;
 
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
+import net.zcarioca.zcommons.config.ConfigurableDateFormat;
 import net.zcarioca.zcommons.config.ConfigurableNumberFormat;
 import net.zcarioca.zcommons.config.ConfigurableNumberFormat.NumberFormat;
 
@@ -77,6 +77,12 @@ public abstract class BaseConverterTestCase
       return mock(annotationType);
    }
    
+   @SuppressWarnings({ "rawtypes", "unchecked" })
+   protected void setPropertyType(Class type)
+   {
+      when(beanPropertyInfo.getPropertyType()).thenReturn(type);
+   }
+   
    protected ConfigurableNumberFormat mockNumberFormatAnnotation(NumberFormat numberFormat)
    {
       ConfigurableNumberFormat configurableNumberFormat = mockAnnotation(ConfigurableNumberFormat.class);
@@ -84,6 +90,15 @@ public abstract class BaseConverterTestCase
       when(configurableNumberFormat.value()).thenReturn(numberFormat != null ? numberFormat : NumberFormat.DECIMAL);
       
       return configurableNumberFormat;
+   }
+   
+   protected ConfigurableDateFormat mockConfigurableDateFormat(String format)
+   {
+      ConfigurableDateFormat configurableDateFormat = mockAnnotation(ConfigurableDateFormat.class);
+      
+      when(configurableDateFormat.value()).thenReturn(format);
+      
+      return configurableDateFormat;
    }
 
 }

@@ -28,14 +28,14 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-public class GenericPropertyConverter implements PropertyConverter<Object>
+class GenericPropertyConverter implements PropertyConverter<Object>
 {
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public Class<Object> getSupportedClass()
+   public Class<?> getSupportedClass()
    {
       return Object.class;
    }
@@ -50,10 +50,6 @@ public class GenericPropertyConverter implements PropertyConverter<Object>
       {
          Constructor<?> constructor = beanPropertyInfo.getPropertyType().getConstructor(String.class);
          return constructor.newInstance(value);
-      }
-      catch (NullPointerException exc)
-      {
-         throw new ConfigurationException(String.format("There is no constructor for the class %s that takes a single string", beanPropertyInfo.getPropertyType()));
       }
       catch (Exception exc)
       {

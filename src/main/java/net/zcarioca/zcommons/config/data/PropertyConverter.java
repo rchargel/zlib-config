@@ -32,7 +32,7 @@ public interface PropertyConverter<T>
     * 
     * @return Returns the class supported by the converter.
     */
-   public Class<T> getSupportedClass();
+   public Class<?> getSupportedClass();
    
    /**
     * Converts the value to type supported by this converter.
