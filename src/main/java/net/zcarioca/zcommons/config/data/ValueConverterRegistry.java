@@ -141,12 +141,12 @@ public class ValueConverterRegistry
       registry.put(String.class, new StringPropertyConverter());
       registry.put(Boolean.class, new BooleanPropertyConverter());
       registry.put(Character.class, new CharacterPropertyConverter());
-      registry.put(Byte.class, new NumberPropertyConverter<Byte>(Byte.class));
-      registry.put(Short.class, new NumberPropertyConverter<Short>(Short.class));
-      registry.put(Integer.class, new NumberPropertyConverter<Integer>(Integer.class));
-      registry.put(Long.class, new NumberPropertyConverter<Long>(Long.class));
-      registry.put(Float.class, new NumberPropertyConverter<Float>(Float.class));
-      registry.put(Double.class, new NumberPropertyConverter<Double>(Double.class));
+      registry.put(Byte.class, NumberPropertyConverter.createNewNumberPropertyConverter(Byte.class));
+      registry.put(Short.class, NumberPropertyConverter.createNewNumberPropertyConverter(Short.class));
+      registry.put(Integer.class, NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class));
+      registry.put(Long.class, NumberPropertyConverter.createNewNumberPropertyConverter(Long.class));
+      registry.put(Float.class, NumberPropertyConverter.createNewNumberPropertyConverter(Float.class));
+      registry.put(Double.class, NumberPropertyConverter.createNewNumberPropertyConverter(Double.class));
       registry.put(Date.class, new DatePropertyConverter());
       registry.put(Calendar.class, new CalendarPropertyConverter());
    }

@@ -18,11 +18,14 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import java.lang.reflect.Constructor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Collection;
+
+import net.zcarioca.zcommons.config.ConfigurableNumberFormat;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 /**
  * A numeric property converter.
@@ -33,9 +36,14 @@ class NumberPropertyConverter<T extends Number> implements PropertyConverter<T>
 {
    private Class<T> supportedClass;
    
-   public NumberPropertyConverter(Class<T> supportedClass)
+   private NumberPropertyConverter(Class<T> type)
    {
-      this.supportedClass = supportedClass;
+      supportedClass = type;
+   }
+   
+   public static <T extends Number> NumberPropertyConverter<T> createNewNumberPropertyConverter(Class<T> type)
+   {
+      return new NumberPropertyConverter<T>(type);
    }
 
    /**
@@ -51,6 +59,7 @@ class NumberPropertyConverter<T extends Number> implements PropertyConverter<T>
     * {@inheritDoc}
     */
    @Override
+   @SuppressWarnings("unchecked")
    public T convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       if (StringUtils.isBlank(value))
@@ -58,13 +67,57 @@ class NumberPropertyConverter<T extends Number> implements PropertyConverter<T>
       
       try
       {
-         Constructor<T> constructor = getSupportedClass().getConstructor(String.class);
-         return constructor.newInstance(value);
+         Method parse = getParseMethod();
+         if (parse.getParameterTypes().length == 1)
+         {
+            return (T)parse.invoke(null, value.trim());
+         }
+         return (T)parse.invoke(null, value.trim(), getRadix(beanPropertyInfo));
       }
       catch (Exception exc)
       {
          throw new ConfigurationException(String.format("Could not parse %s as a %s", value, getSupportedClass()), exc);
       }
+   }
+   
+   protected Method getParseMethod() throws NoSuchMethodException
+   {
+      String methodName = "parse" + getSupportedClass().getSimpleName();
+      if (getSupportedClass() == Integer.class)
+      {
+         methodName = "parseInt";
+      }
+      if (getSupportedClass() == Float.class || getSupportedClass() == Double.class)
+      {
+         return getSupportedClass().getMethod(methodName, String.class);
+      }
+      
+      return getSupportedClass().getMethod(methodName, String.class, int.class);
+   }
+   
+   protected int getRadix(BeanPropertyInfo beanPropertyInfo)
+   {
+      ConfigurableNumberFormat configurableNumberFormat = getConfigurableNumberFormat(beanPropertyInfo);
+      return configurableNumberFormat != null ? configurableNumberFormat.value().radix() : 10;
+   }
+   
+   protected ConfigurableNumberFormat getConfigurableNumberFormat(BeanPropertyInfo beanPropertyInfo)
+   {
+      ConfigurableNumberFormat configurableNumberFormat = getConfigurableNumberFormat(beanPropertyInfo.getPropertyAnnotations());
+      
+      return configurableNumberFormat != null ? configurableNumberFormat : getConfigurableNumberFormat(beanPropertyInfo.getBeanAnnotations());
+   }
+   
+   protected ConfigurableNumberFormat getConfigurableNumberFormat(Collection<Annotation> annotations)
+   {
+      for (Annotation annotation : annotations)
+      {
+         if (annotation instanceof ConfigurableNumberFormat)
+         {
+            return (ConfigurableNumberFormat)annotation;
+         }
+      }
+      return null;
    }
 
 }

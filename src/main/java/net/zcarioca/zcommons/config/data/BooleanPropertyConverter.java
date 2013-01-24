@@ -45,7 +45,34 @@ class BooleanPropertyConverter implements PropertyConverter<Boolean>
    @Override
    public Boolean convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
-      return StringUtils.isBlank(value) ? null : Boolean.parseBoolean(value);
+      return StringUtils.isBlank(value) ? null : parseBoolean(value.trim());
    }
 
+   protected boolean parseBoolean(String value) throws ConfigurationException
+   {
+      boolean bool = Boolean.parseBoolean(value) ||
+            value.equalsIgnoreCase("yes") ||
+            value.equalsIgnoreCase("y") || 
+            value.equalsIgnoreCase("t") || 
+            value.equals("1");
+      
+      if (!bool)
+      {
+         // test for validity
+         if (!isValidFalse(value))
+         {
+            throw new ConfigurationException(String.format("Could not parse the value %s as a boolean", value));
+         }
+      }
+      return bool;
+   }
+   
+   protected boolean isValidFalse(String value)
+   {
+      return value.equalsIgnoreCase("false") ||
+            value.equalsIgnoreCase("f") ||
+            value.equalsIgnoreCase("no") || 
+            value.equalsIgnoreCase("n") ||
+            value.equals("0");
+   }
 }
