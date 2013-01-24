@@ -18,41 +18,28 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.commons.collections.map.MultiValueMap;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.ConfigurationProcessListener;
 import net.zcarioca.zcommons.config.ConfigurationUpdateListener;
+import net.zcarioca.zcommons.config.data.BeanPropertySetter;
+import net.zcarioca.zcommons.config.data.BeanPropertySetterFactory;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderFactory;
+
+import org.apache.commons.collections.map.MultiValueMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This singleton works as the configuration injection engine.
@@ -188,7 +175,7 @@ public class ConfigurationUtilities
       }
       catch(Throwable t)
       {
-         throw new ConfigurationException("Could not load the properties", t, referenceClass);
+         throw new ConfigurationException("Could not load the properties", t);
       }
    }
 
@@ -202,11 +189,12 @@ public class ConfigurationUtilities
     */
    public void setProperties(Object bean, Properties properties) throws ConfigurationException
    {
-      Collection<PropertySetter> setters = getPropertySettersForBean(bean);
+      BeanPropertySetterFactory bpsFactory = new BeanPropertySetterFactory();
+      Collection<BeanPropertySetter> setters = bpsFactory.getPropertySettersForBean(bean);
 
-      for(PropertySetter setter: setters)
+      for(BeanPropertySetter setter: setters)
       {
-         setter.setProperty(bean, properties);
+         setter.setProperty(properties);
       }
    }
    
@@ -244,7 +232,7 @@ public class ConfigurationUtilities
                   catch(Exception exc)
                   {
                      throw new ConfigurationException(String.format("Could not call method %s on the class %s", 
-                           method.getName(), bean.getClass().getName()), exc, bean.getClass());
+                           method.getName(), bean.getClass().getName()), exc);
                   }
                }
             }
@@ -338,167 +326,6 @@ public class ConfigurationUtilities
       return this.reconfigureOnUpdateEnabled;
    }
 
-   static Collection<PropertySetter> getPropertySettersForBean(Object bean) throws ConfigurationException
-   {
-      List<PropertySetter> setters = new LinkedList<PropertySetter>();
-
-      Map<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
-      Class<?> beanClass = bean.getClass();
-      BeanInfo beanInfo = null;
-      try
-      {
-         beanInfo = Introspector.getBeanInfo(beanClass);
-         for(PropertyDescriptor desc: beanInfo.getPropertyDescriptors())
-         {
-            String name = desc.getName();
-            Method reader = desc.getReadMethod();
-            Method writer = desc.getWriteMethod();
-
-            if(writer != null)
-            {
-               if(getAnnotation(writer) != null)
-               {
-                  setters.add(new DescriptorPropertySetter(desc, getAnnotation(writer)));
-               }
-               else if(getAnnotation(reader) != null)
-               {
-                  setters.add(new DescriptorPropertySetter(desc, getAnnotation(reader)));
-               }
-               else
-               {
-                  descriptors.put(name, desc);
-               }
-            }
-            else if(getAnnotation(reader) != null)
-            {
-               descriptors.put(name, desc);
-            }
-         }
-      }
-      catch(Throwable t)
-      {
-         throw new ConfigurationException("Could not introspect bean class", t, beanClass);
-      }
-      do
-      {
-         Field[] fields = beanClass.getDeclaredFields();
-         for(Field field: fields)
-         {
-            if(field.isAnnotationPresent(ConfigurableAttribute.class))
-            {
-               if(descriptors.containsKey(field.getName()))
-               {
-                  PropertyDescriptor desc = descriptors.get(field.getName());
-                  setters.add(new DescriptorPropertySetter(desc, field.getAnnotation(ConfigurableAttribute.class)));
-               }
-               else
-               {
-                  setters.add(new FieldPropertySetter(field, field.getAnnotation(ConfigurableAttribute.class)));
-               }
-            }
-            else if(descriptors.containsKey(field.getName()))
-            {
-               // the annotation may have been set on the getter, not the field
-               PropertyDescriptor desc = descriptors.get(field.getName());
-               if(getAnnotation(desc.getReadMethod()) != null)
-               {
-                  setters.add(new FieldPropertySetter(field, getAnnotation(desc.getReadMethod())));
-               }
-            }
-         }
-      }
-      while((beanClass = beanClass.getSuperclass()) != null);
-      return setters;
-   }
-
-   /**
-    * Converts the supplied string value and transforms it to the desired type.
-    * 
-    * @param type
-    *           The type requested.
-    * @param valueAsString
-    *           The value as a string.
-    * @return Returns the value as the desired type.
-    */
-   static Object convertValueType(Class<?> type, String valueAsString) throws ConfigurationException
-   {
-      if(valueAsString == null)
-         return null;
-
-      try
-      {
-         if(type.isArray())
-         {
-            Class<?> componentType = type.getComponentType();
-            List<Object> list = new ArrayList<Object>();
-            String[] values = valueAsString.split(",");
-            for(String val: values)
-            {
-               list.add(convertValueType(componentType, val.trim()));
-            }
-            Object array = Array.newInstance(componentType, list.size());
-            for(int i = 0; i < list.size(); i++)
-            {
-               Array.set(array, i, list.get(i));
-            }
-            return array;
-         }
-         else if(String.class == type)
-         {
-            return valueAsString;
-         }
-         else if(boolean.class == type || Boolean.class == type)
-         {
-            return Boolean.parseBoolean(valueAsString);
-         }
-         else if(long.class == type || Long.class == type)
-         {
-            return Long.parseLong(valueAsString);
-         }
-         else if(int.class == type || Integer.class == type)
-         {
-            return Integer.parseInt(valueAsString);
-         }
-         else if(short.class == type || Short.class == type)
-         {
-            return Short.parseShort(valueAsString);
-         }
-         else if(byte.class == type || Byte.class == type)
-         {
-            return Byte.parseByte(valueAsString);
-         }
-         else if(char.class == type || Character.class == type)
-         {
-            return valueAsString.charAt(0);
-         }
-         else if(float.class == type || Float.class == type)
-         {
-            return Float.parseFloat(valueAsString);
-         }
-         else if(double.class == type || Double.class == type)
-         {
-            return Double.parseDouble(valueAsString);
-         }
-         else
-         {
-            Constructor<?>[] constructors = type.getConstructors();
-            for(Constructor<?> c: constructors)
-            {
-               Class<?>[] types = c.getParameterTypes();
-               if(types.length == 1 && String.class.equals(types[0]))
-               {
-                  return c.newInstance(valueAsString);
-               }
-            }
-            throw new IllegalArgumentException("No valid constructors for type: " + type);
-         }
-      }
-      catch(Throwable t)
-      {
-         throw new ConfigurationException("Could not convert value for type: " + type, t);
-      }
-   }
-
    private void configureBeanObject(Object bean) throws ConfigurationException
    {
       ConfigurationSourceIdentifier sourceId = new ConfigurationSourceIdentifier(bean);
@@ -567,120 +394,6 @@ public class ConfigurationUtilities
          for(ConfigurationUpdateListener listener: updateListeners)
          {
             listener.completedBeanUpdate(bean);
-         }
-      }
-   }
-
-   private static ConfigurableAttribute getAnnotation(Method method)
-   {
-      if(method != null && method.isAnnotationPresent(ConfigurableAttribute.class))
-      {
-         return method.getAnnotation(ConfigurableAttribute.class);
-      }
-      return null;
-   }
-
-   private static interface PropertySetter
-   {
-      public void setProperty(Object bean, Properties props) throws ConfigurationException;
-
-      public String getPropertyName();
-   }
-
-   private static class DescriptorPropertySetter implements PropertySetter
-   {
-      private PropertyDescriptor desc;
-      private ConfigurableAttribute attr;
-
-      public DescriptorPropertySetter(PropertyDescriptor desc, ConfigurableAttribute attr)
-      {
-         this.desc = desc;
-         this.attr = attr;
-      }
-
-      public String getPropertyName()
-      {
-         String propName = attr.propertyName();
-         if(StringUtils.isEmpty(propName))
-         {
-            propName = desc.getName();
-         }
-         return propName;
-      }
-
-      public void setProperty(Object bean, Properties props) throws ConfigurationException
-      {
-         String propName = getPropertyName();
-         String defaultVal = attr.defaultValue();
-         
-         if (logger.isTraceEnabled()) 
-            logger.trace(String.format("Setting property '%s' with value '%s' for bean '%s'", propName, defaultVal, bean.toString()));
-
-         if(StringUtils.isEmpty(defaultVal))
-         {
-            defaultVal = null;
-         }
-
-         try
-         {
-            desc.getWriteMethod().setAccessible(true);
-            Object beanVal = convertValueType(desc.getPropertyType(), props.getProperty(propName, defaultVal));
-            desc.getWriteMethod().invoke(bean, beanVal);
-         }
-         catch(Exception exc)
-         {
-            ConfigurationException ce = new ConfigurationException("Could not write property to bean", exc, bean.getClass());
-            ce.setPropertyName(propName);
-            throw ce;
-         }
-      }
-   }
-
-   private static class FieldPropertySetter implements PropertySetter
-   {
-      private Field field;
-      private ConfigurableAttribute attr;
-
-      public FieldPropertySetter(Field field, ConfigurableAttribute attr)
-      {
-         this.field = field;
-         this.attr = attr;
-      }
-
-      public String getPropertyName()
-      {
-         String propName = attr.propertyName();
-         if(StringUtils.isEmpty(propName))
-         {
-            propName = field.getName();
-         }
-         return propName;
-      }
-
-      public void setProperty(Object bean, Properties props) throws ConfigurationException
-      {
-         String propName = getPropertyName();
-         String defaultVal = attr.defaultValue();
-         
-         if (logger.isTraceEnabled()) 
-            logger.trace(String.format("Setting property '%s' with value '%s' for bean '%s'", propName, defaultVal, bean.toString()));
-
-         if(StringUtils.isEmpty(defaultVal))
-         {
-            defaultVal = null;
-         }
-
-         try
-         {
-            field.setAccessible(true);
-            Object beanVal = convertValueType(field.getType(), props.getProperty(propName, defaultVal));
-            field.set(bean, beanVal);
-         }
-         catch(Exception exc)
-         {
-            ConfigurationException ce = new ConfigurationException("Could not write property to bean", exc, bean.getClass());
-            ce.setPropertyName(propName);
-            throw ce;
          }
       }
    }

@@ -18,6 +18,10 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import java.util.Properties;
+
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
 /**
  * This class is responsible for setting a property on a bean.
  * 
@@ -25,5 +29,28 @@ package net.zcarioca.zcommons.config.data;
  */
 public interface BeanPropertySetter
 {
+   /**
+    * Gets the {@link BeanPropertyInfo} as information about the bean and the
+    * property this property setter is responsible for.
+    * 
+    * @return Returns the bean property info.
+    */
    public BeanPropertyInfo getBeanPropertyInfo();
+   
+   /**
+    * Unlike the {@link BeanPropertyInfo#getPropertyName()}, this is not the name
+    * of the property in the class, but rather the key for finding the property
+    * in the {@link Properties} object.
+    * 
+    * @return Returns the property key.
+    */
+   public String getPropertyKey();
+
+   /**
+    * Uses the supplied {@link Properties} to set the correct property on the
+    * bean.
+    * 
+    * @param properties The properties.
+    */
+   public void setProperty(Properties properties) throws ConfigurationException;
 }

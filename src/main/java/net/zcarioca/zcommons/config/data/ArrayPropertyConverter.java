@@ -75,30 +75,11 @@ class ArrayPropertyConverter<T> implements BeanPropertyConverter<T>
          Object itemVal = converter.convertPropertyValue(splitValues[i], beanPropertyInfo);
          if (itemVal == null && arrayType.getComponentType().isPrimitive())
          {
-            itemVal = getDefaultValue(arrayType.getComponentType());
+            itemVal = BeanPropertySetterFactory.getDefaultValue(arrayType.getComponentType());
          }
          Array.set(data, i, itemVal);
       }
       return data;
-   }
-   
-   protected Object getDefaultValue(Class<?> primitiveType)
-   {
-      if (boolean.class == primitiveType)
-         return Boolean.FALSE;
-      if (char.class == primitiveType)
-         return new Character('\u0000');
-      if (float.class == primitiveType)
-         return new Float(0);
-      if (double.class == primitiveType)
-         return new Double(0);
-      if (byte.class == primitiveType)
-         return new Byte((byte)0);
-      if (short.class == primitiveType)
-         return new Short((short)0);
-      if (int.class == primitiveType)
-         return new Integer(0);
-      return new Long(0);
    }
    
    protected String[] split(String originalValue)

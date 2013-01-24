@@ -31,9 +31,6 @@ package net.zcarioca.zcommons.config.exceptions;
 public class ConfigurationException extends Exception
 {
    private static final long serialVersionUID = 1L;
-   
-   private Class<?> beanClass;
-   private String propertyName = "unkown";
 
    /**
     * Constructor for the ConfigurationException.
@@ -45,19 +42,6 @@ public class ConfigurationException extends Exception
       super(message);
    }
 
-
-   /**
-    * Constructor for the ConfigurationException.
-    * 
-    * @param message The error message.
-    * @param beanClass The bean type that failed processing.
-    */
-   public ConfigurationException(String message, Class<?> beanClass)
-   {
-      super(message);
-      this.beanClass = beanClass;
-   }
-
    /**
     * Constructor for the ConfigurationException.
     * 
@@ -67,39 +51,6 @@ public class ConfigurationException extends Exception
    public ConfigurationException(String message, Throwable cause)
    {
       super(message, cause);
-   }
-
-   /**
-    * Constructor for the ConfigurationException.
-    * 
-    * @param message The error message.
-    * @param cause The cause of the exception.
-    * @param beanClass The bean type that failed processing.
-    */
-   public ConfigurationException(String message, Throwable cause, Class<?> beanClass)
-   {
-      super(message, cause);
-      this.beanClass = beanClass;
-   }
-
-   public Class<?> getBeanClass()
-   {
-      return this.beanClass;
-   }
-
-   public void setBeanClass(Class<?> beanClass)
-   {
-      this.beanClass = beanClass;
-   }
-
-   public String getPropertyName()
-   {
-      return this.propertyName;
-   }
-
-   public void setPropertyName(String propertyName)
-   {
-      this.propertyName = propertyName;
    }
 
 }

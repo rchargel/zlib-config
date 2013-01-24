@@ -111,7 +111,7 @@ public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, P
                   if (logger.isTraceEnabled())
                      logger.trace(exc.getMessage(), exc);
                   
-                  throw new InvalidPropertyException(bean.getClass(), exc.getPropertyName() != null ? exc.getPropertyName() : "unknown",
+                  throw new InvalidPropertyException(bean.getClass(), "unknown",
                         "Error occured while performing bean configuration", exc);
                }
             }
