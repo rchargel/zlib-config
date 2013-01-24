@@ -27,7 +27,6 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 /**
  * A registry of value converters. Custom converters should be supplied to this registry. 
- * and 
  * 
  * @author zcarioca
  */
@@ -92,6 +91,11 @@ public class ValueConverterRegistry
          throw new IllegalArgumentException("The supplied type cannot be null");
       }
       
+      if (type.isArray())
+      {
+         return ArrayPropertyConverter.createNewArrayPropertyConverter(type);
+      }
+      
       if (this.registry.containsKey(normalizedType(type)))
       {
          return this.registry.get(normalizedType(type));
@@ -102,10 +106,6 @@ public class ValueConverterRegistry
    
    private Class<?> normalizedType(Class<?> type)
    {
-      if (type.isArray())
-      {
-         return normalizedType(type.getComponentType());
-      }
       if (type.isPrimitive())
       {
          return convertFromPrimitiveType(type);
