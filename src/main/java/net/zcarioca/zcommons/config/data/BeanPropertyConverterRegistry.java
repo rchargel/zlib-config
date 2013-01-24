@@ -30,35 +30,35 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-public class ValueConverterRegistry
+public class BeanPropertyConverterRegistry
 {
-   private static ValueConverterRegistry valueConverterRegistry;
+   private static BeanPropertyConverterRegistry beanPropertyConverterRegistry;
    
-   private Map<Class<?>, PropertyConverter<?>> registry;
+   private Map<Class<?>, BeanPropertyConverter<?>> registry;
    
    /**
-    * Gets access to the {@link ValueConverterRegistry}.
+    * Gets access to the {@link BeanPropertyConverterRegistry}.
     * 
-    * @return Returns access to the {@link ValueConverterRegistry}.
+    * @return Returns access to the {@link BeanPropertyConverterRegistry}.
     */
-   public static ValueConverterRegistry getRegistry()
+   public static BeanPropertyConverterRegistry getRegistry()
    {
-      if (valueConverterRegistry == null)
+      if (beanPropertyConverterRegistry == null)
       {
-         valueConverterRegistry = new ValueConverterRegistry();
+         beanPropertyConverterRegistry = new BeanPropertyConverterRegistry();
       }
-      return valueConverterRegistry;
+      return beanPropertyConverterRegistry;
    }
    
    /**
-    * Registers a new {@link PropertyConverter}.
+    * Registers a new {@link BeanPropertyConverter}.
     * 
-    * @param converter The {@link PropertyConverter} to register.
+    * @param converter The {@link BeanPropertyConverter} to register.
     * 
     * @throws IllegalArgumentException if the converter is null.
     * @throws ConfigurationException if the converter does not return a supported class.
     */
-   public void register(PropertyConverter<?> converter) throws ConfigurationException
+   public void register(BeanPropertyConverter<?> converter) throws ConfigurationException
    {
       if (converter == null)
       {
@@ -77,14 +77,14 @@ public class ValueConverterRegistry
    }
    
    /**
-    * Gets a {@link PropertyConverter} for the supplied type.
+    * Gets a {@link BeanPropertyConverter} for the supplied type.
     * 
     * @param type The type to convert.
-    * @return Returns a {@link PropertyConverter} for the supplied type.
+    * @return Returns a {@link BeanPropertyConverter} for the supplied type.
     * 
     * @throws IllegalArgumentException if the type is null.
     */
-   public PropertyConverter<?> getPropertyConverter(Class<?> type) 
+   public BeanPropertyConverter<?> getPropertyConverter(Class<?> type) 
    {
       if (type == null)
       {
@@ -134,9 +134,9 @@ public class ValueConverterRegistry
       return Double.class;
    }
    
-   ValueConverterRegistry()
+   BeanPropertyConverterRegistry()
    {
-      registry = new HashMap<Class<?>, PropertyConverter<?>>();
+      registry = new HashMap<Class<?>, BeanPropertyConverter<?>>();
       registry.put(String.class, new StringPropertyConverter());
       registry.put(Boolean.class, new BooleanPropertyConverter());
       registry.put(Character.class, new CharacterPropertyConverter());

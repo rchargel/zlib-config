@@ -31,38 +31,38 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link ValueConverterRegistry} class.
+ * Tests the {@link BeanPropertyConverterRegistry} class.
  * 
  * 
  * @author zcarioca
  */
-public class ValueConverterRegistryTest
+public class BeanPropertyConverterRegistryTest
 {
-   private ValueConverterRegistry registry;
+   private BeanPropertyConverterRegistry registry;
    
    @Before
    public void setup() 
    {
-      registry = new ValueConverterRegistry();
+      registry = new BeanPropertyConverterRegistry();
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.ValueConverterRegistry#getRegistry()}.
+    * Test method for {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#getRegistry()}.
     */
    @Test
    public void testGetRegistry()
    {
-      assertNotNull(ValueConverterRegistry.getRegistry());
-      assertSame(ValueConverterRegistry.getRegistry(), ValueConverterRegistry.getRegistry());
+      assertNotNull(BeanPropertyConverterRegistry.getRegistry());
+      assertSame(BeanPropertyConverterRegistry.getRegistry(), BeanPropertyConverterRegistry.getRegistry());
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.ValueConverterRegistry#register(net.zcarioca.zcommons.config.data.PropertyConverter)}.
+    * Test method for {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#register(net.zcarioca.zcommons.config.data.BeanPropertyConverter)}.
     */
    @Test
    public void testRegister() throws ConfigurationException
    {
-      registry.register(new PropertyConverter<SimpleDateFormat>()
+      registry.register(new BeanPropertyConverter<SimpleDateFormat>()
       {
          @Override
          public Class<SimpleDateFormat> getSupportedClass()
@@ -91,7 +91,7 @@ public class ValueConverterRegistryTest
    @Test(expected = ConfigurationException.class)
    public void testRegisterBad() throws ConfigurationException
    {
-      registry.register(new PropertyConverter<SimpleDateFormat>()
+      registry.register(new BeanPropertyConverter<SimpleDateFormat>()
       {
          @Override
          public Class<SimpleDateFormat> getSupportedClass()
@@ -108,7 +108,7 @@ public class ValueConverterRegistryTest
    }
    
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.ValueConverterRegistry#getPropertyConverter(java.lang.Class)}.
+    * Test method for {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#getPropertyConverter(java.lang.Class)}.
     */
    @Test
    public void testGetPropertyConverter() 

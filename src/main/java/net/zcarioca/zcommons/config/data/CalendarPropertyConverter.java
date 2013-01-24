@@ -24,11 +24,11 @@ import java.util.Date;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 /**
- * {@link PropertyConverter} for {@link Calendar} values.
+ * {@link BeanPropertyConverter} for {@link Calendar} values.
  * 
  * @author zcarioca
  */
-class CalendarPropertyConverter implements PropertyConverter<Calendar>
+class CalendarPropertyConverter implements BeanPropertyConverter<Calendar>
 {
 
    /**

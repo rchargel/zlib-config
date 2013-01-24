@@ -31,7 +31,7 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-class ArrayPropertyConverter<T> implements PropertyConverter<T>
+class ArrayPropertyConverter<T> implements BeanPropertyConverter<T>
 {
    private static Pattern pattern = Pattern.compile("(?:^|,)(\\\"(?:[^\\\"]+|\\\"\\\")*\\\"|[^,]*)");
    
@@ -65,7 +65,7 @@ class ArrayPropertyConverter<T> implements PropertyConverter<T>
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public T convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
-      PropertyConverter converter = ValueConverterRegistry.getRegistry().getPropertyConverter(arrayType.getComponentType());
+      BeanPropertyConverter converter = BeanPropertyConverterRegistry.getRegistry().getPropertyConverter(arrayType.getComponentType());
       String[] splitValues = split(value);
       
       T data = (T)Array.newInstance(arrayType.getComponentType(), splitValues.length);

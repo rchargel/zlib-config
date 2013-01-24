@@ -25,7 +25,7 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-public interface PropertyConverter<T>
+public interface BeanPropertyConverter<T>
 {
    /**
     * The class supported by the converter.

@@ -35,7 +35,7 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-class DatePropertyConverter implements PropertyConverter<Date>
+class DatePropertyConverter implements BeanPropertyConverter<Date>
 {
 
    /**

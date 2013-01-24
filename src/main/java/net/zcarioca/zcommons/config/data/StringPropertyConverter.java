@@ -25,7 +25,7 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-class StringPropertyConverter implements PropertyConverter<String>
+class StringPropertyConverter implements BeanPropertyConverter<String>
 {
 
    /**

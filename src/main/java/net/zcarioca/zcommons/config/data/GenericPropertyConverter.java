@@ -28,7 +28,7 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-class GenericPropertyConverter implements PropertyConverter<Object>
+class GenericPropertyConverter implements BeanPropertyConverter<Object>
 {
 
    /**

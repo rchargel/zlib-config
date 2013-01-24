@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * @author zcarioca
  */
-class NumberPropertyConverter<T extends Number> implements PropertyConverter<T>
+class NumberPropertyConverter<T extends Number> implements BeanPropertyConverter<T>
 {
    private Class<T> supportedClass;
    

@@ -27,7 +27,7 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
  * 
  * @author zcarioca
  */
-class BooleanPropertyConverter implements PropertyConverter<Boolean>
+class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
 {
    
    /**
