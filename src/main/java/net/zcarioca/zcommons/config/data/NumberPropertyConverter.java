@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import net.zcarioca.zcommons.config.ConfigurableNumberFormat;
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
@@ -97,24 +97,24 @@ class NumberPropertyConverter<T extends Number> implements BeanPropertyConverter
    
    protected int getRadix(BeanPropertyInfo beanPropertyInfo)
    {
-      ConfigurableNumberFormat configurableNumberFormat = getConfigurableNumberFormat(beanPropertyInfo);
-      return configurableNumberFormat != null ? configurableNumberFormat.value().radix() : 10;
+      ConfigurableNumberEncoding configurableNumberEncoding = getConfigurableNumberFormat(beanPropertyInfo);
+      return configurableNumberEncoding != null ? configurableNumberEncoding.value().radix() : 10;
    }
    
-   protected ConfigurableNumberFormat getConfigurableNumberFormat(BeanPropertyInfo beanPropertyInfo)
+   protected ConfigurableNumberEncoding getConfigurableNumberFormat(BeanPropertyInfo beanPropertyInfo)
    {
-      ConfigurableNumberFormat configurableNumberFormat = getConfigurableNumberFormat(beanPropertyInfo.getPropertyAnnotations());
+      ConfigurableNumberEncoding configurableNumberEncoding = getConfigurableNumberFormat(beanPropertyInfo.getPropertyAnnotations());
       
-      return configurableNumberFormat != null ? configurableNumberFormat : getConfigurableNumberFormat(beanPropertyInfo.getBeanAnnotations());
+      return configurableNumberEncoding != null ? configurableNumberEncoding : getConfigurableNumberFormat(beanPropertyInfo.getBeanAnnotations());
    }
    
-   protected ConfigurableNumberFormat getConfigurableNumberFormat(Collection<Annotation> annotations)
+   protected ConfigurableNumberEncoding getConfigurableNumberFormat(Collection<Annotation> annotations)
    {
       for (Annotation annotation : annotations)
       {
-         if (annotation instanceof ConfigurableNumberFormat)
+         if (annotation instanceof ConfigurableNumberEncoding)
          {
-            return (ConfigurableNumberFormat)annotation;
+            return (ConfigurableNumberEncoding)annotation;
          }
       }
       return null;

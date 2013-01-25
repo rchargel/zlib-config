@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
-public @interface ConfigurableNumberFormat
+public @interface ConfigurableNumberEncoding
 {
    public static enum NumberFormat
    {

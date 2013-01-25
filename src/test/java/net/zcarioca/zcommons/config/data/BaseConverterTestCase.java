@@ -28,8 +28,8 @@ import java.util.Collection;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.ConfigurableDateFormat;
-import net.zcarioca.zcommons.config.ConfigurableNumberFormat;
-import net.zcarioca.zcommons.config.ConfigurableNumberFormat.NumberFormat;
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
 
 import org.junit.Before;
 
@@ -83,13 +83,13 @@ public abstract class BaseConverterTestCase
       when(beanPropertyInfo.getPropertyType()).thenReturn(type);
    }
    
-   protected ConfigurableNumberFormat mockNumberFormatAnnotation(NumberFormat numberFormat)
+   protected ConfigurableNumberEncoding mockNumberFormatAnnotation(NumberFormat numberFormat)
    {
-      ConfigurableNumberFormat configurableNumberFormat = mockAnnotation(ConfigurableNumberFormat.class);
+      ConfigurableNumberEncoding configurableNumberEncoding = mockAnnotation(ConfigurableNumberEncoding.class);
       
-      when(configurableNumberFormat.value()).thenReturn(numberFormat != null ? numberFormat : NumberFormat.DECIMAL);
+      when(configurableNumberEncoding.value()).thenReturn(numberFormat != null ? numberFormat : NumberFormat.DECIMAL);
       
-      return configurableNumberFormat;
+      return configurableNumberEncoding;
    }
    
    protected ConfigurableDateFormat mockConfigurableDateFormat(String format)

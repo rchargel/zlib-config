@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
-import net.zcarioca.zcommons.config.ConfigurableNumberFormat.NumberFormat;
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 import org.junit.Test;

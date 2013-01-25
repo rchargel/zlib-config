@@ -22,7 +22,7 @@
             <li><a href="#aConfigurable">&#64;Configurable</a></li>
             <li><a href="#aConfigurableAttribute">&#64;ConfigurableAttribute</a></li>
             <li><a href="#aConfigurableDateFormat">&#64;ConfigurableDateFormat</a></li>
-            <li><a href="#aConfigurableNumberFormat">&#64;ConfigurableNumberFormat</a></li>
+            <li><a href="#aConfigurableNumberEncoding">&#64;ConfigurableNumberEncoding</a></li>
           </ul>
         </li>
         <li><a href="#Advanced_Spring_Configuration">Advanced Spring Configuration</a>
@@ -159,12 +159,12 @@ public class MyConfigurableClass
         </p>
         <p>
           Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive)
-          in the following locations:  
-          <ul>
-            <li><code>${APP_ROOT}/conf/my/application/</code></li>
-            <li><code>${APP_ROOT}/conf/</code></li>
-          </ul>
-        </p>
+          in the following locations:
+        </p>  
+        <ul>
+          <li><code>${APP_ROOT}/conf/my/application/</code></li>
+          <li><code>${APP_ROOT}/conf/</code></li>
+        </ul>
       </subsection>
       <subsection name="&#64;ConfigurableAttribute">
         <p>
@@ -184,6 +184,38 @@ public class MyConfigurableClass
           is private).  In this way it is possible to modify the content of the property, or
           take further action in relation to the property.  If no setter is available the value
           will be injected directly into the field value.
+        </p>
+      </subsection>
+      <subsection name="&#64;ConfigurableDateFormat">
+        <p>
+          The &#64;ConfigurableDateFormat can be coupled with the &#64;ConfigurableAttribute
+          annotation in order provided the rules to parse properties for <code>java.util.Date</code> 
+          and <code>java.util.Calendar</code> objects.  This annotation must be provided for either
+          of these two property types, or a <code>ConfigurationException</code> will be thrown.
+        </p>
+        <p>
+          This annotation can also be placed at the top of the configurable class, if all 
+          date properties are to use the same parsing rules.  If placed at the top of the class,
+          and directly on a property, the property annotation will override the class annotation.
+        </p>
+        <p>
+          The date format uses the same formatting rules provided by the <code>SimpleDateFormat</code>.
+        </p>
+      </subsection>
+      <subsection name="&#64;ConfigurableNumberEncoding">
+        <p>
+          Similar to the &#64;ConfigurableDateFormat, the &#64;ConfigurableNumberEncoding
+          annotation is used as a hint to inform the parser whether the numerical value has been
+          encoded in binary, octal, decimal, or hexidecimal.  It will have no effect on floating
+          point numbers.  Unlike the date formatting annotation, this annotation is not required,
+          and if not provided, it is assumed that the numbers are encoded as decimal digits.
+        </p>
+        <p>
+          Also like the date format annotation, this annotation can be placed at the class level
+          and will be overridden by the property level annotations.
+        </p>
+        <p>
+          At this point, there is no plan to allow for custom base encodings.
         </p>
       </subsection>
     </section>
