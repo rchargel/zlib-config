@@ -99,7 +99,7 @@ public interface ConfigurationSourceProvider
     * @param propertiesBuilderFactory The properties builder factory used to
     *        create the properties object.
     * 
-    * @return Returns a {@link Configuration} object.
+    * @return Returns a {@link Properties} object.
     */
    public Properties getProperties(ConfigurationSourceIdentifier configurationSourceIdentifier, PropertiesBuilderFactory propertiesBuilderFactory)
          throws ConfigurationException;

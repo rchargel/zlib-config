@@ -43,10 +43,9 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
    }
    
    /**
-    * This provider is marked as a {@link Priority#BACKUP} provider.
+    * This provider is marked as a BACKUP provider.
     * 
     * {@inheritDoc}
-    * 
     */
    @Override
    public Priority getPriorityLevel()

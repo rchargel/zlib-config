@@ -97,7 +97,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    }
    
    /**
-    * This provider is marked as a {@link Priority#MEDIUM} provider.
+    * This provider is marked as a MEDIUM provider.
     * 
     * {@inheritDoc}
     */
