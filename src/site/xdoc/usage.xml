@@ -21,11 +21,14 @@
           <ul>
             <li><a href="#aConfigurable">&#64;Configurable</a></li>
             <li><a href="#aConfigurableAttribute">&#64;ConfigurableAttribute</a></li>
+            <li><a href="#aConfigurableDateFormat">&#64;ConfigurableDateFormat</a></li>
+            <li><a href="#aConfigurableNumberFormat">&#64;ConfigurableNumberFormat</a></li>
           </ul>
         </li>
         <li><a href="#Advanced_Spring_Configuration">Advanced Spring Configuration</a>
           <ul>
             <li><a href="#Reconfiguration_on_Update">Reconfiguration on Update</a></li>
+            <li><a href="#The_Filesystem_Configuration_Source_Provider">The Filesystem Configuration Source Provider</a></li>
             <li><a href="#Adding_Configuration_Source_Providers">Adding Configuration Source Providers</a></li>
             <li><a href="#Setting_Default_Configuration_Source_Provider">Setting Default Configuration Source Provider</a></li>
           </ul>
@@ -51,6 +54,9 @@
   </dependency>
 </dependencies>]]>
         </source>
+        <p>
+          It is also recommended that you provide either Spring 2.5 or later.  This library will work with both Spring 2.5 and Spring 3.x.
+        </p>
       </subsection>
       <subsection name="Downloading the JAR">
         <p>
@@ -95,6 +101,26 @@ public class MyConfigurableClass
          Properties associated to that class, and insert a String with the property name
          <code>objectId</code> and a URL with the property name <code>serverUrl</code>.
       </p>
+      <p>
+         <strong>NOTE:</strong> Spring will not automatically wire your classes annotated
+         with <code>&#64;Configurable</code> as Spring Beans, unless Spring is expressly told to
+         do so.  For instance the following class would be wired up as a bean and pre-configured
+         by Spring.
+      </p>
+      <source>
+      package my.application;
+
+&#64;Component
+&#64;Configurable
+public class MyConfigurableClass 
+{
+   &#64;ConfigurableAttribute
+   private String objectId;
+   
+   &#64;ConfigurableAttribute
+   private URL serverUrl;
+}
+      </source>
     </section>
     <section name="Annotations">
       <subsection name="&#64;Configurable">
@@ -109,8 +135,10 @@ public class MyConfigurableClass
         <p>
           While it is entirely up to the implementations of 
           the ConfigurationSourceProvider interface to use this data to determine how to load 
-          the configuration data, a default implementation has been provided with this library.  
-          This implementation works by loading the properties file directly out of the 
+          the configuration data, two default implementations have been provided with this library.  
+        </p>
+        <p>
+          One implementation works by loading the properties file directly out of the 
           classpath, where the reference class' package is the directory location of the 
           properties file, and the resource location is the relative path to the properties
           file from that location.  So in the example above, the configuration injector will
@@ -118,10 +146,24 @@ public class MyConfigurableClass
           <code>/my/application/myconfigurableclass.properties</code>.
         </p>
         <p>
-          With the default implementation it is also possible to provide relative paths to the 
+          With this implementation it is also possible to provide relative paths to the 
           configuration data.  For instance the following could have been provided, 
           <code>&#64;Configurable(resourceName = "/log4j")</code>.  In this case, the properties
           file would be located at <code>/log4j.properties</code>.
+        </p>
+        <p>
+          The other provider will load the properties file out of the file system, by looking in
+          the directory <code>${APP_ROOT}/conf</code>, where APP_ROOT is defined by an environment variable.
+          The name of the environment variable can be configured, more on this can be found in the section
+          about the <a href="#The_Filesystem_Configuration_Source_Provider">filesystem configuration source provider</a>.
+        </p>
+        <p>
+          Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive)
+          in the following locations:  
+          <ul>
+            <li><code>${APP_ROOT}/conf/my/application/</code></li>
+            <li><code>${APP_ROOT}/conf/</code></li>
+          </ul>
         </p>
       </subsection>
       <subsection name="&#64;ConfigurableAttribute">

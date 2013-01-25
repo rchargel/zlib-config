@@ -122,7 +122,7 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
    @Test
    public void testGetResourceName()
    {
-      assertEquals("filesystemconfigurationsourceserviceprovidertest.properties", fcsp.getResourceName(new ConfigurationSourceIdentifier(this)));
+      assertEquals("filesystemconfigurationsourceserviceprovidertest", fcsp.getResourceName(new ConfigurationSourceIdentifier(this)));
       assertEquals("configuration.properties", fcsp.getResourceName(new ConfigurationSourceIdentifier(getClass(), "configuration.properties")));
       assertEquals("configuration.xml", fcsp.getResourceName(new ConfigurationSourceIdentifier(getClass(), "configuration.xml")));
    }

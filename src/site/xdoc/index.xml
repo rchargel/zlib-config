@@ -71,6 +71,10 @@ public class MyClass()
    
    @ConfigurableAttribute(propertyName = "my.long", defaultValue = "50000")
    private long myLong;
+   
+   @ConfigurableAttribute
+   @ConfigurableDateFormat("yyyy-MM-dd HH:mm:ss")
+   private Calendar endDate;
 }
       </source>
     </section>

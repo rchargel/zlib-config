@@ -3,14 +3,14 @@
   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
     <breadcrumbs>
-      <item name="zcarioca.net" href="../../../" />
-      <item name="zcommons" href="../../zcommons" />
-      <item name="Sourceforge" href="https://sourceforge.net/projects/zcommons/" />
+      <item name="zcarioca.net" href="http://zcarioca.net" />
+      <item name="github" href="https://github.com/rchargel/zlib-config" />
     </breadcrumbs>
     <menu name="Overview">
       <item name="Purpose" href="index.html" />
       <item name="Usage" href="usage.html"/>
       <item name="Custom Providers" href="spi_tut.html"/>
+      <item name="Custom Converters" href="converter_tut.html"/>
       <item name="FAQ" href="faq.html"/>
     </menu>
     <menu ref="parent" />

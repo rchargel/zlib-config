@@ -12,7 +12,7 @@
         Cut the first official release.
       </action>
     </release>
-    <release date="2012-xx-xx" version="1.1" description="Release 1.1">
+    <release date="2013-xx-xx" version="1.5" description="Release 1.5">
       <action date="2012-01-26" dev="zcarioca" type="add">
         Added a PropertiesBuilder in place of Configuration object. This allows the user to specify properties in any order
         and still allows for keyword swapping.
@@ -26,13 +26,28 @@
         Added a PropertiesBuilder factory to increase flexibility of library configurations.
       </action>
       <action date="2012-02-01" dev="zcarioca" type="update">
-        Changed the logging framework to Apache Commons Logging. This removes the dependency on Log4J from the user.
+        Changed the logging framework to SLF4J. This removes the dependency on Log4J from the user.
       </action>
       <action date="2012-02-01" dev="zcarioca" type="remove">
         Removed unnecessary external dependencies.
       </action>
       <action date="2012-04-26" dev="zcarioca" type="update">
         Moved to Maven Central Repository in order to remove dependency on an additional repository.
+      </action>
+      <action date="2013-01-19" dev="zcarioca" type="update">
+        Modified the ConfigurationSourceProviderFactory 'discover' the optimal provider for a ConfigurationSourceItentifier.
+      </action>
+      <action date="2013-01-20" dev="zcarioca" type="update">
+        Modified the ConfigurationSourceProvider to determine priority so that providers may override each other when necessary.
+      </action>
+      <action date="2013-01-22" dev="zcarioca" type="add">
+        Added the BeanPropertyConverter and BeanPropertyConverterRegistry to allow developers to create their own converters.
+      </action>
+      <action date="2013-01-23" dev="zcarioca" type="add">
+        Added the ConfigurableDateFormat to allow configuration of Date and Calendar objects
+      </action>
+      <action date="2013-01-23" dev="zcarioca" type="add">
+        Added the ConfigurableNumberFormat to allow number to be represented in properties files in binary, octal, decimal, or hexidecimal.
       </action>
     </release>
   </body>

@@ -23,12 +23,14 @@ import static net.zcarioca.zcommons.config.ConfigurationConstants.FILESYSTEM_CON
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import net.zcarioca.zcommons.config.Environment;
 import net.zcarioca.zcommons.config.EnvironmentAccessor;
@@ -43,6 +45,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,21 +105,6 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    public Priority getPriorityLevel()
    {
       return Priority.MEDIUM;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected String getResourceName(ConfigurationSourceIdentifier configurationSourceIdentifier)
-   {
-      String resourceName = super.getResourceName(configurationSourceIdentifier);
-      if (!resourceName.endsWith(".properties") && !resourceName.endsWith(".xml"))
-      {
-         resourceName += ".properties";
-      }
-
-      return resourceName;
    }
 
    /**
@@ -270,14 +258,15 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    private File getConfigurationFile(Class<?> referenceClass, String resourceName) throws ConfigurationException
    {
       File file = null;
+      Pattern pattern = Pattern.compile(String.format("^%s(\\.properties)?(\\.xml)?$", resourceName), Pattern.CASE_INSENSITIVE);
       try
       {
          File confDir = getFilesystemConfiguration().getConfigurationDirectory();
-         file = getConfigurationFileInSubDirs(confDir, referenceClass, resourceName);
+         file = getConfigurationFileInSubDirs(confDir, referenceClass, pattern);
 
          if (file == null)
          {
-            file = getConfigurationFileInBaseDir(confDir, resourceName);
+            file = getFromPattern(confDir, pattern);
          }
          if (file == null)
          {
@@ -291,18 +280,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       return file;
    }
 
-   private File getConfigurationFileInBaseDir(File confDir, String resourceName)
-   {
-      File file = new File(confDir, resourceName);
-      if (!file.exists())
-      {
-         if (logger.isDebugEnabled()) logger.debug(format("Could not find file %s", file));
-         return null;
-      }
-      return file;
-   }
-
-   private File getConfigurationFileInSubDirs(File confDir, Class<?> referenceClass, String resourceName)
+   private File getConfigurationFileInSubDirs(File confDir, Class<?> referenceClass, Pattern pattern)
    {
       String path = referenceClass.getPackage().getName().replaceAll("\\.", File.separator);
 
@@ -312,14 +290,34 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
          if (logger.isDebugEnabled()) logger.debug(format("Could not find directory %s", filePath));
          return null;
       }
-
-      File file = new File(filePath, resourceName);
-      if (!file.exists())
+      
+      return getFromPattern(filePath, pattern);
+   }
+   
+   private File getFromPattern(File directory, Pattern pattern)
+   {
+      File[] match = directory.listFiles(new PatternFileFilter(pattern));
+      
+      return ArrayUtils.isNotEmpty(match) ? match[0] : null;
+   }
+   
+   protected static class PatternFileFilter implements FileFilter
+   {
+      private final Pattern pattern;
+      
+      PatternFileFilter(Pattern pattern)
       {
-         if (logger.isDebugEnabled()) logger.debug(format("Could not find file %s", file));
-         return null;
+         this.pattern = pattern;
       }
-      return file;
+      
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean accept(File pathname)
+      {
+         return pattern.matcher(pathname.getName()).matches();
+      }
    }
    
    public static class FilesystemConfiguration
