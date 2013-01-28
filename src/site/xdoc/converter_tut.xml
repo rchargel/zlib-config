@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Custom Bean Property Converter</title>
+    <author email="zcarioca@zcarioca.net">zcarioca</author>
+  </properties>
+  
+  <body>
+    <section name="The BeanPropertyConverter Interface">
+      <p>
+        Properties are converted using the <code>com.zcarioca.zcommons.config.data.BeanPropertyConverter</code> interface.
+        This interface defines only two methods.
+      </p>
+      <dl>
+        <dt>getSupportedClass()</dt>
+        <dd>Returns the property type supported by the converter.</dd>
+        <dt>convertPropertyValue(String, BeanPropertyInfo)</dt>
+        <dd>Uses the BeanPropertyInfo object to convert the string value into the property type supported by this converter.</dd>
+      </dl>
+    </section>
+    <section name="The Registry">
+      <p>
+        Once you have defined a custom converter it must be registered with the <code>BeanPropertyConverterRegistry</code>.
+      </p>
+      <source>
+<![CDATA[BeanPropertyConverterRegistry registry = BeanPropertyConverterRegistry.getRegistry();
+registry.register(new MyCustomConverter());]]>      
+      </source>
+      <p>
+        It's really that simple.  The registry is then responsible for supplying the correct converter for your properties.
+      </p>
+    </section>
+    <section name="Custom Converters and Arrays">
+      <p>
+        Once you have defined your custom converter, it is not necessary to define a converter for an array of custom types.  
+        There is already an <code>ArrayBeanPropertyConverter</code>, which delegates the conversion of its values back to the registry.
+      </p>
+    </section>
+  </body>
+</document>
