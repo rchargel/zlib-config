@@ -35,6 +35,7 @@
     <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
     <maven.cobertura.plugin.version>2.5.2</maven.cobertura.plugin.version>
     <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
+    <wagon.ssh.version>2.3</wagon.ssh.version>
   </properties>
   <distributionManagement>
     <site>
@@ -213,7 +214,7 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>RELEASE</version>
+            <version>${wagon.ssh.version}</version>
           </dependency>
         </dependencies>
       </plugin>
