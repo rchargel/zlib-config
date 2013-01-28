@@ -132,6 +132,6 @@ public class ConfigurationSourceProviderFactory
    {
       identifierMap = new HashMap<ConfigurationSourceIdentifier, ConfigurationSourceProvider>();
       initializedProviders = new HashSet<ConfigurationSourceProvider>();
-      serviceLoader = ServiceLoader.load(ConfigurationSourceProvider.class, ClassLoader.getSystemClassLoader());
+      serviceLoader = ServiceLoader.load(ConfigurationSourceProvider.class, Thread.currentThread().getContextClassLoader());
    }
 }
