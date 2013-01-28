@@ -35,6 +35,7 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
    
    public Properties getProperties(ConfigurationSourceIdentifier configurationSourceIdentifier, PropertiesBuilderFactory propertiesBuilderFactory)
    {
+      System.out.println(String.format("MockConfSourceProvider getting configuration for %s", configurationSourceIdentifier));
       Properties props = new Properties();
       props.setProperty("myFiles", "/tmp/file.txt, /tmp/text.txt");
       props.setProperty("number", "23");

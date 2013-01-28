@@ -44,6 +44,7 @@ public class ConfigurationSourceProviderFactory
 
    private Map<ConfigurationSourceIdentifier, ConfigurationSourceProvider> identifierMap;
    private Set<ConfigurationSourceProvider> initializedProviders;
+   private ServiceLoader<ConfigurationSourceProvider> serviceLoader;
 
    /**
     * Gets access to the singleton instance.
@@ -123,7 +124,7 @@ public class ConfigurationSourceProviderFactory
     */
    protected Iterator<ConfigurationSourceProvider> getConfigurationSourceProviders()
    {
-      ServiceLoader<ConfigurationSourceProvider> serviceLoader = ServiceLoader.load(ConfigurationSourceProvider.class);
+      serviceLoader.reload();
       return serviceLoader.iterator();
    }
    
@@ -131,5 +132,6 @@ public class ConfigurationSourceProviderFactory
    {
       identifierMap = new HashMap<ConfigurationSourceIdentifier, ConfigurationSourceProvider>();
       initializedProviders = new HashSet<ConfigurationSourceProvider>();
+      serviceLoader = ServiceLoader.load(ConfigurationSourceProvider.class, ClassLoader.getSystemClassLoader());
    }
 }
