@@ -22,23 +22,35 @@
       <p>
         In the case of the zlib-config library, the interface in question is  
         <code>net.zcarioca.zcommons.config.source.ConfigurationSourceProvider</code>.  This interface
-        defines two methods: <code>getProviderID</code> and <code>getProperties</code>.
+        defines a number of methods required to retrieve and properties associated to an object.
       </p>
       <dl>
+        <dt>getPriorityLevel()</dt>
+        <dd>
+          The priority level of a provider determines which providers will act upon an object if multiple providers can support
+          its identifier.  The Default provider has a priority of BACKUP, which will only act if no other providers will support
+          an object's identifier.  The Filesystem provider has a MEDIUM priority level.  The different levels in order of lowest to 
+          highest are as follows: BACKUP, LOW, MEDIUM, HIGH, OVERRIDE.  
+        </dd>
+        <dt>supportsIdentifier(ConfigurationSourceIdentifer)</dt>
+        <dd>
+          Determines whether the given identifier can be supported.  For instance, the filesystem provider will only return true, if it is
+          configured correctly, and if it can find a configuration file for the provided identifier.
+        </dd>
         <dt>getProviderID()</dt>
         <dd>
-          This method must return a unique identifier for this interface.  This is the
-          identifier that can be associated with a package.  It is also the identifier that can be
-          used to a configure a new default configuration source provider.
+          This method must return a unique identifier for this interface.
         </dd>
-        <dt>getProperties(net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier)</dt>
+        <dt>getProperties(ConfigurationSourceIdentifier, PropertiesBuilderFactory)</dt>
         <dd>
           This method maps the provided configuration source identifier to a set of properties.  The identifier
-          provides a reference class and a resource location to aid with this mapping.  Rather than return an
-          instance of <code>java.util.Properties</code>, this method returns a 
-          <code>net.zcarioca.zcommons.config.Configuration</code> object.  This is a subclass of Properties, so
-          it can be cast down to properties without changing existing code, but it adds the automatic replacement
-          of variables within properties files (see <a href="usage.html#Variable_Substitution">Usage</a>).
+          provides a reference class and a resource location to aid with this mapping.
+        </dd>
+        <dt>postInit() and preDestroy()</dt>
+        <dd>
+          These two methods are called when the configuration source provider is initialized or destroyed.  These can be used for additional 
+          configuration or cleanup.  It should be noted that configuration source providers are not singletons, and many of the same
+          type can be constructed.
         </dd>
       </dl>
     </section>
@@ -91,7 +103,7 @@ JAR File
         of the configuration data, there is a hook that custom providers can use to request that the configuration injector
         reconfigure beans when the source data has changed.  The <code>ConfigurationUtilities</code> class
         has a method to allow source providers to send an event stating that a given configuration
-        source identifier has been updated (<code>configurationUtilities.sendConfigurationSourceUpdate(id)</code>).
+        source identifier has been updated (<code>configurationUtilities.runReconfiguration(ConfigurationSourceIdentifier)</code>).
         The ConfigurationUtilities also maintains a list of configuration update listeners, one of these is the Spring bean
         post processor, which will reconfigure the beans if the event is received.
       </p>
@@ -102,7 +114,7 @@ JAR File
 ConfigurationSourceIdentifier sourceId = .... // the source that was updated
 
 // inform all listeners that this source has been updated
-ConfigurationUtilities.getInstance().configurationUtilities.sendConfigurationSourceUpdate(sourceId);
+ConfigurationUtilities.getInstance().configurationUtilities.runReconfiguration(sourceId);
       </source>
     </section>
   </body>

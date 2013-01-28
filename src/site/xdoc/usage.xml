@@ -10,12 +10,7 @@
   <body>
     <section name="Table of Contents">
       <ul>
-        <li><a href="#Installation">Installation</a>
-          <ul>
-            <li><a href="#Using_Maven">Using Maven</a></li>
-            <li><a href="#Downloading_the_JAR">Downloading the JAR</a></li>
-          </ul>
-        </li>
+        <li><a href="#Installation">Installation</a></li>
         <li><a href="#Basic_Configuration">Basic Configuration</a></li>
         <li><a href="#Annotations">Annotations</a>
           <ul>
@@ -25,12 +20,16 @@
             <li><a href="#aConfigurableNumberEncoding">&#64;ConfigurableNumberEncoding</a></li>
           </ul>
         </li>
-        <li><a href="#Advanced_Spring_Configuration">Advanced Spring Configuration</a>
+        <li><a href="#Standard_Configuration_Source_Providers">Standard Configuration Source Providers</a>
+          <ul>
+            <li><a href="#Default_Configuration_Source_Provider">Default Configuration Source Provider</a></li>
+            <li><a href="#Filesystem_Configuration_Source_Provider">Filesystem Configuration Source Provider</a></li>
+          </ul>
+        </li>
+        <li><a href="#Advanced_Configuration">Advanced Configuration</a>
           <ul>
             <li><a href="#Reconfiguration_on_Update">Reconfiguration on Update</a></li>
-            <li><a href="#The_Filesystem_Configuration_Source_Provider">The Filesystem Configuration Source Provider</a></li>
             <li><a href="#Adding_Configuration_Source_Providers">Adding Configuration Source Providers</a></li>
-            <li><a href="#Setting_Default_Configuration_Source_Provider">Setting Default Configuration Source Provider</a></li>
           </ul>
         </li>
         <li><a href="#Supported_Property_Types">Property Types</a></li>
@@ -39,12 +38,11 @@
       </ul>
     </section>
     <section name="Installation">
-      <subsection name="Using Maven">
-        <p>
-          Adding this library to your maven project is as simple as adding the following
-          to your dependencies set:
-        </p>
-        <source>
+      <p>
+        Adding this library to your maven project is as simple as adding the following
+        to your dependencies set:
+      </p>
+      <source>
 <![CDATA[
 <dependencies>
   <dependency>
@@ -53,18 +51,10 @@
     <version>1.1</version>
   </dependency>
 </dependencies>]]>
-        </source>
-        <p>
-          It is also recommended that you provide either Spring 2.5 or later.  This library will work with both Spring 2.5 and Spring 3.x.
-        </p>
-      </subsection>
-      <subsection name="Downloading the JAR">
-        <p>
-          Simply download the JAR file from 
-          <a href="https://sourceforge.net/projects/zcommons/files/">Sourceforge.net</a>.
-          Then simply include the jar file in your classpath.
-        </p>
-      </subsection>
+      </source>
+      <p>
+        It is also recommended that you provide either Spring 2.5 or later.  This library will work with both Spring 2.5 and Spring 3.x.
+      </p>
     </section>
     <section name="Basic Configuration">
       <p>
@@ -108,7 +98,7 @@ public class MyConfigurableClass
          by Spring.
       </p>
       <source>
-      package my.application;
+package my.application;
 
 &#64;Component
 &#64;Configurable
@@ -132,39 +122,6 @@ public class MyConfigurableClass
           These two values are used by the <code>ConfigurationSourceProviders</code> to 
           locate the configuration data.  
         </p>
-        <p>
-          While it is entirely up to the implementations of 
-          the ConfigurationSourceProvider interface to use this data to determine how to load 
-          the configuration data, two default implementations have been provided with this library.  
-        </p>
-        <p>
-          One implementation works by loading the properties file directly out of the 
-          classpath, where the reference class' package is the directory location of the 
-          properties file, and the resource location is the relative path to the properties
-          file from that location.  So in the example above, the configuration injector will
-          look for a properties file in the classpath located at 
-          <code>/my/application/myconfigurableclass.properties</code>.
-        </p>
-        <p>
-          With this implementation it is also possible to provide relative paths to the 
-          configuration data.  For instance the following could have been provided, 
-          <code>&#64;Configurable(resourceName = "/log4j")</code>.  In this case, the properties
-          file would be located at <code>/log4j.properties</code>.
-        </p>
-        <p>
-          The other provider will load the properties file out of the file system, by looking in
-          the directory <code>${APP_ROOT}/conf</code>, where APP_ROOT is defined by an environment variable.
-          The name of the environment variable can be configured, more on this can be found in the section
-          about the <a href="#The_Filesystem_Configuration_Source_Provider">filesystem configuration source provider</a>.
-        </p>
-        <p>
-          Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive)
-          in the following locations:
-        </p>  
-        <ul>
-          <li><code>${APP_ROOT}/conf/my/application/</code></li>
-          <li><code>${APP_ROOT}/conf/</code></li>
-        </ul>
       </subsection>
       <subsection name="&#64;ConfigurableAttribute">
         <p>
@@ -219,7 +176,108 @@ public class MyConfigurableClass
         </p>
       </subsection>
     </section>
-    <section name="Advanced Spring Configuration">
+    <section name="Standard Configuration Source Providers">
+      <p>
+        As stated in the previous section, there are two configuration source providers that are packaged
+        with this library.  There is a default provider, which pulls configuration data out of the classpath, 
+        and a filesystem configuration source provider, which pulls the configuration data from files on the 
+        server.
+      </p>
+      <p>
+        To learn about providing custom configuration source providers, for example a provider that pulls its
+        configuration data from database tables, or from a network storage system, see the <a href="spi-tut.html">custom
+        provider tutorial</a>.
+      </p>
+      <subsection name="Default Configuration Source Provider">
+        <p>
+          The default configuration source provider loads the configuration data
+          from a properties file located in the classpath.  To understand exactly how configuration
+          will be retrieved, let's assume the following configurable class:
+        </p>
+        <source>
+<![CDATA[package com.my.application;
+
+@Configurable
+public class MyClass {
+   ...
+}]]>
+        </source>
+        <p>
+          The &#64;Configurable annotation will provide a reference class of <code>code.my.application.MyClass</code>,
+          and a resource name of <code>myclass</code>.  As a result, the 
+          default configuration source provider will attempt to locate
+          the configuration file at <code>classpath:/com/my/package/myclass.properties</code>.
+          If it cannot locate the file, a <code>Configuration Exception</code> will be thrown.
+        </p>
+        <p>
+          With this implementation it is also possible to provide relative paths to the 
+          configuration data.  For instance the following could have been provided, 
+          <code>&#64;Configurable(resourceName = "/log4j")</code>.  In this case, the properties
+          file would be located at <code>classpath:/log4j.properties</code>.
+        </p>
+      </subsection>
+      <subsection name="Filesystem Configuration Source Provider">
+        <p>
+          The filesystem configuration source provider will load the properties file out of the file system, by looking in
+          the directory <code>${APP_ROOT}/conf</code>, where APP_ROOT is defined by a configurable environment variable.
+          Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive)
+          in the following locations:
+        </p>  
+        <ul>
+          <li><code>${APP_ROOT}/conf/com/my/application/</code></li>
+          <li><code>${APP_ROOT}/conf/</code></li>
+        </ul>
+        <p>
+          It will also look for files with no extension, or a <code>.properties</code> and <code>.xml</code> file extension.
+          The first file the provider sees that matches its criteria will be used.  Again, if no file can be found, a
+          <code>ConfigurationException</code> will be thrown.
+        </p>
+        <p>
+          Also, if both the default and filesystem configuration source providers can configure the same class, the filesystem 
+          provider will take priority.  For more on priorities see the <a href="spi_tut.html">custom configuration source provider
+          tutorial</a>.
+        </p>
+        <p>
+          The following system properties can be used to override the default settings of this provider.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Java System Property</th>
+              <th>Default Value</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>config.file.rootDirEnvVar</td>
+              <td><code>APP_ROOT</code></td>
+              <td>This is the name of the environment variable which defines the root directory of the configuration.</td>
+            </tr>
+            <tr>
+              <td>config.file.confDir</td>
+              <td><code>conf</code></td>
+              <td>
+                This is the name of directory, within the application root where configuration files will be located.  If
+                set to <code>null</code> or blank, the root application directory will be used.
+                For example, if no changes are made to the default behavior, the provider will look for configuration files
+                in the directory <code>$APP_ROOT/conf</code>.
+              </td>
+            </tr>
+            <tr>
+              <td>config.file.rootDir</td>
+              <td><code>null</code></td>
+              <td>The root directory for your application.  If set, this value will remove the need for setting an environment variable.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <strong>NOTE:</strong> the filesystem configuration source provider will watch your configuration files, and if changes are made, it has 
+          the ability to reconfigure configurable classes during runtime.
+        </p>
+      </subsection>
+    </section>
+    <section name="Advanced Configuration">
       <subsection name="Reconfiguration on Update">
         <p>
           Some implementations of the <code>ConfigurationSourceProvider</code> interface can send
@@ -238,54 +296,27 @@ public class MyConfigurableClass
       </subsection>
       <subsection name="Adding Configuration Source Providers">
         <p>
-          By default, the configuration injector will only use the bundled configuration source provider, 
-          however, it is possible to provide external configuration source providers, and tell the 
-          injector to use those external providers for certain packages.  Simply add the following to your 
-          application context file:
-        </p>
-        <source>
-<![CDATA[<bean class="net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper" factory-method="getInstance">
-  <property name="associations">
-    <map>
-      <entry key="your.package.name" value="your-provider-id"/>
-    </map>
-  </property>
-</bean>]]>
-        </source>
-        <p>
           Please see the <a href="spi_tut.html">tutorial</a> for creating
           new Configuration Source Providers for more information. 
-        </p>
-      </subsection>
-      <subsection name="Setting Default Configuration Source Provider">
-        <p>
-          Beyond simply mapping configuration source providers, it is also possible to change
-          the default configuration source provider.  This can also be in the application
-          context file for Spring:
-        </p>
-        <source>
-<![CDATA[<bean class="net.zcarioca.zcommons.config.source.ConfigurationSourceProviderMapper" factory-method="getInstance">
-  <property name="defaultConfigurationSourceProviderID" value="your_config_source_provider_id"/>
-</bean>]]>
-        </source>
-        <p>
-          This property will allow you to override the default behavior of the
-          configuration injector and supply a completely new provider for all
-          of your classes.  
         </p>
       </subsection>
     </section>
     <section name="Supported Property Types">
       <p>
         The configuration injector can automatically convert properties into strings, primitive 
-        types and any object which takes a single string as a constructor (eg: java.io.File and java.net.URL).  
-        Additionally, an array of any of the above is also available by providing the values as a comma-separated
+        types and their wrappers, and any object which takes a single string as a constructor (eg: java.io.File and java.net.URL).
+        Using the &#64;ConfigurableDateFormat, it is also possible to inject <code>java.util.Calendar</code> and <code>java.util.Date</code>
+        objects. Additionally, an array of any of the above is also available by providing the values as a comma-separated
         list.
+      </p>
+      <p>
+        It is possible to define custom converters for other property types.  See the <a href="converter_tut.html">Custom Converter</a>
+        tutorial for more information.
       </p>
     </section>
     <section name="Variable Substitution">
       <p>
-        Additionally, the configuration injector will handle the automatic replacement of variables
+        The configuration injector will handle the automatic replacement of variables
         within properties.  This is done using the <code>net.zcarioca.zcommons.config.util.PropertiesBuilder</code>
         class.
       </p>
@@ -323,19 +354,13 @@ export APP_HOME="/etc/app/home"
     </section>
     <section name="Using the Library Without Spring">
       <p>
-        Finally, it is even possible to take advantage of this library without the use of Spring.
+        It is possible to take advantage of this library without the use of Spring.
         All of the functionality provided by the zlib-config library is available for use 
-        programmatically.  Most of the main classes in use are singletons (yes I know it's an 
-        overused pattern), and they are accessible via a <code>getInstance()</code> method.  For
-        instance the ConfigurationSourceProviderMapper can be configured as follows:
+        programmatically.  Most of the main classes are singletons (yes I know it's an 
+        over used pattern), and they are accessible via a <code>getInstance()</code> method. 
       </p>
-      <source>
-ConfigurationSourceProviderMapper mapper = ConfigurationSourceProviderMapper.getInstance();
-mapper.setDefaultConfigurationSourceProviderID("my.source.provider::ID");
-mapper.addAssociation("com.my.organization.config", "my.source.provider::ID");
-      </source>
       <p>
-        Similarly the configurable objects may be passed to the <code>ConfigurationUtilities</code>
+        As an example the configurable objects may be passed to the <code>ConfigurationUtilities</code>
         singleton as follows:
       </p>
       <source>
