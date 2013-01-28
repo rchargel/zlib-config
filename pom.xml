@@ -34,6 +34,7 @@
     <maven.changes.plugin.version>2.8</maven.changes.plugin.version>
     <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
     <maven.cobertura.plugin.version>2.5.2</maven.cobertura.plugin.version>
+    <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
   </properties>
   <distributionManagement>
     <site>
@@ -171,6 +172,20 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${maven.gpg.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
