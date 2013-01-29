@@ -18,25 +18,6 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.CONF_DIR_OVERRIDE;
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_CONF_DIR;
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_ROOT_DIR_ENV_VAR;
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_ENV_OVERRIDE;
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_OVERRIDE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
@@ -46,61 +27,65 @@ import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.util.ConfigurableObject;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 import net.zcarioca.zcommons.config.util.UnconfigurableObject;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+
+import java.io.*;
+import java.util.Collection;
+
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests the {@link FilesystemConfigurationSourceServiceProvider}.
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCase
 {
    private static File appDir;
    private static File confDir;
-   
+
    private Environment environment;
    private FilesystemConfigurationSourceServiceProvider fcsp;
-   
+
    @BeforeClass
    public static void setupFiles() throws Exception
    {
       File tmpDir = new File(System.getProperty("java.io.tmpdir"));
       appDir = new File(tmpDir, "app_root");
       confDir = new File(appDir, "conf");
-      
+
       confDir.mkdirs();
-      
+
       File thisDir = new File(confDir, "net/zcarioca/zcommons/config/source/spi");
       thisDir.mkdirs();
-      
+
       copyFile("net/zcarioca/zcommons/config/util/configurableobject.properties", new File(confDir, "configurableobject.properties"));
       copyFile("net/zcarioca/zcommons/config/util/test.properties", new File(thisDir, "test.properties"));
       copyFile("net/zcarioca/zcommons/config/source/baddata.properties", new File(confDir, "baddata.properties"));
    }
-   
+
    private static void copyFile(String classpathResource, File file) throws Exception
    {
       InputStream in = ClassLoader.getSystemResourceAsStream(classpathResource);
       OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-      
+
       IOUtils.copy(in, out);
       IOUtils.closeQuietly(in);
       IOUtils.closeQuietly(out);
    }
-   
+
    @AfterClass
    public static void clearFiles() throws Exception
    {
       FileUtils.deleteDirectory(confDir);
    }
-   
+
    @Before
    public void setupMock() throws Exception
    {
@@ -109,10 +94,10 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
-      
+
       fcsp = new FilesystemConfigurationSourceServiceProvider(environment);
    }
-   
+
    @After
    public void cleanup() throws Exception
    {
@@ -126,110 +111,111 @@ public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCa
       assertEquals("configuration.properties", fcsp.getResourceName(new ConfigurationSourceIdentifier(getClass(), "configuration.properties")));
       assertEquals("configuration.xml", fcsp.getResourceName(new ConfigurationSourceIdentifier(getClass(), "configuration.xml")));
    }
-   
+
    @Test
    public void testGetProperties() throws ConfigurationException
    {
       assertNotNull(fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory(false, false)));
    }
-   
+
    @Test
    public void testGetPropertiesNested() throws ConfigurationException
    {
       assertNotNull(fcsp.getProperties(new ConfigurationSourceIdentifier(new TestOne()), new PropertiesBuilderFactory(false, false)));
    }
-   
+
    @Test
    public void testGetMonitoredConfigurationDirectory()
    {
       assertEquals(confDir.getAbsolutePath(), fcsp.getMonitoredConfigurationDirectory());
    }
-   
+
    @Test
    public void testBadMonitoredConfigurationDirectory()
    {
       when(environment.getEnvVariable("APP_ROOT")).thenReturn(null);
       assertNull(fcsp.getMonitoredConfigurationDirectory());
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadGetProperties() throws ConfigurationException
    {
       when(environment.getEnvVariable("APP_ROOT")).thenReturn(null);
       fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory());
    }
-   
+
    @Test
    public void testGetMonitoredFiles() throws ConfigurationException
    {
       fcsp.getProperties(new ConfigurationSourceIdentifier(new ConfigurableObject()), new PropertiesBuilderFactory(false, false));
       Collection<File> monitoredFiles = fcsp.getMonitoredFiles();
-      
+
       assertEquals(1, monitoredFiles.size());
       assertTrue(monitoredFiles.contains(new File(confDir, "configurableobject.properties")));
    }
-   
+
    @Test
-   public void testPostInit() 
+   public void testPostInit()
    {
       // should be able to call as many times as a want
       fcsp.postInit();
       fcsp.postInit();
       fcsp.postInit();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testNoConfigurationFile() throws ConfigurationException
    {
       fcsp.getProperties(new ConfigurationSourceIdentifier(new UnconfigurableObject()), new PropertiesBuilderFactory());
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadConfigurationFile() throws ConfigurationException
    {
       fcsp.getProperties(new ConfigurationSourceIdentifier(getClass(), "baddata.properties"), new PropertiesBuilderFactory());
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingConfigurationFile() throws ConfigurationException
    {
       fcsp.getProperties(new ConfigurationSourceIdentifier(new TestTwo()), new PropertiesBuilderFactory());
    }
-   
-   @Configurable(resourceName="test")
+
+   @SuppressWarnings("UnusedDeclaration")
+   @Configurable(resourceName = "test")
    public static class TestOne
    {
-      @ConfigurableAttribute(propertyName="value.1")
+      @ConfigurableAttribute(propertyName = "value.1")
       private String valueOne;
-      
-      @ConfigurableAttribute(propertyName="value.2")
+
+      @ConfigurableAttribute(propertyName = "value.2")
       private String valueTwo;
-      
+
       public String getValueOne()
       {
          return this.valueOne;
       }
-      
+
       public void setValueOne(String valueOne)
       {
          this.valueOne = valueOne;
       }
-      
+
       public String getValueTwo()
       {
          return this.valueTwo;
       }
-      
+
       public void setValueTwo(String valueTwo)
       {
          this.valueTwo = valueTwo;
       }
    }
 
-   @Configurable(resourceName = "test2.propertes")
-   public static class TestTwo extends TestOne
+   @Configurable(resourceName = "test2.properties")
+   private static class TestTwo extends TestOne
    {
       // no overrides
    }
-   
+
 }

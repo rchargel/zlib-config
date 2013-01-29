@@ -18,27 +18,25 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
-
-import static org.junit.Assert.*;
-
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
-
 import org.junit.Test;
+
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests the {@link DefaultConfigSourceServiceProvider}.
- * 
- * 
+ *
  * @author zcarioca
  */
 public class DefaultConfigSourceServiceProviderTest extends BaseTestCase
 {
-   private PropertiesBuilderFactory factory = new PropertiesBuilderFactory();
+   private final PropertiesBuilderFactory factory = new PropertiesBuilderFactory();
 
    @Test
    public void testGetProviderID()
@@ -58,9 +56,9 @@ public class DefaultConfigSourceServiceProviderTest extends BaseTestCase
    public void testGetPropertiesNullFactory() throws Exception
    {
       ConfigurationSourceProvider provider = new DefaultConfigSourceServiceProvider();
-      assertNotNull(provider.getProperties(new ConfigurationSourceIdentifier(getClass(), "/log4j.properties"),null));
+      assertNotNull(provider.getProperties(new ConfigurationSourceIdentifier(getClass(), "/log4j.properties"), null));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testGetPropertiesInvalidIdentifier() throws Exception
    {

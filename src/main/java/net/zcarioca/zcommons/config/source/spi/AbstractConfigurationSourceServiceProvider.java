@@ -18,8 +18,6 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import java.util.Properties;
-
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
@@ -27,6 +25,8 @@ import net.zcarioca.zcommons.config.util.PropertiesBuilder;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * An abstraction for ease of development.
@@ -71,7 +71,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
     *
     * @param configurationSourceIdentifier The configuration source identifier.
     */
-   public void runPreProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   protected void runPreProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       if (logger.isDebugEnabled())
          logger.debug(String.format("%s.runPreProcessAction(%s)", getClass(), configurationSourceIdentifier));
@@ -82,7 +82,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
     *
     * @param configurationSourceIdentifier The configuration source identifier.
     */
-   public void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   protected void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       if (logger.isDebugEnabled())
          logger.debug(String.format("%s.runPostProcessAction(%s)", getClass(), configurationSourceIdentifier));
@@ -94,7 +94,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
     * @param configurationSourceIdentifier The {@link ConfigurationSourceIdentifier}.
     * @throws IllegalArgumentException when the configuration source identifier is null.
     */
-   protected void validateConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
+   void validateConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
          throws IllegalArgumentException
    {
       if (configurationSourceIdentifier == null) {
@@ -108,7 +108,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
     * @param propertiesBuilderFactory The properties builder factory.
     * @return Returns a {@link PropertiesBuilder} from the factory, or a new properties builder if the factory is null.
     */
-   protected PropertiesBuilder getPropertiesBuilder(PropertiesBuilderFactory propertiesBuilderFactory)
+   PropertiesBuilder getPropertiesBuilder(PropertiesBuilderFactory propertiesBuilderFactory)
    {
       if (propertiesBuilderFactory == null) {
          propertiesBuilderFactory = new PropertiesBuilderFactory();

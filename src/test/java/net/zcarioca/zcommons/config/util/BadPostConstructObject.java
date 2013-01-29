@@ -18,18 +18,18 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import java.io.File;
-
-import javax.annotation.PostConstruct;
-
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
+import javax.annotation.PostConstruct;
+import java.io.File;
+
 /**
  * A fake object that is configurable.
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("UnusedDeclaration")
 @Configurable(referenceClass = ConfigurableObject.class)
 public class BadPostConstructObject
 {
@@ -56,7 +56,8 @@ public class BadPostConstructObject
    @ConfigurableAttribute
    private Boolean trueFalse;
 
-   float anotherFloat;
+   @SuppressWarnings("FieldCanBeLocal")
+   private float anotherFloat;
 
    private char aCharacter;
 
@@ -64,6 +65,7 @@ public class BadPostConstructObject
 
    private String helloWorld;
 
+   @SuppressWarnings("FieldCanBeLocal")
    private double bigNum = 0;
 
    public File[] getFiles()
@@ -101,7 +103,7 @@ public class BadPostConstructObject
    {
       return this.propMessage;
    }
-   
+
    public void setAnotherLongValue(long anotherLongValue)
    {
       this.anotherLongValue = anotherLongValue;

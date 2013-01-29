@@ -18,22 +18,19 @@
  */
 package net.zcarioca.zcommons.config.source;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the {@link ConfigurationSourceIdentifier}.
- * 
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings({"ObjectEqualsNull", "EqualsBetweenInconvertibleTypes"})
 public class ConfigurationSourceIdentifierTest extends BaseTestCase
 {
    @Test
@@ -42,7 +39,7 @@ public class ConfigurationSourceIdentifierTest extends BaseTestCase
       ConfigurationSourceIdentifier id1 = new ConfigurationSourceIdentifier(getClass(), "/log4j.properties");
       ConfigurationSourceIdentifier id2 = new ConfigurationSourceIdentifier(getClass(), "/log4j.properties");
       ConfigurationSourceIdentifier id3 = new ConfigurationSourceIdentifier(getClass(), "log4j.properties");
-      
+
       assertTrue(id1.hashCode() == id2.hashCode());
       assertFalse(id2.hashCode() == id3.hashCode());
    }
@@ -72,7 +69,7 @@ public class ConfigurationSourceIdentifierTest extends BaseTestCase
 
       String one = "ConfigurationSourceIdentifier[referenceClass=class net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifierTest,resourceName=/log4j.properties]";
       String two = "ConfigurationSourceIdentifier[referenceClass=class net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifierTest,resourceName=log4j.properties]";
-      
+
       assertEquals(one, id1.toString());
       assertEquals(two, id2.toString());
    }
@@ -81,29 +78,29 @@ public class ConfigurationSourceIdentifierTest extends BaseTestCase
    public void testConfigurationSourceIdentifierObject()
    {
       ConfigurationSourceIdentifier id = new ConfigurationSourceIdentifier(new NoAnnotationClass());
-      
+
       assertSame(NoAnnotationClass.class, id.getReferenceClass());
       assertEquals("noannotationclass", id.getResourceName());
 
-      id = new ConfigurationSourceIdentifier(new SimpleAnnotationClass());
-      
-      assertSame(SimpleAnnotationClass.class, id.getReferenceClass());
-      assertEquals("simpleannotationclass", id.getResourceName());
-      
-      id = new ConfigurationSourceIdentifier(new RefClassAnnotationClass());
-      
-      assertSame(String.class, id.getReferenceClass());
-      assertEquals("string", id.getResourceName());
+      ConfigurationSourceIdentifier id2 = new ConfigurationSourceIdentifier(new SimpleAnnotationClass());
 
-      id = new ConfigurationSourceIdentifier(new ResourceNameAnnotationClass());
-      
-      assertSame(ResourceNameAnnotationClass.class, id.getReferenceClass());
-      assertEquals("/log4j", id.getResourceName());
+      assertSame(SimpleAnnotationClass.class, id2.getReferenceClass());
+      assertEquals("simpleannotationclass", id2.getResourceName());
 
-      id = new ConfigurationSourceIdentifier(new FullAnnotationClass());
-      
-      assertSame(String.class, id.getReferenceClass());
-      assertEquals("/log4j", id.getResourceName());
+      ConfigurationSourceIdentifier id3 = new ConfigurationSourceIdentifier(new RefClassAnnotationClass());
+
+      assertSame(String.class, id3.getReferenceClass());
+      assertEquals("string", id3.getResourceName());
+
+      ConfigurationSourceIdentifier id4 = new ConfigurationSourceIdentifier(new ResourceNameAnnotationClass());
+
+      assertSame(ResourceNameAnnotationClass.class, id4.getReferenceClass());
+      assertEquals("/log4j", id4.getResourceName());
+
+      ConfigurationSourceIdentifier id5 = new ConfigurationSourceIdentifier(new FullAnnotationClass());
+
+      assertSame(String.class, id5.getReferenceClass());
+      assertEquals("/log4j", id5.getResourceName());
    }
 
    @Test
@@ -113,31 +110,41 @@ public class ConfigurationSourceIdentifierTest extends BaseTestCase
       assertSame(getClass(), id.getReferenceClass());
       assertEquals("/log4j.properties", id.getResourceName());
    }
-   
-   @Test(expected = IllegalArgumentException.class) 
-   public void testConfigurationSourceIdentifierClassOfQStringNullNull() 
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testConfigurationSourceIdentifierClassOfQStringNullNull()
    {
       new ConfigurationSourceIdentifier(null, null);
    }
-   
+
    @Test(expected = IllegalArgumentException.class)
-   public void testConfigurationSourceIdentifierClassOfQStringNull() 
+   public void testConfigurationSourceIdentifierClassOfQStringNull()
    {
       new ConfigurationSourceIdentifier(getClass(), null);
    }
-   
-   private static class NoAnnotationClass {}
-   
+
+   private static class NoAnnotationClass
+   {
+   }
+
    @Configurable
-   private static class SimpleAnnotationClass {}
-   
+   private static class SimpleAnnotationClass
+   {
+   }
+
    @Configurable(referenceClass = String.class)
-   private static class RefClassAnnotationClass {}
-   
+   private static class RefClassAnnotationClass
+   {
+   }
+
    @Configurable(resourceName = "/log4j")
-   private static class ResourceNameAnnotationClass {}
-   
+   private static class ResourceNameAnnotationClass
+   {
+   }
+
    @Configurable(referenceClass = String.class, resourceName = "/log4j")
-   private static class FullAnnotationClass {}
+   private static class FullAnnotationClass
+   {
+   }
 
 }

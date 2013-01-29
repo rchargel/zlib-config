@@ -18,16 +18,17 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import java.io.File;
-
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
+import java.io.File;
+
 /**
  * A fake object that is configurable.
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("UnusedDeclaration")
 @Configurable(referenceClass = ConfigurableObject.class)
 public class NotFullyConfiguredObject
 {
@@ -60,6 +61,7 @@ public class NotFullyConfiguredObject
 
    private String helloWorld;
 
+   @SuppressWarnings("FieldCanBeLocal")
    private double bigNum = 0;
 
    public File[] getFiles()
@@ -97,7 +99,7 @@ public class NotFullyConfiguredObject
    {
       return this.propMessage;
    }
-   
+
    public void setAnotherLongValue(long anotherLongValue)
    {
       this.anotherLongValue = anotherLongValue;

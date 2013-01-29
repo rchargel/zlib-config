@@ -18,23 +18,21 @@
  */
 package net.zcarioca.zcommons.config;
 
-import java.io.File;
-import java.io.IOException;
-
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 import net.zcarioca.zcommons.config.util.MockEnvironment;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * A base for test classes.
- * 
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class BaseTestCase
 {
    @BeforeClass
@@ -42,45 +40,34 @@ public class BaseTestCase
    {
       EnvironmentAccessor.getInstance().setEnvironment(new MockEnvironment());
    }
-   
+
    @AfterClass
    public static void resetNormalEnvironment()
    {
-      try
-      {
-         ConfigurationUtilities.getInstance().invokePreDestroyAll();
-      }
-      catch (ConfigurationException exc)
-      {
-         // do nothing
-      }
+      ConfigurationUtilities.getInstance().invokePreDestroyAll();
       deleteConfDir();
       EnvironmentAccessor.getInstance().setEnvironment(new EnvironmentAccessor.DefaultEnvironment());
    }
-   
-   public static File getConfDir()
+
+   static File getConfDir()
    {
       String appRoot = EnvironmentAccessor.getInstance().getEnvironment().getEnvVariable("APP_ROOT");
       return new File(System.getProperty("java.io.tmpDir"), String.format("%s/conf", appRoot));
    }
-   
-   public static void createConfDir()
+
+   static void createConfDir()
    {
       getConfDir().mkdirs();
    }
-   
-   public static void deleteConfDir()
+
+   private static void deleteConfDir()
    {
       File confDir = getConfDir();
-      try
-      {
-         if (confDir.exists())
-         {
+      try {
+         if (confDir.exists()) {
             FileUtils.deleteDirectory(confDir);
          }
-      }
-      catch (IOException exc)
-      {
+      } catch (IOException exc) {
          //do nothing
       }
    }

@@ -18,32 +18,31 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
-
-import java.io.File;
-
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Environment;
 import net.zcarioca.zcommons.config.EnvironmentAccessor;
 import net.zcarioca.zcommons.config.util.MockEnvironment;
-
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests the {@link FilesystemConfiguration}.
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class FilesystemConfigurationTest extends BaseTestCase
 {
-   private static File tmpDir;
+   private static final Logger logger = LoggerFactory.getLogger(FilesystemConfigurationTest.class);
 
    // basic configuration
    private static File rootDir1;
@@ -59,7 +58,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
    @BeforeClass
    public static void setup()
    {
-      tmpDir = new File(System.getProperty("java.io.tmpdir"));
+      File tmpDir = new File(System.getProperty("java.io.tmpdir"));
       rootDir1 = new File(tmpDir, "app_root");
       rootDir2 = new File(tmpDir, "my_app_root");
       rootDir3 = new File(tmpDir, "set_app_root");
@@ -69,16 +68,15 @@ public class FilesystemConfigurationTest extends BaseTestCase
       rootDir3.mkdirs();
    }
 
-   public static File makeConfDir(File rootDir, String path)
+   private static File makeConfDir(File rootDir, String path)
    {
       return makeConfDir(rootDir, path, true);
    }
 
-   public static File makeConfDir(File rootDir, String path, boolean makeIt)
+   private static File makeConfDir(File rootDir, String path, boolean makeIt)
    {
       File confDir = new File(rootDir, path);
-      if (!confDir.exists() && makeIt)
-      {
+      if (!confDir.exists() && makeIt) {
          confDir.mkdirs();
       }
 
@@ -88,15 +86,12 @@ public class FilesystemConfigurationTest extends BaseTestCase
    @AfterClass
    public static void resetFS()
    {
-      try
-      {
+      try {
          FileUtils.deleteDirectory(rootDir1);
          FileUtils.deleteDirectory(rootDir2);
          FileUtils.deleteDirectory(rootDir3);
-      }
-      catch (Exception exc)
-      {
-         exc.printStackTrace();
+      } catch (Exception exc) {
+         logger.error(exc.getMessage(), exc);
       }
    }
 
@@ -108,7 +103,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
       when(environment.getEnvVariable("MY_APP_ROOT")).thenReturn(rootDir2.getAbsolutePath());
       when(environment.getEnvVariable("BAD_ROOT")).thenReturn(null);
    }
-   
+
    @After
    public void resetEnvironment()
    {
@@ -125,7 +120,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);
-      
+
       FilesystemConfiguration conf = new FilesystemConfiguration(environment);
       assertNull(conf.getRootDir());
       assertEquals(makeConfDir(rootDir1, "conf"), conf.getConfigurationDirectory());
@@ -136,10 +131,10 @@ public class FilesystemConfigurationTest extends BaseTestCase
    {
       // same as -Dconfig.file.rootDirEnvVar=MY_APP_ROOT
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn("MY_APP_ROOT");
-      
+
       //nochange
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
-      
+
       FilesystemConfiguration conf = new FilesystemConfiguration(environment);
       assertNull(conf.getRootDir());
       assertEquals("MY_APP_ROOT", conf.getRootDirEnvironmentVar());
@@ -152,11 +147,11 @@ public class FilesystemConfigurationTest extends BaseTestCase
    {
       // same as -Dconfig.file.rootDir=/tmp
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(rootDir3.getAbsolutePath());
-      
+
       // nochange
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
-      
+
       FilesystemConfiguration conf = new FilesystemConfiguration(environment);
       assertNotNull(conf.getRootDir());
       assertEquals("APP_ROOT", conf.getRootDirEnvironmentVar());
@@ -169,7 +164,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
    {
       // same as -Dconfig.file.confDir=configuration/dir
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn("configuration/dir");
-      
+
       // nochange
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);
@@ -187,7 +182,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
    {
       // same as -Dconfig.file.confDir=/
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn("/");
-      
+
       // nochange
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);
@@ -205,7 +200,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
    {
       // same as -Dconfig.file.confDir=""
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn("");
-      
+
       // nochange
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn(DEFAULT_ROOT_DIR_ENV_VAR);
       when(environment.getSystemProperty(ROOT_DIR_OVERRIDE, null)).thenReturn(null);

@@ -22,8 +22,7 @@ import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 
 /**
  * A set of constants for the configuration service provider.
- * 
- * 
+ *
  * @author zcarioca
  */
 public interface ConfigurationConstants
@@ -34,13 +33,13 @@ public interface ConfigurationConstants
     * if either no ID was specified in the provider-bean mapping, if the
     * requested provider is unavailable, or unless the default provider was overridden.
     */
-   public static String DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER = "net.zcarioca.zommons.config.default";
-   
+   public static String DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER = "net.zcarioca.zcommons.config.default";
+
    /**
-    * This is the ID of the file-system based provider for the 
-    * {@link ConfigurationSourceProvider} service. 
+    * This is the ID of the file-system based provider for the
+    * {@link ConfigurationSourceProvider} service.
     */
-   public static String FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER = "net.zcarioca.zommons.config.filesystem";
+   public static String FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER = "net.zcarioca.zcommons.config.filesystem";
 
    /**
     * If the {@link Configurable} annotation has its resourceName set to

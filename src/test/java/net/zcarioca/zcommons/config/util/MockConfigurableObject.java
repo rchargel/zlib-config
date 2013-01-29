@@ -18,22 +18,21 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import java.io.File;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.stereotype.Component;
-
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
 
 /**
  * A fake object that is configurable.
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("UnusedDeclaration")
 @Component
-@Configurable(referenceClass=MockConfigurableObject.class)
+@Configurable(referenceClass = MockConfigurableObject.class)
 public class MockConfigurableObject
 {
    @ConfigurableAttribute(propertyName = "myFiles")
@@ -59,7 +58,8 @@ public class MockConfigurableObject
    @ConfigurableAttribute
    private Boolean trueFalse;
 
-   float anotherFloat;
+   @SuppressWarnings("FieldCanBeLocal")
+   private float anotherFloat;
 
    private char aCharacter;
 
@@ -104,7 +104,7 @@ public class MockConfigurableObject
    {
       return this.propMessage;
    }
-   
+
    public void setAnotherLongValue(long anotherLongValue)
    {
       this.anotherLongValue = anotherLongValue;
@@ -170,4 +170,8 @@ public class MockConfigurableObject
       this.bigNum = this.number + this.floatingPointNumber;
    }
 
+   public void setFloatingPointNumber(Double floatingPointNumber)
+   {
+      this.floatingPointNumber = floatingPointNumber;
+   }
 }

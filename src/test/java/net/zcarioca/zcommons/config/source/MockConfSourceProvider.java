@@ -18,24 +18,23 @@
  */
 package net.zcarioca.zcommons.config.source;
 
-import java.util.Properties;
-
 import net.zcarioca.zcommons.config.util.MockConfigurableObject;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 
+import java.util.Properties;
+
 /**
  * A mock configuration source provider.
- * 
- * 
+ *
  * @author zcarioca
  */
+@SuppressWarnings("UnusedDeclaration")
 public class MockConfSourceProvider implements ConfigurationSourceProvider
 {
-   public static final String ID = "MOCK-PROVIDER";
-   
+   private static final String ID = "MOCK-PROVIDER";
+
    public Properties getProperties(ConfigurationSourceIdentifier configurationSourceIdentifier, PropertiesBuilderFactory propertiesBuilderFactory)
    {
-      System.out.println(String.format("MockConfSourceProvider getting configuration for %s", configurationSourceIdentifier));
       Properties props = new Properties();
       props.setProperty("myFiles", "/tmp/file.txt, /tmp/text.txt");
       props.setProperty("number", "23");
@@ -48,7 +47,7 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
       props.setProperty("aCharacter", "s");
       props.setProperty("property.message", "This is a simple property message");
       props.setProperty("another.long.value", "500");
-      
+
       return props;
    }
 
@@ -56,7 +55,7 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
    {
       return ID;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -65,13 +64,17 @@ public class MockConfSourceProvider implements ConfigurationSourceProvider
    {
       return Priority.HIGH;
    }
-   
+
    public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       return configurationSourceIdentifier.equals(new ConfigurationSourceIdentifier(new MockConfigurableObject()));
    }
-   
-   public void postInit() { }
-   
-   public void preDestroy() { }
+
+   public void postInit()
+   {
+   }
+
+   public void preDestroy()
+   {
+   }
 }

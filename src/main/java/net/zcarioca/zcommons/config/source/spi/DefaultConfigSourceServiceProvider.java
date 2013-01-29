@@ -18,21 +18,20 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
-
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.apache.commons.io.IOUtils;
-
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.util.PropertiesBuilder;
+import org.apache.commons.io.IOUtils;
+
+import java.io.InputStream;
+import java.util.Properties;
+
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
 
 /**
  * A classpath based implementation of the {@link ConfigurationSourceProvider} interface.
- * 
+ *
  * @author zcarioca
  */
 public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSourceServiceProvider implements ConfigurationSourceProvider
@@ -41,10 +40,10 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
    {
       return DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
    }
-   
+
    /**
     * This provider is marked as a BACKUP provider.
-    * 
+    * <p/>
     * {@inheritDoc}
     */
    @Override
@@ -52,18 +51,17 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
    {
       return Priority.BACKUP;
    }
-   
+
    @Override
-   protected String getResourceName(ConfigurationSourceIdentifier configurationSourceIdentifier) 
+   protected String getResourceName(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
-      String resourceName = configurationSourceIdentifier.getResourceName();
-      if (!resourceName.endsWith(".properties") && !resourceName.endsWith(".xml")) 
-      {
-          resourceName = resourceName + ".properties";
+      String resourceName = super.getResourceName(configurationSourceIdentifier);
+      if (!resourceName.endsWith(".properties") && !resourceName.endsWith(".xml")) {
+         resourceName = resourceName + ".properties";
       }
       return resourceName;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -72,26 +70,21 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
    {
       return true;
    }
-   
+
    @Override
    protected Properties buildPropertiesFromValidInputs(Class<?> referenceClass, String resourceName, PropertiesBuilder propertiesBuilder) throws ConfigurationException
    {
       InputStream in = null;
-      try
-      {
+      try {
          in = referenceClass.getResourceAsStream(resourceName);
          Properties props = new Properties();
          props.load(in);
          propertiesBuilder.addAll(props);
-         
+
          return propertiesBuilder.build();
-      }
-      catch (Throwable t)
-      {
+      } catch (Throwable t) {
          throw new ConfigurationException(String.format("Could not read configuration for %s using the reference class %s", resourceName, referenceClass), t);
-      }
-      finally
-      {
+      } finally {
          IOUtils.closeQuietly(in);
       }
    }

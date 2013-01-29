@@ -18,31 +18,29 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
-
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.ConfigurableDateFormat;
 import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
 import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
-
 import org.junit.Before;
+
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * A base class for converter tests.
- * 
- * 
+ *
  * @author zcarioca
  */
 public abstract class BaseConverterTestCase
 {
-   protected BeanPropertyInfo beanPropertyInfo;
-   
+   BeanPropertyInfo beanPropertyInfo;
+
    @Before
    public void init() throws Exception
    {
@@ -51,53 +49,53 @@ public abstract class BaseConverterTestCase
       setPropertyAnnotations(mock(ConfigurableAttribute.class));
       setupBeanPropertyInfo();
    }
-   
-   protected void setupBeanPropertyInfo()
+
+   void setupBeanPropertyInfo()
    {
       // override
    }
-   
-   protected void setBeanAnnotations(Annotation ... annotations)
+
+   void setBeanAnnotations(Annotation... annotations)
    {
       when(beanPropertyInfo.getBeanAnnotations()).thenReturn(toCollection(annotations));
    }
-   
-   protected void setPropertyAnnotations(Annotation ... annotations)
+
+   void setPropertyAnnotations(Annotation... annotations)
    {
       when(beanPropertyInfo.getPropertyAnnotations()).thenReturn(toCollection(annotations));
    }
-   
-   protected Collection<Annotation> toCollection(Annotation ... annotations)
+
+   Collection<Annotation> toCollection(Annotation... annotations)
    {
       return Arrays.asList(annotations);
    }
-   
-   protected <T extends Annotation> T mockAnnotation(Class<T> annotationType)
+
+   <T extends Annotation> T mockAnnotation(Class<T> annotationType)
    {
       return mock(annotationType);
    }
-   
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   protected void setPropertyType(Class type)
+
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   void setPropertyType(Class type)
    {
       when(beanPropertyInfo.getPropertyType()).thenReturn(type);
    }
-   
-   protected ConfigurableNumberEncoding mockNumberFormatAnnotation(NumberFormat numberFormat)
+
+   ConfigurableNumberEncoding mockNumberFormatAnnotation(NumberFormat numberFormat)
    {
       ConfigurableNumberEncoding configurableNumberEncoding = mockAnnotation(ConfigurableNumberEncoding.class);
-      
+
       when(configurableNumberEncoding.value()).thenReturn(numberFormat != null ? numberFormat : NumberFormat.DECIMAL);
-      
+
       return configurableNumberEncoding;
    }
-   
-   protected ConfigurableDateFormat mockConfigurableDateFormat(String format)
+
+   ConfigurableDateFormat mockConfigurableDateFormat(String format)
    {
       ConfigurableDateFormat configurableDateFormat = mockAnnotation(ConfigurableDateFormat.class);
-      
+
       when(configurableDateFormat.value()).thenReturn(format);
-      
+
       return configurableDateFormat;
    }
 
