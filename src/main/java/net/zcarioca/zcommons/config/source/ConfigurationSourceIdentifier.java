@@ -44,20 +44,15 @@ public final class ConfigurationSourceIdentifier
    
    public ConfigurationSourceIdentifier(Object bean)
    {
-      Class<?> referenceClass = null;
-      String resourceName = null;
+      Class<?> referenceClass = bean.getClass();
+      String resourceName = bean.getClass().getSimpleName().toLowerCase();
       if (bean.getClass().isAnnotationPresent(Configurable.class))
       {
          Configurable conf = bean.getClass().getAnnotation(Configurable.class);
          referenceClass = conf.referenceClass() == DEFAULT_REFERENCE_CLASS ? bean.getClass() : conf.referenceClass();
          resourceName = conf.resourceName().equals(DEFAULT_RESOURCE_NAME) ? referenceClass.getSimpleName().toLowerCase() : conf.resourceName();
       }
-      else
-      {
-         referenceClass = bean.getClass();
-         resourceName = bean.getClass().getSimpleName().toLowerCase();
-      }
-      
+
       setReferenceClass(referenceClass);
       setResourceName(resourceName);
    }

@@ -51,9 +51,10 @@ public class ConfigurationUtilities
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtilities.class);
    private static ConfigurationUtilities configUtil;
    
-   private MultiValueMap beanSourceMap;
-   private Set<ConfigurationProcessListener> procListeners;
-   private Set<ConfigurationUpdateListener> updateListeners;
+   private final MultiValueMap beanSourceMap;
+   private final Set<ConfigurationProcessListener> procListeners;
+   private final Set<ConfigurationUpdateListener> updateListeners;
+
    private PropertiesBuilderFactory propertiesBuilderFactory = new PropertiesBuilderFactory();
    
    private boolean reconfigureOnUpdateEnabled;
@@ -279,12 +280,10 @@ public class ConfigurationUtilities
     */
    public boolean removeConfigurationProcessListener(ConfigurationProcessListener listener)
    {
-      boolean removed = false;
       synchronized(procListeners)
       {
-         removed = this.procListeners.remove(listener);
+         return this.procListeners.remove(listener);
       }
-      return removed;
    }
 
    /**
@@ -297,12 +296,10 @@ public class ConfigurationUtilities
     */
    public boolean removeConfigurationUpdateListener(ConfigurationUpdateListener listener)
    {
-      boolean removed = false;
       synchronized(updateListeners)
       {
-         removed = this.updateListeners.remove(listener);
+         return this.updateListeners.remove(listener);
       }
-      return removed;
    }
 
    /**

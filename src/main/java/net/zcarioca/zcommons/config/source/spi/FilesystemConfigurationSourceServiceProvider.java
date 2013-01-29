@@ -257,7 +257,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
    private File getConfigurationFile(Class<?> referenceClass, String resourceName) throws ConfigurationException
    {
-      File file = null;
+      File file;
       Pattern pattern = Pattern.compile(String.format("^%s(\\.properties)?(\\.xml)?$", resourceName), Pattern.CASE_INSENSITIVE);
       try
       {
@@ -384,7 +384,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
        */
       public File getConfigurationDirectory()
       {
-         File rootDir = null;
+         File rootDir;
          if (StringUtils.isNotBlank(getRootDir()))
          {
             rootDir = new File(getRootDir());

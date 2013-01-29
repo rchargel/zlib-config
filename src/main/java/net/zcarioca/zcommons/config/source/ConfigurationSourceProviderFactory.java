@@ -62,7 +62,7 @@ public class ConfigurationSourceProviderFactory
    
    /**
     * Gets the configuration source provider for a given source identifier.
-    * @param configurationSourceIdentifier
+    * @param configurationSourceIdentifier The configuration source identifier.
     * @return Returns the source provider for an identifier.
     */
    public ConfigurationSourceProvider getConfigurationSourceProvider(ConfigurationSourceIdentifier configurationSourceIdentifier)

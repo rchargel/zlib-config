@@ -244,9 +244,9 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testFloat() throws ConfigurationException
    {
       NumberPropertyConverter<Float> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Float.class);
-      assertEquals(0f, converter.convertPropertyValue("0", beanPropertyInfo).floatValue(), 0);
-      assertEquals(123.456f, converter.convertPropertyValue("123.456", beanPropertyInfo).floatValue(), 0);
-      assertEquals(-256.99f, converter.convertPropertyValue("-256.99", beanPropertyInfo).floatValue(), 0);
+      assertEquals(0f, converter.convertPropertyValue("0", beanPropertyInfo), 0);
+      assertEquals(123.456f, converter.convertPropertyValue("123.456", beanPropertyInfo), 0);
+      assertEquals(-256.99f, converter.convertPropertyValue("-256.99", beanPropertyInfo), 0);
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
@@ -263,10 +263,10 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testDouble() throws ConfigurationException
    {
       NumberPropertyConverter<Double> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Double.class);
-      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo).doubleValue(), 0);
+      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo), 0);
+      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo), 0);
+      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo), 0);
+      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo), 0);
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
@@ -278,10 +278,10 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.BINARY));
       
       NumberPropertyConverter<Double> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Double.class);
-      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo).doubleValue(), 0);
+      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo), 0);
+      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo), 0);
+      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo), 0);
+      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo), 0);
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));

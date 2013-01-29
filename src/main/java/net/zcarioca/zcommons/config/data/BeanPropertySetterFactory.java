@@ -64,11 +64,10 @@ public class BeanPropertySetterFactory
       Map<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
       
       Class<?> beanClass = bean.getClass();
-      BeanInfo beanInfo = null;
-      
+
       try
       {
-         beanInfo = Introspector.getBeanInfo(beanClass);
+         BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
          for (PropertyDescriptor desc : beanInfo.getPropertyDescriptors())
          {
             Method reader = desc.getReadMethod();
@@ -136,18 +135,18 @@ public class BeanPropertySetterFactory
       if (boolean.class == primitiveType)
          return Boolean.FALSE;
       if (char.class == primitiveType)
-         return new Character('\u0000');
+         return '\u0000';
       if (float.class == primitiveType)
-         return new Float(0);
+         return 0f;
       if (double.class == primitiveType)
-         return new Double(0);
+         return 0d;
       if (byte.class == primitiveType)
-         return new Byte((byte)0);
+         return (byte)0;
       if (short.class == primitiveType)
-         return new Short((short)0);
+         return (short)0;
       if (int.class == primitiveType)
-         return new Integer(0);
-      return new Long(0);
+         return 0;
+      return 0l;
    }
    
    private Field getField(Class<?> beanClass, PropertyDescriptor descriptor)
@@ -284,8 +283,7 @@ public class BeanPropertySetterFactory
          }
          catch(Exception exc)
          {
-            ConfigurationException ce = new ConfigurationException("Could not write property to bean", exc);
-            throw ce;
+            throw new ConfigurationException("Could not write property to bean", exc);
          }
       }
       

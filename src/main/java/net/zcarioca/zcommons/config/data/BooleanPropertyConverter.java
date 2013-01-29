@@ -59,7 +59,7 @@ class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
       if (!bool)
       {
          // test for validity
-         if (!isValidFalse(value))
+         if (isNotValid(value))
          {
             throw new ConfigurationException(String.format("Could not parse the value %s as a boolean", value));
          }
@@ -67,12 +67,12 @@ class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
       return bool;
    }
    
-   protected boolean isValidFalse(String value)
+   protected boolean isNotValid(String value)
    {
-      return value.equalsIgnoreCase("false") ||
+      return !(value.equalsIgnoreCase("false") ||
             value.equalsIgnoreCase("f") ||
             value.equalsIgnoreCase("no") || 
             value.equalsIgnoreCase("n") ||
-            value.equals("0");
+            value.equals("0"));
    }
 }

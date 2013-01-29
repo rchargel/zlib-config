@@ -37,6 +37,8 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the {@link ConfigurationUtilities} class.
@@ -45,6 +47,7 @@ import org.junit.Test;
  */
 public class ConfigurationUtilitiesTest extends BaseTestCase
 {
+   private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtilitiesTest.class);
    private ConfigurationUtilities utils;
    
    @Before
@@ -192,17 +195,18 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
 
    private static class MockProcessListener implements ConfigurationProcessListener
    {
-      public void completedConfiguration(Object bean) {}
-      public void startingConfiguration(Object bean) {}
+      public void completedConfiguration(Object bean) { logger.debug("Completed Configuration: " + bean); }
+      public void startingConfiguration(Object bean) { logger.debug("Starting Configuration: " + bean);}
    }
    
    private static class MockUpdateListener implements ConfigurationUpdateListener
    {
       private Object lastCompleted;
       private int count = 0;
-      public void startingBeanUpdate(Object bean) { }
+      public void startingBeanUpdate(Object bean) { logger.debug("Starting Bean Update: " + bean); }
       public void completedBeanUpdate(Object bean) 
-      { 
+      {
+         logger.debug("Completed Bean Update: "  + bean);
          this.lastCompleted = bean;
          this.count ++;
       }

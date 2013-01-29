@@ -61,8 +61,8 @@ public class ConfigurationInjectionPostProcessor implements BeanPostProcessor, P
 {
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationInjectionPostProcessor.class);
    
-   private Set<Object> processedBeans;
-   private ConfigurationUtilities configurationUtilities;
+   private final Set<Object> processedBeans;
+   private final ConfigurationUtilities configurationUtilities;
    
    public ConfigurationInjectionPostProcessor()
    {
