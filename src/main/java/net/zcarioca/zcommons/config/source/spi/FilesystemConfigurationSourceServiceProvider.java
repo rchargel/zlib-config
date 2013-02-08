@@ -68,6 +68,8 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    public static final String CONF_DIR_OVERRIDE = "config.file.confDir";
 
    private final FilesystemConfiguration filesystemConfiguration;
+   
+   private final Object lock = new Object();
 
    private static FileWatchListener fileWatchListener;
    private static FileAlterationMonitor fileAlterationMonitor;
@@ -183,23 +185,26 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    public void postInit()
    {
       super.postInit();
-      if (fileAlterationMonitor == null)
+      synchronized(lock) 
       {
-         fileWatchListener = new FileWatchListener(ConfigurationUtilities.getInstance());
-         fileAlterationMonitor = new FileAlterationMonitor();
-         File confDir = getFilesystemConfiguration().getConfigurationDirectory();
-         FileAlterationObserver observer = new FileAlterationObserver(confDir);
-
-         observer.addListener(getFileWatchListener());
-         fileAlterationMonitor.addObserver(observer);
-
-         try
+         if (fileAlterationMonitor == null)
          {
-            fileAlterationMonitor.start();
-         }
-         catch (Exception exc)
-         {
-            logger.error("Could not start file monitor", exc);
+            fileWatchListener = new FileWatchListener(ConfigurationUtilities.getInstance());
+            fileAlterationMonitor = new FileAlterationMonitor();
+            File confDir = getFilesystemConfiguration().getConfigurationDirectory();
+            FileAlterationObserver observer = new FileAlterationObserver(confDir);
+
+            observer.addListener(getFileWatchListener());
+            fileAlterationMonitor.addObserver(observer);
+
+            try
+            {
+               fileAlterationMonitor.start();
+            }
+            catch (Exception exc)
+            {
+               logger.error("Could not start file monitor", exc);
+            }
          }
       }
    }
@@ -211,17 +216,20 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    public void preDestroy()
    {
       super.preDestroy();
-      try
+      synchronized (lock)
       {
-         if (fileAlterationMonitor != null) fileAlterationMonitor.stop(10);
-         if (fileWatchListener != null) fileWatchListener.clear();
-         
-         fileAlterationMonitor = null;
-         fileWatchListener = null;
-      }
-      catch (Exception exc)
-      {
-         logger.error("Could not stop file monitor", exc);
+         try
+         {
+            if (fileAlterationMonitor != null) fileAlterationMonitor.stop(10);
+            if (fileWatchListener != null) fileWatchListener.clear();
+
+            fileAlterationMonitor = null;
+            fileWatchListener = null;
+         }
+         catch (Exception exc)
+         {
+            logger.error("Could not stop file monitor", exc);
+         }
       }
    }
    
@@ -245,8 +253,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       return null;
    }
 
-   
-   private static FileWatchListener getFileWatchListener()
+   private synchronized static FileWatchListener getFileWatchListener()
    {
       if (fileWatchListener == null)
       {

@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class ConfigurationUtilities
 {
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtilities.class);
-   private static ConfigurationUtilities configUtil;
+   private static ConfigurationUtilities configUtil = new ConfigurationUtilities();
    
    private MultiValueMap beanSourceMap;
    private Set<ConfigurationProcessListener> procListeners;
@@ -65,10 +65,6 @@ public class ConfigurationUtilities
     */
    public static ConfigurationUtilities getInstance()
    {
-      if(configUtil == null)
-      {
-         configUtil = new ConfigurationUtilities();
-      }
       return configUtil;
    }
 

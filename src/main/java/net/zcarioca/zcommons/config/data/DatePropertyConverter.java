@@ -77,7 +77,6 @@ class DatePropertyConverter implements BeanPropertyConverter<Date>
       ConfigurableDateFormat format = null;
       try
       {
-         SimpleDateFormat simpleDateFormat = null;
          format = getConfigurableDateFormat(beanPropertyInfo.getPropertyAnnotations());
          if (format == null)
          {
@@ -86,9 +85,8 @@ class DatePropertyConverter implements BeanPropertyConverter<Date>
 
          if (format != null)
          {
-            simpleDateFormat = new SimpleDateFormat(format.value());
+            return new SimpleDateFormat(format.value());
          }
-         return simpleDateFormat;
       }
       catch (NullPointerException exc)
       {
@@ -96,8 +94,9 @@ class DatePropertyConverter implements BeanPropertyConverter<Date>
       }
       catch (IllegalArgumentException exc)
       {
-         throw new ConfigurationException(String.format("%s is not a valid format for the @ConfigurableDateFormat for property %s.%s", format.value(), beanPropertyInfo.getBeanType().getSimpleName(), beanPropertyInfo.getPropertyName()));
+         throw new ConfigurationException(String.format("%s is not a valid format for the @ConfigurableDateFormat for property %s.%s", format == null ? null : format.value(), beanPropertyInfo.getBeanType().getSimpleName(), beanPropertyInfo.getPropertyName()));
       }
+      return null;
    }
    
    protected ConfigurableDateFormat getConfigurableDateFormat(Collection<Annotation> annotations)
