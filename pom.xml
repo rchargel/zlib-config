@@ -8,7 +8,7 @@
   </parent>
   <groupId>net.zcarioca.zcommons</groupId>
   <artifactId>zlib-config</artifactId>
-  <version>1.5.RC2-SNAPSHOT</version>
+  <version>1.5</version>
   <name>ZCommons - Configuration Library - (${project.version})</name>
   <description>A library project designed to simplify project configuration and remove boiler-plate code.</description>
   <url>http://zcarioca.net/projects/${project.artifactId}/${project.version}</url>
@@ -54,7 +54,7 @@
     <connection>scm:git:git@github.com:rchargel/zlib-config.git</connection>
     <developerConnection>scm:git:git@github.com:rchargel/zlib-config.git</developerConnection>
     <url>https://github.com/rchargel/zlib-config</url>
-    <tag>HEAD</tag>
+    <tag>zlib-config-1.5</tag>
   </scm>
   <organization>
     <name>zcarioca.net</name>
@@ -295,7 +295,7 @@
               <exclude>**/*Exception.class</exclude>
             </excludes>
           </instrumentation>
-          <check/>
+          <check />
         </configuration>
       </plugin>
     </plugins>
