@@ -12,7 +12,7 @@
         Cut the first official release.
       </action>
     </release>
-    <release date="2013-xx-xx" version="1.5" description="Release 1.5">
+    <release date="2013-02-11" version="1.5" description="Release 1.5">
       <action date="2012-01-26" dev="zcarioca" type="add">
         Added a PropertiesBuilder in place of Configuration object. This allows the user to specify properties in any order
         and still allows for keyword swapping.
