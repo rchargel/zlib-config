@@ -18,16 +18,18 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import net.zcarioca.zcommons.config.Configurable;
-import net.zcarioca.zcommons.config.ConfigurableAttribute;
-import org.springframework.stereotype.Component;
+import java.io.File;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
+
+import net.zcarioca.zcommons.config.Configurable;
+import net.zcarioca.zcommons.config.ConfigurableAttribute;
+
+import org.springframework.stereotype.Component;
 
 /**
  * A fake object that is configurable.
- *
+ * 
  * @author zcarioca
  */
 @Component
@@ -57,6 +59,7 @@ public class MockConfigurableObject
    @ConfigurableAttribute
    private Boolean trueFalse;
 
+   @SuppressWarnings("unused")
    private float anotherFloat;
 
    private char aCharacter;

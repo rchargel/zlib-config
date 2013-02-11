@@ -37,22 +37,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests the {@link ConfigurationInjectionPostProcessor}
- *
- *
+ * 
+ * 
  * @author zcarioca
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"test-applicationContext.xml"})
+@ContextConfiguration(locations = { "test-applicationContext.xml" })
 public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implements ApplicationContextAware
 {
    private ApplicationContext ctx;
-   
+
    @Autowired
    private ConfigurationInjectionPostProcessor proc;
 
    @Autowired
    private ConfigurableObject obj;
-   
+
    /**
     * {@inheritDoc}
     */
@@ -63,16 +63,20 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)}
+    * .
     */
    @Test
    public void testPostProcessAfterInitialization()
    {
       assertEquals(5, proc.postProcessAfterInitialization(5, "name"));
    }
-   
+
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)}
+    * .
     */
    @Test
    public void testPostProcessBeforeInitialization()
@@ -80,7 +84,7 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
       this.proc.postProcessBeforeInitialization(this.obj, "configuredObject");
       this.proc.postProcessBeforeInitialization(this.obj, "configuredObject");
    }
-   
+
    @Test(expected = InvalidPropertyException.class)
    public void testPostProcessBeforeInitializationInvalid()
    {
@@ -89,7 +93,9 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#getOrder()}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#getOrder()}
+    * .
     */
    @Test
    public void testGetOrder()
@@ -98,7 +104,9 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#onApplicationEvent(org.springframework.context.ApplicationEvent)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#onApplicationEvent(org.springframework.context.ApplicationEvent)}
+    * .
     */
    @Test
    public void testOnApplicationEvent()
@@ -108,7 +116,9 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#setApplicationContext(ApplicationContext)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#setApplicationContext(ApplicationContext)}
+    * .
     */
    @Test
    public void testSetApplicationContext()
@@ -116,5 +126,5 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
       this.proc.setApplicationContext(null);
       this.proc.setApplicationContext(this.ctx);
    }
-   
+
 }

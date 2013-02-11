@@ -26,20 +26,20 @@ import net.zcarioca.zcommons.config.ConfigurableAttribute;
  * 
  * @author zcarioca
  */
-@Configurable(resourceName="test")
+@Configurable(resourceName = "test")
 public class AnotherConfigurableObject
 {
    @ConfigurableAttribute(propertyName = "value.1")
    private String firstValue;
-   
+
    @ConfigurableAttribute(propertyName = "value.2")
    private String secondValue;
-   
+
    public String getFirstValue()
    {
       return this.firstValue;
    }
-   
+
    public String getSecondValue()
    {
       return this.secondValue;

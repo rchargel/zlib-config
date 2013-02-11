@@ -42,40 +42,40 @@ public class ArrayPropertyConverterTest extends BaseConverterTestCase
    public void testSplit()
    {
       ArrayPropertyConverter<String[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(String[].class);
-      
+
       String[] output = converter.split("this, \"\"is\"\", \"a test\", \"of, my,delimitedlist\", oh yes, ");
-      
+
       assertEquals(6, output.length);
-      assertArrayEquals(toArray("this","\"is\"","a test" ,"of, my,delimitedlist" ,"oh yes",""), output);
+      assertArrayEquals(toArray("this", "\"is\"", "a test", "of, my,delimitedlist", "oh yes", ""), output);
    }
-   
+
    @Test
    public void testBoolean() throws ConfigurationException
    {
       ArrayPropertyConverter<boolean[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(boolean[].class);
       boolean[] data = converter.convertPropertyValue("true, false, 0, 1, yes", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertBooleanArrayEquals(new boolean[] { true, false, false, true, true }, data);
    }
-   
+
    @Test
    public void testBooleanWithEmptyValue() throws ConfigurationException
    {
       ArrayPropertyConverter<boolean[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(boolean[].class);
       boolean[] data = converter.convertPropertyValue("true, false, , 1, yes", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertBooleanArrayEquals(new boolean[] { true, false, false, true, true }, data);
-      
+
    }
-   
+
    @Test
    public void testCharWithEmptyValue() throws ConfigurationException
    {
       ArrayPropertyConverter<char[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(char[].class);
       char[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertArrayEquals(new char[] { '0', '1', '\u0000', '3', '4' }, data);
    }
@@ -85,7 +85,7 @@ public class ArrayPropertyConverterTest extends BaseConverterTestCase
    {
       ArrayPropertyConverter<float[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(float[].class);
       float[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertFloatArrayEquals(new float[] { 0, 1, 0, 3, 4 }, data);
    }
@@ -95,17 +95,17 @@ public class ArrayPropertyConverterTest extends BaseConverterTestCase
    {
       ArrayPropertyConverter<double[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(double[].class);
       double[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertDoubleArrayEquals(new double[] { 0, 1, 0, 3, 4 }, data);
    }
-   
+
    @Test
    public void testByteWithEmptyValue() throws ConfigurationException
    {
       ArrayPropertyConverter<byte[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(byte[].class);
       byte[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertArrayEquals(new byte[] { 0, 1, 0, 3, 4 }, data);
    }
@@ -115,7 +115,7 @@ public class ArrayPropertyConverterTest extends BaseConverterTestCase
    {
       ArrayPropertyConverter<short[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(short[].class);
       short[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertArrayEquals(new short[] { 0, 1, 0, 3, 4 }, data);
    }
@@ -125,7 +125,7 @@ public class ArrayPropertyConverterTest extends BaseConverterTestCase
    {
       ArrayPropertyConverter<int[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(int[].class);
       int[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertArrayEquals(new int[] { 0, 1, 0, 3, 4 }, data);
    }
@@ -135,39 +135,39 @@ public class ArrayPropertyConverterTest extends BaseConverterTestCase
    {
       ArrayPropertyConverter<long[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(long[].class);
       long[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertArrayEquals(new long[] { 0, 1, 0, 3, 4 }, data);
    }
-   
+
    @Test
    public void testStringWithEmptyValue() throws ConfigurationException
    {
       ArrayPropertyConverter<String[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(String[].class);
       String[] data = converter.convertPropertyValue("0, 1, , 3, 4", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       assertArrayEquals(new String[] { "0", "1", "", "3", "4" }, data);
    }
-   
+
    @Test
    public void testDateWithEmptyValue() throws ConfigurationException, ParseException
    {
       setPropertyAnnotations(mockConfigurableDateFormat("yyyy"));
-      
+
       ArrayPropertyConverter<Date[]> converter = ArrayPropertyConverter.createNewArrayPropertyConverter(Date[].class);
       Date[] data = converter.convertPropertyValue("2001, 2002, , 2004, 2005", beanPropertyInfo);
-      
+
       assertEquals(5, data.length);
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
       assertArrayEquals(new Date[] { sdf.parse("2001"), sdf.parse("2002"), null, sdf.parse("2004"), sdf.parse("2005") }, data);
    }
-   
-   private String[] toArray(String ... strings)
+
+   private String[] toArray(String... strings)
    {
       return strings;
    }
-   
+
    private void assertBooleanArrayEquals(boolean[] expected, boolean[] actual)
    {
       assertEquals(expected.length, actual.length);

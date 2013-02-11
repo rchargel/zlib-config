@@ -18,7 +18,9 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -39,15 +41,17 @@ import org.junit.Test;
 public class BeanPropertyConverterRegistryTest
 {
    private BeanPropertyConverterRegistry registry;
-   
+
    @Before
-   public void setup() 
+   public void setup()
    {
       registry = new BeanPropertyConverterRegistry();
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#getRegistry()}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#getRegistry()}
+    * .
     */
    @Test
    public void testGetRegistry()
@@ -57,7 +61,9 @@ public class BeanPropertyConverterRegistryTest
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#register(net.zcarioca.zcommons.config.data.BeanPropertyConverter)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#register(net.zcarioca.zcommons.config.data.BeanPropertyConverter)}
+    * .
     */
    @Test
    public void testRegister() throws ConfigurationException
@@ -69,25 +75,25 @@ public class BeanPropertyConverterRegistryTest
          {
             return SimpleDateFormat.class;
          }
-         
+
          @Override
          public SimpleDateFormat convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
          {
             return new SimpleDateFormat(value);
          }
       });
-      
+
       assertNotNull(registry.getPropertyConverter(SimpleDateFormat.class));
       assertEquals(SimpleDateFormat.class, registry.getPropertyConverter(SimpleDateFormat.class).getSupportedClass());
       assertEquals(Object.class, registry.getPropertyConverter(File.class).getSupportedClass());
    }
-   
+
    @Test(expected = IllegalArgumentException.class)
    public void testRegisterNull() throws ConfigurationException
    {
       registry.register(null);
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testRegisterBad() throws ConfigurationException
    {
@@ -98,7 +104,7 @@ public class BeanPropertyConverterRegistryTest
          {
             return null;
          }
-         
+
          @Override
          public SimpleDateFormat convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
          {
@@ -106,12 +112,14 @@ public class BeanPropertyConverterRegistryTest
          }
       });
    }
-   
+
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#getPropertyConverter(java.lang.Class)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.data.BeanPropertyConverterRegistry#getPropertyConverter(java.lang.Class)}
+    * .
     */
    @Test
-   public void testGetPropertyConverter() 
+   public void testGetPropertyConverter()
    {
       assertEquals(Boolean.class, registry.getPropertyConverter(boolean.class).getSupportedClass());
       assertEquals(Boolean.class, registry.getPropertyConverter(Boolean.class).getSupportedClass());
@@ -136,7 +144,7 @@ public class BeanPropertyConverterRegistryTest
       assertEquals(Date.class, registry.getPropertyConverter(Date.class).getSupportedClass());
       assertEquals(Calendar.class, registry.getPropertyConverter(Calendar.class).getSupportedClass());
    }
-   
+
    @Test
    public void testGetPropertyConverterForArray()
    {
@@ -165,7 +173,7 @@ public class BeanPropertyConverterRegistryTest
    }
 
    @Test(expected = IllegalArgumentException.class)
-   public void testGetPropertyConverterNull() 
+   public void testGetPropertyConverterNull()
    {
       registry.getPropertyConverter(null);
    }

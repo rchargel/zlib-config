@@ -18,16 +18,19 @@
  */
 package net.zcarioca.zcommons.config.source;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Tests the {@link ConfigurationSourceIdentifier}.
- *
+ * 
  * @author zcarioca
  */
 public class ConfigurationSourceIdentifierTest extends BaseTestCase

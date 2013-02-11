@@ -19,11 +19,12 @@
 package net.zcarioca.zcommons.config.data;
 
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Converts a String into a Boolean value.
- *
+ * 
  * @author zcarioca
  */
 class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
@@ -49,16 +50,16 @@ class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
 
    private boolean parseBoolean(String value) throws ConfigurationException
    {
-      boolean bool = Boolean.parseBoolean(value) ||
-            value.equalsIgnoreCase("yes") ||
-            value.equalsIgnoreCase("y") ||
-            value.equalsIgnoreCase("t") ||
+      boolean bool = Boolean.parseBoolean(value) || 
+            value.equalsIgnoreCase("yes") || 
+            value.equalsIgnoreCase("y") || 
+            value.equalsIgnoreCase("t") || 
             value.equals("1");
 
-      if (!bool) 
+      if (!bool)
       {
          // test for validity
-         if (isNotValid(value)) 
+         if (isNotValid(value))
          {
             throw new ConfigurationException(String.format("Could not parse the value %s as a boolean", value));
          }
@@ -68,10 +69,10 @@ class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
 
    private boolean isNotValid(String value)
    {
-      return !(value.equalsIgnoreCase("false") ||
-            value.equalsIgnoreCase("f") ||
-            value.equalsIgnoreCase("no") ||
-            value.equalsIgnoreCase("n") ||
+      return !(value.equalsIgnoreCase("false") || 
+            value.equalsIgnoreCase("f") || 
+            value.equalsIgnoreCase("no") || 
+            value.equalsIgnoreCase("n") || 
             value.equals("0"));
    }
 }

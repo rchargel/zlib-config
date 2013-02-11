@@ -18,18 +18,19 @@
  */
 package net.zcarioca.zcommons.config;
 
+import java.io.File;
+import java.io.IOException;
+
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 import net.zcarioca.zcommons.config.util.MockEnvironment;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * A base for test classes.
- *
+ * 
  * @author zcarioca
  */
 public class BaseTestCase
@@ -62,16 +63,16 @@ public class BaseTestCase
    private static void deleteConfDir()
    {
       File confDir = getConfDir();
-      try 
+      try
       {
-         if (confDir.exists()) 
+         if (confDir.exists())
          {
             FileUtils.deleteDirectory(confDir);
          }
-      } 
-      catch (IOException exc) 
+      }
+      catch (IOException exc)
       {
-         //do nothing
+         // do nothing
       }
    }
 

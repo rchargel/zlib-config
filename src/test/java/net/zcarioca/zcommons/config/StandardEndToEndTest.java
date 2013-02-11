@@ -18,14 +18,9 @@
  */
 package net.zcarioca.zcommons.config;
 
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import net.zcarioca.zcommons.config.util.AnotherConfigurableObject;
-import net.zcarioca.zcommons.config.util.ConfigurableObject;
-import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
-import net.zcarioca.zcommons.config.util.MockConfigurableObject;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,11 +28,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import net.zcarioca.zcommons.config.util.AnotherConfigurableObject;
+import net.zcarioca.zcommons.config.util.ConfigurableObject;
+import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
+import net.zcarioca.zcommons.config.util.MockConfigurableObject;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * This is an end-to-end test.
- *
+ * 
  * @author zcarioca
  */
 public class StandardEndToEndTest extends BaseTestCase
@@ -57,15 +60,15 @@ public class StandardEndToEndTest extends BaseTestCase
       props.put("value.1", "This is the first value");
       props.put("value.2", "This is the second value");
 
-      try 
+      try
       {
          OutputStream out = new FileOutputStream(new File(getConfDir(), "test.properties"));
 
          props.store(out, "this is a comment");
-      } 
-      catch (IOException exc) 
+      }
+      catch (IOException exc)
       {
-         //do nothing
+         // do nothing
       }
    }
 
@@ -87,16 +90,10 @@ public class StandardEndToEndTest extends BaseTestCase
       /*
        * This data is stored in MockConfSourceProvider
        * 
-       * myFiles=/tmp/file.txt, /tmp/text.txt
-       * number=23
-       * floatingPointNumber=123.56
-       * trueFalse=false
-       * name=Z-Carioca
-       * oneMoreFloat=1.34
-       * aByte=120
-       * fieldMessage=This is a simple message
-       * aCharacter=s
-       * property.message=This is a simple property message
+       * myFiles=/tmp/file.txt, /tmp/text.txt number=23
+       * floatingPointNumber=123.56 trueFalse=false name=Z-Carioca
+       * oneMoreFloat=1.34 aByte=120 fieldMessage=This is a simple message
+       * aCharacter=s property.message=This is a simple property message
        * another.long.value=500
        */
       assertEquals(2, mockConfigurableObject.getFiles().length);
@@ -116,17 +113,11 @@ public class StandardEndToEndTest extends BaseTestCase
       /*
        * This data is stored in the classpath.
        * 
-       * myFiles=/tmp/file.txt,/tmp/text.txt
-       * number=22
-       * floatingPointNumber=123.56
-       * trueFalse=true
-       * name=Z Carioca
-       * oneMoreFloat=0.34
-       * aByte=120
-       * fieldMessage=This is a simple message
-       * aCharacter=S
-       * property.message=There is a field which states: ${fieldMessage} - ${oneMoreFloat} ${along}
-       * another.long.value=500
+       * myFiles=/tmp/file.txt,/tmp/text.txt number=22
+       * floatingPointNumber=123.56 trueFalse=true name=Z Carioca
+       * oneMoreFloat=0.34 aByte=120 fieldMessage=This is a simple message
+       * aCharacter=S property.message=There is a field which states:
+       * ${fieldMessage} - ${oneMoreFloat} ${along} another.long.value=500
        */
       assertEquals(2, configurableObject.getFiles().length);
       assertEquals(22, configurableObject.getNumber());
@@ -147,13 +138,11 @@ public class StandardEndToEndTest extends BaseTestCase
        * 
        * There is a file in the classpath test.properties:
        * 
-       * value.1=Value One
-       * value.2=Value Two
+       * value.1=Value One value.2=Value Two
        * 
        * There is also a file on the file system test.properties:
        * 
-       * value.1=This is the first value
-       * value.2=This is the second value
+       * value.1=This is the first value value.2=This is the second value
        * 
        * The file system values should be used instead of the classpath values.
        */

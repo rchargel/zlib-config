@@ -18,9 +18,9 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Converter for {@link Character} class.

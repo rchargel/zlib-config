@@ -18,14 +18,14 @@
  */
 package net.zcarioca.zcommons.config.source;
 
+import java.util.Properties;
+
 import net.zcarioca.zcommons.config.util.MockConfigurableObject;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 
-import java.util.Properties;
-
 /**
  * A mock configuration source provider.
- *
+ * 
  * @author zcarioca
  */
 public class MockConfSourceProvider implements ConfigurationSourceProvider

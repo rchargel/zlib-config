@@ -18,15 +18,16 @@
  */
 package net.zcarioca.zcommons.config.util;
 
+import java.io.File;
+
+import javax.annotation.PostConstruct;
+
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-
 /**
  * A fake object that is configurable.
- *
+ * 
  * @author zcarioca
  */
 @Configurable(referenceClass = ConfigurableObject.class)
@@ -55,6 +56,7 @@ public class BadPostConstructObject
    @ConfigurableAttribute
    private Boolean trueFalse;
 
+   @SuppressWarnings("unused")
    private float anotherFloat;
 
    private char aCharacter;

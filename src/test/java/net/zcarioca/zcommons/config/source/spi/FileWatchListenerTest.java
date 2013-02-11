@@ -19,8 +19,8 @@
 package net.zcarioca.zcommons.config.source.spi;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Collection;
@@ -35,22 +35,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the {@link FileWatchListener}. 
+ * Tests the {@link FileWatchListener}.
  * 
  * @author zcarioca
  */
 public class FileWatchListenerTest extends BaseTestCase
 {
    private ConfigurationUtilitiesMock configurationUtilities;
-   
+
    @Before
    public void setUp() throws Exception
    {
       configurationUtilities = new ConfigurationUtilitiesMock();
    }
-   
+
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#addFile(java.io.File, net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#addFile(java.io.File, net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier)}
+    * .
     */
    @Test
    public void testAddFile()
@@ -58,15 +60,17 @@ public class FileWatchListenerTest extends BaseTestCase
       FileWatchListener listener = new FileWatchListener(configurationUtilities);
       listener.addFile(new File("file1.txt"), new ConfigurationSourceIdentifier(this));
       listener.addFile(new File("file2.txt"), new ConfigurationSourceIdentifier(this));
-      
+
       Collection<File> mappedFiles = listener.getMappedFiles();
       assertEquals(2, mappedFiles.size());
       assertTrue(mappedFiles.contains(new File("file1.txt")));
       assertTrue(mappedFiles.contains(new File("file2.txt")));
    }
-   
+
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#getMappedFiles()}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#getMappedFiles()}
+    * .
     */
    @Test(expected = UnsupportedOperationException.class)
    public void testImmutableMappedFiles()
@@ -74,37 +78,37 @@ public class FileWatchListenerTest extends BaseTestCase
       FileWatchListener listener = new FileWatchListener(configurationUtilities);
       listener.addFile(new File("file1.txt"), new ConfigurationSourceIdentifier(this));
       listener.addFile(new File("file2.txt"), new ConfigurationSourceIdentifier(this));
-      
+
       Collection<File> mappedFiles = listener.getMappedFiles();
       mappedFiles.add(new File("file3.txt"));
    }
-   
+
    @Test(expected = IllegalArgumentException.class)
    public void testAddFileNullFile()
    {
       FileWatchListener listener = new FileWatchListener(configurationUtilities);
       listener.addFile(null, new ConfigurationSourceIdentifier(this));
    }
-   
+
    @Test(expected = IllegalArgumentException.class)
    public void testAddFileNullCSI()
    {
       FileWatchListener listener = new FileWatchListener(configurationUtilities);
       listener.addFile(new File("file1.txt"), null);
    }
-   
+
    @Test
    public void testOnFileChanged()
    {
       FileWatchListener listener = new FileWatchListener(configurationUtilities);
       listener.onFileChange(new File("file1.txt"));
       assertFalse(configurationUtilities.isRanReconfiguration());
-      
+
       listener.addFile(new File("file1.txt"), new ConfigurationSourceIdentifier(this));
       listener.onFileChange(new File("file1.txt"));
       assertTrue(configurationUtilities.isRanReconfiguration());
    }
-   
+
    @Test
    public void testOnFileDeleted()
    {
@@ -112,29 +116,29 @@ public class FileWatchListenerTest extends BaseTestCase
       listener.addFile(new File("file1.txt"), new ConfigurationSourceIdentifier(this));
       listener.addFile(new File("file2.txt"), new ConfigurationSourceIdentifier(this));
       assertEquals(2, listener.getMappedFiles().size());
-      
+
       listener.onFileDelete(new File("file1.txt"));
       assertEquals(1, listener.getMappedFiles().size());
-      
+
       listener.onFileDelete(new File("file1.txt"));
       assertEquals(1, listener.getMappedFiles().size());
    }
-   
+
    private static class ConfigurationUtilitiesMock extends ConfigurationUtilities
    {
 
       private boolean ranReconfiguration = false;
-      
+
       public ConfigurationUtilitiesMock()
       {
          super();
       }
-      
+
       public boolean isRanReconfiguration()
       {
          return this.ranReconfiguration;
       }
-      
+
       /**
        * {@inheritDoc}
        */

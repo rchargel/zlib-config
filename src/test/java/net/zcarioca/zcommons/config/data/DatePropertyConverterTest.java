@@ -18,22 +18,23 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.Configurable;
-import net.zcarioca.zcommons.config.ConfigurableAttribute;
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import net.zcarioca.zcommons.config.Configurable;
+import net.zcarioca.zcommons.config.ConfigurableAttribute;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * Tests the {@link DatePropertyConverter}.
- *
+ * 
  * @author zcarioca
  */
 public class DatePropertyConverterTest extends BaseConverterTestCase
@@ -53,7 +54,7 @@ public class DatePropertyConverterTest extends BaseConverterTestCase
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings({"unchecked", "rawtypes"})
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    protected void setupBeanPropertyInfo()
    {
       super.setupBeanPropertyInfo();
@@ -121,11 +122,11 @@ public class DatePropertyConverterTest extends BaseConverterTestCase
 
    private Date createDate(String date, String format)
    {
-      try 
+      try
       {
          return new SimpleDateFormat(format).parse(date);
-      } 
-      catch (Exception exc) 
+      }
+      catch (Exception exc)
       {
          return null;
       }

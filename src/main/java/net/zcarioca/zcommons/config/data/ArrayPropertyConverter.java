@@ -18,13 +18,13 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 
 /**
  * A property converter to convert array properties.

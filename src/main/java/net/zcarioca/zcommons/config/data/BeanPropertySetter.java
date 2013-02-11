@@ -36,11 +36,11 @@ public interface BeanPropertySetter
     * @return Returns the bean property info.
     */
    public BeanPropertyInfo getBeanPropertyInfo();
-   
+
    /**
-    * Unlike the {@link BeanPropertyInfo#getPropertyName()}, this is not the name
-    * of the property in the class, but rather the key for finding the property
-    * in the {@link Properties} object.
+    * Unlike the {@link BeanPropertyInfo#getPropertyName()}, this is not the
+    * name of the property in the class, but rather the key for finding the
+    * property in the {@link Properties} object.
     * 
     * @return Returns the property key.
     */

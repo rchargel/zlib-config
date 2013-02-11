@@ -22,8 +22,8 @@ package net.zcarioca.zcommons.config.exceptions;
  * A simple exception thrown when there is an error with the configuration
  * mechanism.
  * <p>
- * This is a checked exception because it is necessary, when utilizing the API directory, to force the user
- * to catch this exception.
+ * This is a checked exception because it is necessary, when utilizing the API
+ * directory, to force the user to catch this exception.
  * </p>
  * 
  * @author zcarioca

@@ -18,7 +18,7 @@
  */
 package net.zcarioca.zcommons.config;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_RESOURCE_NAME;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

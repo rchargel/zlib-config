@@ -18,20 +18,21 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static org.junit.Assert.assertEquals;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the {@link GenericPropertyConverter}.
- *
+ * 
  * @author zcarioca
  */
 public class GenericPropertyConverterTest extends BaseConverterTestCase

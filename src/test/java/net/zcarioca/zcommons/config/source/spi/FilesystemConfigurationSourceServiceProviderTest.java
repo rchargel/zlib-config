@@ -18,6 +18,25 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.CONF_DIR_OVERRIDE;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_CONF_DIR;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_ROOT_DIR_ENV_VAR;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_ENV_OVERRIDE;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_OVERRIDE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
@@ -27,21 +46,18 @@ import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.util.ConfigurableObject;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
 import net.zcarioca.zcommons.config.util.UnconfigurableObject;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.*;
-
-import java.io.*;
-import java.util.Collection;
-
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests the {@link FilesystemConfigurationSourceServiceProvider}.
- *
+ * 
  * @author zcarioca
  */
 public class FilesystemConfigurationSourceServiceProviderTest extends BaseTestCase

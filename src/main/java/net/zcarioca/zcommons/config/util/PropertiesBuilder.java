@@ -18,31 +18,35 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import net.zcarioca.zcommons.config.Environment;
-import net.zcarioca.zcommons.config.EnvironmentAccessor;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.zcarioca.zcommons.config.Environment;
+import net.zcarioca.zcommons.config.EnvironmentAccessor;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * <p>
- * Works as a simple builder used to create properties objects.  This class allows for keyword substitution so that
- * if there is a property defined as "<code>my.greeting=Hello</code>" and a property defined as
- * "<code>my.message=${my.greeting} World<code>", the result of calling "<code>prop.getProperty("my.message");</code>"
- * will return the string "Hello World".
+ * Works as a simple builder used to create properties objects. This class
+ * allows for keyword substitution so that if there is a property defined as "
+ * <code>my.greeting=Hello</code>" and a property defined as "
+ * <code>my.message=${my.greeting} World<code>", the result of calling "<code>prop.getProperty("my.message");</code>
+ * " will return the string "Hello World".
  * </p>
  * <p>
- * Properties are overridden by the order in which they are added.  If you would like to add a system property and allow that property
- * to be overridden, then you would need to add the system property first, followed by the overridden property and value, if necessary.
+ * Properties are overridden by the order in which they are added. If you would
+ * like to add a system property and allow that property to be overridden, then
+ * you would need to add the system property first, followed by the overridden
+ * property and value, if necessary.
  * </p>
  * <p>
  * Note: this object is not thread-safe.
  * </p>
- *
+ * 
  * @author zcarioca
  */
 public class PropertiesBuilder
@@ -74,12 +78,14 @@ public class PropertiesBuilder
    }
 
    /**
-    * Adds an environment property to the builder.  If the property doesn't exist, a blank value will be added.
-    *
+    * Adds an environment property to the builder. If the property doesn't
+    * exist, a blank value will be added.
+    * 
     * @param propertyName The name of the environment property.
     * @return Returns the builder.
     * @throws IllegalArgumentException if the property name is blank or null.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addEnvironmentProperty(String propertyName)
    {
@@ -87,13 +93,15 @@ public class PropertiesBuilder
    }
 
    /**
-    * Adds an environment property to the builder, or the default value if the property doesn't exist.
-    *
+    * Adds an environment property to the builder, or the default value if the
+    * property doesn't exist.
+    * 
     * @param propertyName The name of the environment property.
     * @param defaultValue The default value.
     * @return Returns the builder.
     * @throws IllegalArgumentException if the property name is blank or null.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addEnvironmentProperty(String propertyName, String defaultValue)
    {
@@ -102,12 +110,14 @@ public class PropertiesBuilder
    }
 
    /**
-    * Adds a system property to the builder. If the property doesn't exist, a blank value will be added.
-    *
+    * Adds a system property to the builder. If the property doesn't exist, a
+    * blank value will be added.
+    * 
     * @param propertyName The name of the system property.
     * @return Returns the builder.
     * @throws IllegalArgumentException if the property name is blank or null.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addSystemProperty(String propertyName)
    {
@@ -115,17 +125,19 @@ public class PropertiesBuilder
    }
 
    /**
-    * Adds a system property to the builder, or the default value if the property doesn't exist.
-    *
+    * Adds a system property to the builder, or the default value if the
+    * property doesn't exist.
+    * 
     * @param propertyName The name of the system property.
     * @param defaultValue The default value.
     * @return Returns the builder.
     * @throws IllegalArgumentException if the property name is blank or null.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addSystemProperty(String propertyName, String defaultValue)
    {
-      if (StringUtils.isEmpty(propertyName)) 
+      if (StringUtils.isEmpty(propertyName))
       {
          throw new IllegalArgumentException("Empty or NULL property name");
       }
@@ -133,25 +145,28 @@ public class PropertiesBuilder
    }
 
    /**
-    * Adds a new property to the builder. If the value is null, an empty string will be added.
-    *
-    * @param propertyName  The property name.
+    * Adds a new property to the builder. If the value is null, an empty string
+    * will be added.
+    * 
+    * @param propertyName The property name.
     * @param propertyValue The property value (may be null).
     * @return Returns the builder.
     * @throws IllegalArgumentException if the property name is blank or null.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addProperty(String propertyName, String propertyValue)
    {
-      if (generated) 
+      if (generated)
       {
-         throw new IllegalStateException("The properties object for this builder has already been built. A separate builder is needed for each properties object.");
+         throw new IllegalStateException(
+               "The properties object for this builder has already been built. A separate builder is needed for each properties object.");
       }
-      if (StringUtils.isEmpty(propertyName)) 
+      if (StringUtils.isEmpty(propertyName))
       {
          throw new IllegalArgumentException("Empty or NULL property name");
       }
-      if (propertyValue == null) 
+      if (propertyValue == null)
       {
          propertyValue = "";
       }
@@ -161,10 +176,12 @@ public class PropertiesBuilder
 
    /**
     * Adds all of the environment properties to the builder.
-    *
+    * 
     * @return Returns the builder.
-    * @throws IllegalArgumentException if any of the keys are null or blank strings.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalArgumentException if any of the keys are null or blank
+    *         strings.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addAllEnvironmentProperties()
    {
@@ -173,10 +190,12 @@ public class PropertiesBuilder
 
    /**
     * Adds all of the system properties to the builder.
-    *
+    * 
     * @return Returns the builder.
-    * @throws IllegalArgumentException if any of the keys are null or blank strings.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalArgumentException if any of the keys are null or blank
+    *         strings.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    public PropertiesBuilder addAllSystemProperties()
    {
@@ -184,17 +203,20 @@ public class PropertiesBuilder
    }
 
    /**
-    * Adds all of the entries in the map to the builder. If any values are null, an empty string will be added in its place.
-    *
+    * Adds all of the entries in the map to the builder. If any values are null,
+    * an empty string will be added in its place.
+    * 
     * @param props The map of properties.
     * @return Returns the builder.
-    * @throws IllegalArgumentException if any of the keys are null or blank strings.
-    * @throws IllegalStateException    if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalArgumentException if any of the keys are null or blank
+    *         strings.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    @SuppressWarnings("rawtypes")
    public PropertiesBuilder addAll(Map props)
    {
-      for (Object key : props.keySet()) 
+      for (Object key : props.keySet())
       {
          Object val = props.get(key);
          this.addProperty(key.toString(), val != null ? val.toString() : null);
@@ -204,20 +226,21 @@ public class PropertiesBuilder
 
    /**
     * Builds the {@link Properties} object.
-    *
+    * 
     * @return Returns a new {@link Properties} object.
-    * @throws IllegalStateException if this method has been called more than once.
+    * @throws IllegalStateException if this method has been called more than
+    *         once.
     */
    public Properties build()
    {
-      if (this.generated) 
+      if (this.generated)
       {
          throw new IllegalStateException("The build() method has already been called on this instance.");
       }
       this.generated = true;
       Properties newProps = new Properties();
 
-      for (String key : this.props.keySet()) 
+      for (String key : this.props.keySet())
       {
          newProps.setProperty(key, getFilteredValue(key));
       }
@@ -227,31 +250,36 @@ public class PropertiesBuilder
 
    /**
     * Returns the number of properties currently within this builder.
-    *
+    * 
     * @return Returns the number of properties currently in the builder.
-    * @throws IllegalStateException if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    int size()
    {
-      if (generated) 
+      if (generated)
       {
-         throw new IllegalStateException("The properties object for this builder has already been built. A separate builder is needed for each properties object.");
+         throw new IllegalStateException(
+               "The properties object for this builder has already been built. A separate builder is needed for each properties object.");
       }
       return this.props.size();
    }
 
    /**
-    * Returns the property value for given property name currently within this builder.
-    *
+    * Returns the property value for given property name currently within this
+    * builder.
+    * 
     * @param propertyName The property name.
     * @return Returns the unfiltered property value, may be null.
-    * @throws IllegalStateException if the {@link PropertiesBuilder#build()} method has already been called on this instance.
+    * @throws IllegalStateException if the {@link PropertiesBuilder#build()}
+    *         method has already been called on this instance.
     */
    String getProperty(String propertyName)
    {
-      if (generated) 
+      if (generated)
       {
-         throw new IllegalStateException("The properties object for this builder has already been built. A separate builder is needed for each properties object.");
+         throw new IllegalStateException(
+               "The properties object for this builder has already been built. A separate builder is needed for each properties object.");
       }
       return this.props.get(propertyName);
    }
@@ -259,18 +287,18 @@ public class PropertiesBuilder
    String getFilteredValue(String key)
    {
       String value = this.props.get(key);
-      if (StringUtils.isEmpty(value)) 
+      if (StringUtils.isEmpty(value))
       {
          return "";
       }
       Matcher matcher = pattern.matcher(value);
-      while (matcher.find()) 
+      while (matcher.find())
       {
          String grouping = matcher.group();
          String valKey = grouping.substring(2, grouping.length() - 1);
 
          String prop = getFilteredValue(valKey);
-         if (!StringUtils.isEmpty(prop)) 
+         if (!StringUtils.isEmpty(prop))
          {
             value = matcher.replaceFirst(prop);
             matcher = pattern.matcher(value);

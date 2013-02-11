@@ -18,8 +18,9 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.zcarioca.zcommons.config.BaseTestCase;
 
 import org.junit.Test;
@@ -78,10 +79,10 @@ public class PropertiesBuilderFactoryTest extends BaseTestCase
    {
       PropertiesBuilder emptyBuilder = new PropertiesBuilderFactory().newPropertiesBuilder();
       assertEquals(0, emptyBuilder.size());
-      
+
       PropertiesBuilder envBuilder = new PropertiesBuilderFactory(true, false).newPropertiesBuilder();
       assertEquals(2, envBuilder.size());
-      
+
       PropertiesBuilder fullBuilder = new PropertiesBuilderFactory(true, true).newPropertiesBuilder();
       assertEquals(3, fullBuilder.size());
    }

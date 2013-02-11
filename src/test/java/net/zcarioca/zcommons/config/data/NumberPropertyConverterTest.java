@@ -18,18 +18,18 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
 /**
  * Tests the {@link NumberPropertyConverter}.
- *
+ * 
  * @author zcarioca
  */
 public class NumberPropertyConverterTest extends BaseConverterTestCase
@@ -293,6 +293,5 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
       NumberPropertyConverter<Double> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Double.class);
       converter.convertPropertyValue("123.456.789", beanPropertyInfo);
    }
-
 
 }

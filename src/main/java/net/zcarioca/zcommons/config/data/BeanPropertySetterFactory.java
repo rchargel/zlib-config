@@ -18,13 +18,6 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.ConfigurableAttribute;
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -75,7 +68,8 @@ public class BeanPropertySetterFactory
       try 
       {
          BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
-         for (PropertyDescriptor desc : beanInfo.getPropertyDescriptors()) {
+         for (PropertyDescriptor desc : beanInfo.getPropertyDescriptors()) 
+         {
             Method reader = desc.getReadMethod();
             Method writer = desc.getWriteMethod();
             Field field = getField(beanClass, desc);

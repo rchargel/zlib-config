@@ -18,16 +18,22 @@
  */
 package net.zcarioca.zcommons.config.source;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
+
 import net.zcarioca.zcommons.config.source.spi.DefaultConfigSourceServiceProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * This is a factory class used to load the {@link ConfigurationSourceProvider}
  * implementations available to the ClassLoader.
- *
+ * 
  * @author zcarioca
  */
 public class ConfigurationSourceProviderFactory
@@ -41,12 +47,12 @@ public class ConfigurationSourceProviderFactory
 
    /**
     * Gets access to the singleton instance.
-    *
+    * 
     * @return Returns a reference to the singleton.
     */
    public static ConfigurationSourceProviderFactory getInstance()
    {
-      if (spiFactory == null) 
+      if (spiFactory == null)
       {
          spiFactory = new ConfigurationSourceProviderFactory();
       }
@@ -55,7 +61,7 @@ public class ConfigurationSourceProviderFactory
 
    /**
     * Gets the configuration source provider for a given source identifier.
-    *
+    * 
     * @param configurationSourceIdentifier The configuration source identifier.
     * @return Returns the source provider for an identifier.
     */
@@ -67,9 +73,9 @@ public class ConfigurationSourceProviderFactory
 
    public void clearAssociations()
    {
-      for (ConfigurationSourceProvider provider : identifierMap.values()) 
+      for (ConfigurationSourceProvider provider : identifierMap.values())
       {
-         if (initializedProviders.contains(provider)) 
+         if (initializedProviders.contains(provider))
          {
             provider.preDestroy();
          }
@@ -80,7 +86,7 @@ public class ConfigurationSourceProviderFactory
 
    private void mapConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
-      if (identifierMap.get(configurationSourceIdentifier) != null) 
+      if (identifierMap.get(configurationSourceIdentifier) != null)
       {
          return;
       }
@@ -90,18 +96,17 @@ public class ConfigurationSourceProviderFactory
       Iterator<ConfigurationSourceProvider> providers = getConfigurationSourceProviders();
 
       ConfigurationSourceProvider chosenProvider = new DefaultConfigSourceServiceProvider();
-      while (providers.hasNext()) 
+      while (providers.hasNext())
       {
          ConfigurationSourceProvider provider = providers.next();
-         if (provider.supportsIdentifier(configurationSourceIdentifier)
-               && chosenProvider.getPriorityLevel().ordinal() < provider.getPriorityLevel().ordinal()) 
+         if (provider.supportsIdentifier(configurationSourceIdentifier) && chosenProvider.getPriorityLevel().ordinal() < provider.getPriorityLevel().ordinal())
          {
             chosenProvider = provider;
          }
       }
       identifierMap.put(configurationSourceIdentifier, chosenProvider);
 
-      if (!initializedProviders.contains(chosenProvider)) 
+      if (!initializedProviders.contains(chosenProvider))
       {
          chosenProvider.postInit();
          initializedProviders.add(chosenProvider);
@@ -113,7 +118,7 @@ public class ConfigurationSourceProviderFactory
 
    /**
     * Gets an iterator for each service loader available.
-    *
+    * 
     * @return Returns an iterator to the service loaders.
     */
    private Iterator<ConfigurationSourceProvider> getConfigurationSourceProviders()

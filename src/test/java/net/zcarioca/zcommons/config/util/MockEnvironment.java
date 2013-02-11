@@ -18,15 +18,15 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import net.zcarioca.zcommons.config.Environment;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.zcarioca.zcommons.config.Environment;
+
 /**
  * A mock {@link Environment}.
- *
+ * 
  * @author zcarioca
  */
 public class MockEnvironment implements Environment
@@ -86,7 +86,8 @@ public class MockEnvironment implements Environment
    @Override
    public String getEnvVariable(String envVar, String defaultValue)
    {
-      if (env.containsKey(envVar)) {
+      if (env.containsKey(envVar))
+      {
          return env.get(envVar);
       }
       return defaultValue;
@@ -98,7 +99,7 @@ public class MockEnvironment implements Environment
    @Override
    public String getSystemProperty(String propertyName, String defaultValue)
    {
-      if (sys.containsKey(propertyName)) 
+      if (sys.containsKey(propertyName))
       {
          return sys.get(propertyName);
       }

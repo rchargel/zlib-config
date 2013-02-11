@@ -18,25 +18,37 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import net.zcarioca.zcommons.config.BaseTestCase;
-import net.zcarioca.zcommons.config.Environment;
-import net.zcarioca.zcommons.config.EnvironmentAccessor;
-import net.zcarioca.zcommons.config.util.MockEnvironment;
-import org.apache.commons.io.FileUtils;
-import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-
-import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.*;
-import static org.junit.Assert.*;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.CONF_DIR_OVERRIDE;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_CONF_DIR;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.DEFAULT_ROOT_DIR_ENV_VAR;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_ENV_OVERRIDE;
+import static net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.ROOT_DIR_OVERRIDE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+
+import net.zcarioca.zcommons.config.BaseTestCase;
+import net.zcarioca.zcommons.config.Environment;
+import net.zcarioca.zcommons.config.EnvironmentAccessor;
+import net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FilesystemConfiguration;
+import net.zcarioca.zcommons.config.util.MockEnvironment;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Tests the {@link FilesystemConfiguration}.
- *
+ * 
  * @author zcarioca
  */
 public class FilesystemConfigurationTest extends BaseTestCase
@@ -75,7 +87,8 @@ public class FilesystemConfigurationTest extends BaseTestCase
    private static File makeConfDir(File rootDir, String path, boolean makeIt)
    {
       File confDir = new File(rootDir, path);
-      if (!confDir.exists() && makeIt) {
+      if (!confDir.exists() && makeIt)
+      {
          confDir.mkdirs();
       }
 
@@ -85,11 +98,14 @@ public class FilesystemConfigurationTest extends BaseTestCase
    @AfterClass
    public static void resetFS()
    {
-      try {
+      try
+      {
          FileUtils.deleteDirectory(rootDir1);
          FileUtils.deleteDirectory(rootDir2);
          FileUtils.deleteDirectory(rootDir3);
-      } catch (Exception exc) {
+      }
+      catch (Exception exc)
+      {
          logger.error(exc.getMessage(), exc);
       }
    }
@@ -131,7 +147,7 @@ public class FilesystemConfigurationTest extends BaseTestCase
       // same as -Dconfig.file.rootDirEnvVar=MY_APP_ROOT
       when(environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR)).thenReturn("MY_APP_ROOT");
 
-      //nochange
+      // nochange
       when(environment.getSystemProperty(CONF_DIR_OVERRIDE, DEFAULT_CONF_DIR)).thenReturn(DEFAULT_CONF_DIR);
 
       FilesystemConfiguration conf = new FilesystemConfiguration(environment);

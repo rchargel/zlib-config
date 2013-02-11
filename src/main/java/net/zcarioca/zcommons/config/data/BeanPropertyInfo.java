@@ -34,7 +34,7 @@ public interface BeanPropertyInfo
     * @return Returns the property name.
     */
    public String getPropertyName();
-   
+
    /**
     * Gets the type of the bean.
     * 
@@ -48,14 +48,15 @@ public interface BeanPropertyInfo
     * @return Returns the property type.
     */
    public Class<?> getPropertyType();
-   
+
    /**
     * Returns true if the property is a primitive, or an array of primitives.
     * 
-    * @return Returns true if the property is a primitive or an array of primitives.
+    * @return Returns true if the property is a primitive or an array of
+    *         primitives.
     */
    public boolean isPrimitive();
-   
+
    /**
     * Returns true if the property is an array.
     * 

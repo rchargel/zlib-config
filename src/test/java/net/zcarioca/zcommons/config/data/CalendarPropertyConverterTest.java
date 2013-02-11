@@ -18,22 +18,23 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.Configurable;
-import net.zcarioca.zcommons.config.ConfigurableAttribute;
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import net.zcarioca.zcommons.config.Configurable;
+import net.zcarioca.zcommons.config.ConfigurableAttribute;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * Tests the {@link CalendarPropertyConverter}.
- *
+ * 
  * @author zcarioca
  */
 public class CalendarPropertyConverterTest extends BaseConverterTestCase
@@ -53,7 +54,7 @@ public class CalendarPropertyConverterTest extends BaseConverterTestCase
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings({"unchecked", "rawtypes"})
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    protected void setupBeanPropertyInfo()
    {
       super.setupBeanPropertyInfo();
@@ -121,13 +122,13 @@ public class CalendarPropertyConverterTest extends BaseConverterTestCase
 
    private Calendar createCalendar(String date, String format)
    {
-      try 
+      try
       {
          Calendar cal = Calendar.getInstance();
          cal.setTime(new SimpleDateFormat(format).parse(date));
          return cal;
-      } 
-      catch (Exception exc) 
+      }
+      catch (Exception exc)
       {
          return null;
       }

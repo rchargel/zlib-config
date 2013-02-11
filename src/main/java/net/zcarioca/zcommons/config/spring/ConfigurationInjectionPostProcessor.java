@@ -18,22 +18,27 @@
  */
 package net.zcarioca.zcommons.config.spring;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurationProcessListener;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * This is the Spring Post Processor which implements the configuration

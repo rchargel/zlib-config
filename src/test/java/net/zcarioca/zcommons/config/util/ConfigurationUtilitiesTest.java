@@ -49,15 +49,15 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
 {
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtilitiesTest.class);
    private ConfigurationUtilities utils;
-   
+
    @Before
    public void setUp() throws Exception
    {
       PropertyConfigurator.configure(getClass().getResource("/log4j.properties"));
-      
+
       utils = ConfigurationUtilities.getInstance();
    }
-   
+
    @After
    public void tearDown() throws Exception
    {
@@ -72,17 +72,17 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
 
    @Test
    public void testConfigureBeanObject() throws Exception
-   {  
+   {
       ConfigurableObject obj = new ConfigurableObject();
       this.utils.configureBean(obj);
    }
-   
+
    @Test(expected = IllegalArgumentException.class)
    public void testConfigureBeanObjectNull() throws Exception
    {
       this.utils.configureBean(null);
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testConfigureBeanObjectInvalid() throws Exception
    {
@@ -91,14 +91,14 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
 
    @Test
    public void testReconfigureConfigureBeanObject() throws Exception
-   {  
+   {
       MockUpdateListener updateListener = new MockUpdateListener();
       this.utils.addConfigurationUpdateListener(updateListener);
-      
+
       ConfigurableObject obj = new ConfigurableObject();
       this.utils.configureBean(obj);
       this.utils.setReconfigureOnUpdateEnabled(true);
-      
+
       for (ConfigurationSourceIdentifier sourceId : this.utils.getConfiguredSourceIdentifiers())
       {
          this.utils.runReconfiguration(sourceId);
@@ -106,9 +106,9 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
       assertEquals(1, updateListener.count);
       assertEquals(obj, updateListener.lastCompleted);
       updateListener.lastCompleted = null;
-      
+
       this.utils.setReconfigureOnUpdateEnabled(false);
-      for (ConfigurationSourceIdentifier sourceId : this.utils.getConfiguredSourceIdentifiers()) 
+      for (ConfigurationSourceIdentifier sourceId : this.utils.getConfiguredSourceIdentifiers())
       {
          this.utils.runReconfiguration(sourceId);
       }
@@ -117,14 +117,16 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.util.ConfigurationUtilities#configureBean(java.lang.Object)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.util.ConfigurationUtilities#configureBean(java.lang.Object)}
+    * .
     */
    @Test
    public void testNotFullyConfiguredBeanObject() throws Exception
    {
       NotFullyConfiguredObject nfc = new NotFullyConfiguredObject();
       this.utils.configureBean(nfc);
-      
+
       assertEquals(0.34, nfc.anotherFloat, 0.000001);
       assertEquals(500, nfc.anotherLongValue);
       assertEquals(1780000, nfc.longValue);
@@ -132,13 +134,15 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
       assertEquals("This is a simple message", nfc.getFieldMessage());
       assertEquals(new Double(123.56), nfc.getFloatingPointNumber());
       assertEquals("Hello Z Carioca!", nfc.getMessage());
-      assertEquals((byte)120, nfc.getMyByte());
+      assertEquals((byte) 120, nfc.getMyByte());
       assertEquals(Boolean.TRUE, nfc.getTrueFalse());
-      
+
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.util.ConfigurationUtilities#configureBean(java.lang.Object, boolean)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.util.ConfigurationUtilities#configureBean(java.lang.Object, boolean)}
+    * .
     */
    @Test
    public void testConfigureBeanObjectBoolean() throws Exception
@@ -149,11 +153,11 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
       this.utils.addConfigurationUpdateListener(updateListener);
       ConfigurableObject obj = new ConfigurableObject();
       this.utils.configureBean(obj, false);
-      
+
       assertFalse(obj.getBigNum() == (obj.getNumber() + obj.getFloatingPointNumber()));
-      
+
       this.utils.configureBean(obj, true);
-      
+
       assertEquals(0.34, obj.anotherFloat, 0.000001);
       assertEquals(500, obj.anotherLongValue);
       assertEquals(1780000, obj.longValue);
@@ -161,18 +165,18 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
       assertEquals("This is a simple message", obj.getFieldMessage());
       assertEquals(new Double(123.56), obj.getFloatingPointNumber());
       assertEquals("Hello Z Carioca!", obj.getMessage());
-      assertEquals((byte)120, obj.getMyByte());
+      assertEquals((byte) 120, obj.getMyByte());
       assertEquals(22, obj.getNumber());
       assertEquals("There is a field which states: This is a simple message - 0.34 ${along}", obj.getPropMessage());
       assertEquals(Boolean.TRUE, obj.getTrueFalse());
       assertTrue(obj.getBigNum() == (obj.getNumber() + obj.getFloatingPointNumber()));
-      
+
       this.utils.configureBean(new BadPostConstructObject(), false);
-      
+
       assertTrue(this.utils.removeConfigurationProcessListener(listener));
       assertTrue(this.utils.removeConfigurationUpdateListener(updateListener));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testConfigurationBeanBadBean() throws Exception
    {
@@ -195,20 +199,32 @@ public class ConfigurationUtilitiesTest extends BaseTestCase
 
    private static class MockProcessListener implements ConfigurationProcessListener
    {
-      public void completedConfiguration(Object bean) { logger.debug("Completed Configuration: " + bean); }
-      public void startingConfiguration(Object bean) { logger.debug("Starting Configuration: " + bean);}
+      public void completedConfiguration(Object bean)
+      {
+         logger.debug("Completed Configuration: " + bean);
+      }
+
+      public void startingConfiguration(Object bean)
+      {
+         logger.debug("Starting Configuration: " + bean);
+      }
    }
-   
+
    private static class MockUpdateListener implements ConfigurationUpdateListener
    {
       private Object lastCompleted;
       private int count = 0;
-      public void startingBeanUpdate(Object bean) { logger.debug("Starting Bean Update: " + bean); }
-      public void completedBeanUpdate(Object bean) 
+
+      public void startingBeanUpdate(Object bean)
       {
-         logger.debug("Completed Bean Update: "  + bean);
+         logger.debug("Starting Bean Update: " + bean);
+      }
+
+      public void completedBeanUpdate(Object bean)
+      {
+         logger.debug("Completed Bean Update: " + bean);
          this.lastCompleted = bean;
-         this.count ++;
+         this.count++;
       }
    }
 }

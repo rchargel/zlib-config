@@ -101,7 +101,7 @@ public class ConfigurableObject
    {
       return this.propMessage;
    }
-   
+
    public void setAnotherLongValue(long anotherLongValue)
    {
       this.anotherLongValue = anotherLongValue;

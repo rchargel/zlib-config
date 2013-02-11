@@ -18,20 +18,20 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import net.zcarioca.zcommons.config.BaseTestCase;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
-import org.junit.Test;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
 
 /**
  * Tests the {@link DefaultConfigSourceServiceProvider}.
- *
+ * 
  * @author zcarioca
  */
 public class DefaultConfigSourceServiceProviderTest extends BaseTestCase

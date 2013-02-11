@@ -47,10 +47,10 @@ class CalendarPropertyConverter implements BeanPropertyConverter<Calendar>
    public Calendar convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       Calendar calendar = null;
-      
+
       DatePropertyConverter converter = new DatePropertyConverter();
       Date date = converter.convertPropertyValue(value, beanPropertyInfo);
-      
+
       if (date != null)
       {
          calendar = Calendar.getInstance();

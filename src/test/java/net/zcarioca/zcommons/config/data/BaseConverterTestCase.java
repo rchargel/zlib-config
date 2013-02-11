@@ -18,23 +18,24 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.Configurable;
-import net.zcarioca.zcommons.config.ConfigurableAttribute;
-import net.zcarioca.zcommons.config.ConfigurableDateFormat;
-import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
-import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
-import org.junit.Before;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import net.zcarioca.zcommons.config.Configurable;
+import net.zcarioca.zcommons.config.ConfigurableAttribute;
+import net.zcarioca.zcommons.config.ConfigurableDateFormat;
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
+
+import org.junit.Before;
 
 /**
  * A base class for converter tests.
- *
+ * 
  * @author zcarioca
  */
 public abstract class BaseConverterTestCase
@@ -75,7 +76,7 @@ public abstract class BaseConverterTestCase
       return mock(annotationType);
    }
 
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    void setPropertyType(Class type)
    {
       when(beanPropertyInfo.getPropertyType()).thenReturn(type);

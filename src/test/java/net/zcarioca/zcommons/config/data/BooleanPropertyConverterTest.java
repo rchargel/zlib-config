@@ -46,7 +46,9 @@ public class BooleanPropertyConverterTest extends BaseConverterTestCase
    }
 
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.data.BooleanPropertyConverter#convertPropertyValue(java.lang.String, net.zcarioca.zcommons.config.data.BeanPropertyInfo)}.
+    * Test method for
+    * {@link net.zcarioca.zcommons.config.data.BooleanPropertyConverter#convertPropertyValue(java.lang.String, net.zcarioca.zcommons.config.data.BeanPropertyInfo)}
+    * .
     */
    @Test
    public void testConvertPropertyValue() throws ConfigurationException
@@ -70,7 +72,7 @@ public class BooleanPropertyConverterTest extends BaseConverterTestCase
       assertFalse(converter.convertPropertyValue("n", beanPropertyInfo));
       assertFalse(converter.convertPropertyValue("0", beanPropertyInfo));
    }
-   
+
    @Test
    public void testConvertPropertyValueBlankOrNull() throws ConfigurationException
    {
@@ -78,7 +80,7 @@ public class BooleanPropertyConverterTest extends BaseConverterTestCase
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testConvertPropertyValueBadValue() throws ConfigurationException
    {

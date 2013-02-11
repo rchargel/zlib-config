@@ -18,19 +18,23 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import net.zcarioca.zcommons.config.BaseTestCase;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import net.zcarioca.zcommons.config.BaseTestCase;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the {@link PropertiesBuilder} class.
- *
+ * 
  * @author zcarioca
  */
 public class PropertiesBuilderTest extends BaseTestCase
@@ -75,7 +79,6 @@ public class PropertiesBuilderTest extends BaseTestCase
       assertEquals("", builder.getFilteredValue("property"));
       assertEquals(1, builder.size());
    }
-
 
    @Test(expected = IllegalArgumentException.class)
    public void testAddPropertyNullPropertyName()
@@ -386,11 +389,11 @@ public class PropertiesBuilderTest extends BaseTestCase
 
    private static void assertPropertiesNotEquals(Properties expected, Properties actual)
    {
-      try 
+      try
       {
          assertPropertiesEquals(expected, actual);
-      } 
-      catch (Throwable error) 
+      }
+      catch (Throwable error)
       {
          return;
       }
@@ -400,7 +403,7 @@ public class PropertiesBuilderTest extends BaseTestCase
    private static void assertPropertiesEquals(Properties expected, Properties actual)
    {
       assertEquals("Properties have unequal number of rows", expected.size(), actual.size());
-      for (Object key : expected.keySet()) 
+      for (Object key : expected.keySet())
       {
          assertTrue("Missing key: " + key.toString(), actual.containsKey(key));
          assertEquals(expected.get(key), actual.get(key));

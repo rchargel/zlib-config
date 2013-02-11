@@ -26,22 +26,22 @@ import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
 /**
  * A fake object that is configurable.
- *
+ * 
  * @author zcarioca
  */
 public class UnconfigurableObject
 {
-   @ConfigurableAttribute(propertyName="myFiles")
+   @ConfigurableAttribute(propertyName = "myFiles")
    private File[] files;
-   
-   @ConfigurableAttribute(defaultValue="15")
+
+   @ConfigurableAttribute(defaultValue = "15")
    private int number;
-   
+
    @ConfigurableAttribute
    private Double floatingPointNumber;
-   
+
    private String helloWorld;
-   
+
    private double bigNum = 0;
 
    public File[] getFiles()
@@ -84,12 +84,12 @@ public class UnconfigurableObject
    {
       this.helloWorld = "Hello " + name + "!";
    }
-   
+
    public double getBigNum()
    {
       return this.bigNum;
    }
-   
+
    @PostConstruct
    public void add()
    {

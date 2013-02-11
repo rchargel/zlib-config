@@ -27,20 +27,19 @@ import net.zcarioca.zcommons.config.util.ConfigurableObject;
  * 
  * @author zcarioca
  */
-@Configurable(referenceClass=ConfigurableObject.class)
-public class InvalidConfigurableObject 
+@Configurable(referenceClass = ConfigurableObject.class)
+public class InvalidConfigurableObject
 {
 
    @ConfigurableAttribute(propertyName = "property.message")
    private int propMessage;
 
-   
-   public int getPropMessage() 
+   public int getPropMessage()
    {
       return propMessage;
    }
-   
-   public void setPropMessage(int propMessage) 
+
+   public void setPropMessage(int propMessage)
    {
       this.propMessage = propMessage;
    }

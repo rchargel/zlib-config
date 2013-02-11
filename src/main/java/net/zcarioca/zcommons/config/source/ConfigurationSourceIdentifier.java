@@ -18,21 +18,22 @@
  */
 package net.zcarioca.zcommons.config.source;
 
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_REFERENCE_CLASS;
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_RESOURCE_NAME;
 import net.zcarioca.zcommons.config.Configurable;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_REFERENCE_CLASS;
-import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_RESOURCE_NAME;
-
 /**
  * Uses a reference class and a resource location to point to a configuration
- * data source. It is the responsibility of the {@link ConfigurationSourceProvider}
- * implementation to actually find and process the configuration.
- *
+ * data source. It is the responsibility of the
+ * {@link ConfigurationSourceProvider} implementation to actually find and
+ * process the configuration.
+ * 
  * @author zcarioca
  */
 public final class ConfigurationSourceIdentifier
@@ -44,7 +45,7 @@ public final class ConfigurationSourceIdentifier
    {
       Class<?> referenceClass = bean.getClass();
       String resourceName = bean.getClass().getSimpleName().toLowerCase();
-      if (bean.getClass().isAnnotationPresent(Configurable.class)) 
+      if (bean.getClass().isAnnotationPresent(Configurable.class))
       {
          Configurable conf = bean.getClass().getAnnotation(Configurable.class);
          referenceClass = conf.referenceClass() == DEFAULT_REFERENCE_CLASS ? bean.getClass() : conf.referenceClass();
@@ -76,17 +77,18 @@ public final class ConfigurationSourceIdentifier
    @Override
    public final int hashCode()
    {
-      return new HashCodeBuilder(17, 91)
-            .append(referenceClass)
-            .append(resourceName).toHashCode();
+      return new HashCodeBuilder(17, 91).append(referenceClass).append(resourceName).toHashCode();
    }
 
    @Override
    public final boolean equals(Object obj)
    {
-      if (this == obj) return true;
-      if (null == obj) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj)
+         return true;
+      if (null == obj)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
 
       ConfigurationSourceIdentifier other = (ConfigurationSourceIdentifier) obj;
       EqualsBuilder equals = new EqualsBuilder();
@@ -103,7 +105,7 @@ public final class ConfigurationSourceIdentifier
 
    private void validateParams(Class<?> referenceClass, String resourceName)
    {
-      if (referenceClass == null || StringUtils.isBlank(resourceName)) 
+      if (referenceClass == null || StringUtils.isBlank(resourceName))
       {
          throw new IllegalArgumentException("The reference class or resource name is NULL or Blank");
       }

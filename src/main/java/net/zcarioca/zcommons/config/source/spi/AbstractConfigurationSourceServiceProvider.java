@@ -18,24 +18,25 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
+import java.util.Properties;
+
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.util.PropertiesBuilder;
 import net.zcarioca.zcommons.config.util.PropertiesBuilderFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
 /**
  * An abstraction for ease of development.
- *
+ * 
  * @author zcarioca
  */
 public abstract class AbstractConfigurationSourceServiceProvider implements ConfigurationSourceProvider
 {
-   private static final Logger logger = LoggerFactory.getLogger(AbstractConfigurationSourceServiceProvider.class);
+   protected static final Logger logger = LoggerFactory.getLogger(AbstractConfigurationSourceServiceProvider.class);
 
    @Override
    public Properties getProperties(ConfigurationSourceIdentifier configurationSourceIdentifier, PropertiesBuilderFactory propertiesBuilderFactory)
@@ -47,13 +48,13 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
       Class<?> referenceClass = configurationSourceIdentifier.getReferenceClass();
       String resourceName = getResourceName(configurationSourceIdentifier);
 
-      try 
+      try
       {
          runPreProcessAction(configurationSourceIdentifier);
 
          return buildPropertiesFromValidInputs(referenceClass, resourceName, builder);
-      } 
-      finally 
+      }
+      finally
       {
          runPostProcessAction(configurationSourceIdentifier);
       }
@@ -61,7 +62,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
 
    public void postInit()
    {
-      //do nothing
+      // do nothing
    }
 
    public void preDestroy()
@@ -71,7 +72,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
 
    /**
     * Not implemented. Runs before reading the properties file.
-    *
+    * 
     * @param configurationSourceIdentifier The configuration source identifier.
     */
    protected void runPreProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
@@ -82,7 +83,7 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
 
    /**
     * Not implemented. Runs after reading the properties file.
-    *
+    * 
     * @param configurationSourceIdentifier The configuration source identifier.
     */
    protected void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
@@ -93,14 +94,15 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
 
    /**
     * Validates the configuration source identifier.
-    *
-    * @param configurationSourceIdentifier The {@link ConfigurationSourceIdentifier}.
-    * @throws IllegalArgumentException when the configuration source identifier is null.
+    * 
+    * @param configurationSourceIdentifier The
+    *        {@link ConfigurationSourceIdentifier}.
+    * @throws IllegalArgumentException when the configuration source identifier
+    *         is null.
     */
-   void validateConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
-         throws IllegalArgumentException
+   void validateConfigurationSourceIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier) throws IllegalArgumentException
    {
-      if (configurationSourceIdentifier == null) 
+      if (configurationSourceIdentifier == null)
       {
          throw new IllegalArgumentException("NULL Configuration Source Identifier");
       }
@@ -108,13 +110,14 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
 
    /**
     * Gets a properties builder from the PropertiesBuilderFactory.
-    *
+    * 
     * @param propertiesBuilderFactory The properties builder factory.
-    * @return Returns a {@link PropertiesBuilder} from the factory, or a new properties builder if the factory is null.
+    * @return Returns a {@link PropertiesBuilder} from the factory, or a new
+    *         properties builder if the factory is null.
     */
    PropertiesBuilder getPropertiesBuilder(PropertiesBuilderFactory propertiesBuilderFactory)
    {
-      if (propertiesBuilderFactory == null) 
+      if (propertiesBuilderFactory == null)
       {
          propertiesBuilderFactory = new PropertiesBuilderFactory();
       }
@@ -122,9 +125,10 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
    }
 
    /**
-    * Gets the resource name from the configuration source identifier.  This method may be overwritten if the
-    * resource name requires an extension such as '.properties' or '.xml'.
-    *
+    * Gets the resource name from the configuration source identifier. This
+    * method may be overwritten if the resource name requires an extension such
+    * as '.properties' or '.xml'.
+    * 
     * @param configurationSourceIdentifier The configuration source identifier.
     * @return Returns the resource name.
     */
@@ -135,12 +139,13 @@ public abstract class AbstractConfigurationSourceServiceProvider implements Conf
 
    /**
     * Uses previously validated inputs to build configuration properties.
-    *
-    * @param referenceClass    The reference class.
-    * @param resourceName      The resource name.
+    * 
+    * @param referenceClass The reference class.
+    * @param resourceName The resource name.
     * @param propertiesBuilder The properties builder object.
     * @return Returns a Properties object.
     */
-   protected abstract Properties buildPropertiesFromValidInputs(Class<?> referenceClass, String resourceName, PropertiesBuilder propertiesBuilder) throws ConfigurationException;
+   protected abstract Properties buildPropertiesFromValidInputs(Class<?> referenceClass, String resourceName, PropertiesBuilder propertiesBuilder)
+         throws ConfigurationException;
 
 }

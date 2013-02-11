@@ -33,7 +33,7 @@ public interface BeanPropertyConverter<T>
     * @return Returns the class supported by the converter.
     */
    public Class<?> getSupportedClass();
-   
+
    /**
     * Converts the value to type supported by this converter.
     * 

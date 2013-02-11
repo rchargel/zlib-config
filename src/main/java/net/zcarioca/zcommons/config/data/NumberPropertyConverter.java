@@ -18,17 +18,18 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+import net.zcarioca.zcommons.config.ConfigurableNumberEncoding;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * A numeric property converter.
- *
+ * 
  * @author zcarioca
  */
 class NumberPropertyConverter<T extends Number> implements BeanPropertyConverter<T>
@@ -64,16 +65,16 @@ class NumberPropertyConverter<T extends Number> implements BeanPropertyConverter
       if (StringUtils.isBlank(value))
          return null;
 
-      try 
+      try
       {
          Method parse = getParseMethod();
-         if (parse.getParameterTypes().length == 1) 
+         if (parse.getParameterTypes().length == 1)
          {
             return (T) parse.invoke(null, value.trim());
          }
          return (T) parse.invoke(null, value.trim(), getRadix(beanPropertyInfo));
-      } 
-      catch (Exception exc) 
+      }
+      catch (Exception exc)
       {
          throw new ConfigurationException(String.format("Could not parse %s as a %s", value, getSupportedClass()), exc);
       }
@@ -82,11 +83,11 @@ class NumberPropertyConverter<T extends Number> implements BeanPropertyConverter
    private Method getParseMethod() throws NoSuchMethodException
    {
       String methodName = "parse" + getSupportedClass().getSimpleName();
-      if (getSupportedClass() == Integer.class) 
+      if (getSupportedClass() == Integer.class)
       {
          methodName = "parseInt";
       }
-      if (getSupportedClass() == Float.class || getSupportedClass() == Double.class) 
+      if (getSupportedClass() == Float.class || getSupportedClass() == Double.class)
       {
          return getSupportedClass().getMethod(methodName, String.class);
       }
@@ -109,9 +110,9 @@ class NumberPropertyConverter<T extends Number> implements BeanPropertyConverter
 
    private ConfigurableNumberEncoding getConfigurableNumberFormat(Collection<Annotation> annotations)
    {
-      for (Annotation annotation : annotations) 
+      for (Annotation annotation : annotations)
       {
-         if (annotation instanceof ConfigurableNumberEncoding) 
+         if (annotation instanceof ConfigurableNumberEncoding)
          {
             return (ConfigurableNumberEncoding) annotation;
          }

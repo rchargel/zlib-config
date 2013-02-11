@@ -18,16 +18,16 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 /**
  * Tests the {@link StringPropertyConverter}.
- *
+ * 
  * @author zcarioca
  */
 public class StringPropertyConverterTest extends BaseConverterTestCase
