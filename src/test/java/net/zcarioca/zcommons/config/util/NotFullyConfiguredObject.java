@@ -18,14 +18,14 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import java.io.File;
-
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 
+import java.io.File;
+
 /**
  * A fake object that is configurable.
- * 
+ *
  * @author zcarioca
  */
 @Configurable(referenceClass = ConfigurableObject.class)
@@ -97,7 +97,7 @@ public class NotFullyConfiguredObject
    {
       return this.propMessage;
    }
-   
+
    public void setAnotherLongValue(long anotherLongValue)
    {
       this.anotherLongValue = anotherLongValue;

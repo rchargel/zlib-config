@@ -18,21 +18,19 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import net.zcarioca.zcommons.config.ConfigurableDateFormat;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
+
 import java.lang.annotation.Annotation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-
-import net.zcarioca.zcommons.config.ConfigurableDateFormat;
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
 /**
  * Converts a {@link Date} property.
- * 
- * 
+ *
  * @author zcarioca
  */
 class DatePropertyConverter implements BeanPropertyConverter<Date>
@@ -54,31 +52,27 @@ class DatePropertyConverter implements BeanPropertyConverter<Date>
    public Date convertPropertyValue(String value, BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       SimpleDateFormat simpleDateFormat = getSimpleDateFormat(beanPropertyInfo);
-      if (simpleDateFormat == null)
-      {
-         throw new ConfigurationException(String.format("To convert a value to a date the field '%s' or class '%s' must be annotated with an @ConfigurableDateFormat", 
+      if (simpleDateFormat == null) {
+         throw new ConfigurationException(String.format("To convert a value to a date the field '%s' or class '%s' must be annotated with an @ConfigurableDateFormat",
                beanPropertyInfo.getPropertyName(), beanPropertyInfo.getBeanType().getSimpleName()));
       }
-      
-      try
-      {
+
+      try {
          return StringUtils.isBlank(value) ? null : simpleDateFormat.parse(value);
-      }
-      catch (ParseException exc)
-      {
+      } catch (ParseException exc) {
          throw new ConfigurationException(String.format("Could not format property %s of %s, value %s did not fit provided format %s",
                beanPropertyInfo.getPropertyName(), beanPropertyInfo.getBeanType().getSimpleName(),
                value, simpleDateFormat.toPattern()));
       }
    }
-   
-   protected SimpleDateFormat getSimpleDateFormat(BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
+
+   SimpleDateFormat getSimpleDateFormat(BeanPropertyInfo beanPropertyInfo) throws ConfigurationException
    {
       ConfigurableDateFormat format = null;
       try
       {
          format = getConfigurableDateFormat(beanPropertyInfo.getPropertyAnnotations());
-         if (format == null)
+         if (format == null) 
          {
             format = getConfigurableDateFormat(beanPropertyInfo.getBeanAnnotations());
          }
@@ -98,14 +92,14 @@ class DatePropertyConverter implements BeanPropertyConverter<Date>
       }
       return null;
    }
-   
-   protected ConfigurableDateFormat getConfigurableDateFormat(Collection<Annotation> annotations)
+
+   ConfigurableDateFormat getConfigurableDateFormat(Collection<Annotation> annotations)
    {
-      for (Annotation annotation : annotations)
+      for (Annotation annotation : annotations) 
       {
-         if (annotation instanceof ConfigurableDateFormat)
+         if (annotation instanceof ConfigurableDateFormat) 
          {
-            return (ConfigurableDateFormat)annotation;
+            return (ConfigurableDateFormat) annotation;
          }
       }
       return null;

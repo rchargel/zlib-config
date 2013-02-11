@@ -18,54 +18,49 @@
  */
 package net.zcarioca.zcommons.config.source;
 
-import static net.zcarioca.zcommons.config.ConfigurationConstants.*;
 import net.zcarioca.zcommons.config.Configurable;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_REFERENCE_CLASS;
+import static net.zcarioca.zcommons.config.ConfigurationConstants.DEFAULT_RESOURCE_NAME;
 
 /**
  * Uses a reference class and a resource location to point to a configuration
  * data source. It is the responsibility of the {@link ConfigurationSourceProvider}
  * implementation to actually find and process the configuration.
- * 
+ *
  * @author zcarioca
  */
 public final class ConfigurationSourceIdentifier
 {
-   private static final Logger logger = LoggerFactory.getLogger(ConfigurationSourceIdentifier.class);
-   private Class<?> referenceClass;
-   private String resourceName;
-   
+   private final Class<?> referenceClass;
+   private final String resourceName;
+
    public ConfigurationSourceIdentifier(Object bean)
    {
-      Class<?> referenceClass = null;
-      String resourceName = null;
-      if (bean.getClass().isAnnotationPresent(Configurable.class))
+      Class<?> referenceClass = bean.getClass();
+      String resourceName = bean.getClass().getSimpleName().toLowerCase();
+      if (bean.getClass().isAnnotationPresent(Configurable.class)) 
       {
          Configurable conf = bean.getClass().getAnnotation(Configurable.class);
          referenceClass = conf.referenceClass() == DEFAULT_REFERENCE_CLASS ? bean.getClass() : conf.referenceClass();
          resourceName = conf.resourceName().equals(DEFAULT_RESOURCE_NAME) ? referenceClass.getSimpleName().toLowerCase() : conf.resourceName();
       }
-      else
-      {
-         referenceClass = bean.getClass();
-         resourceName = bean.getClass().getSimpleName().toLowerCase();
-      }
-      
-      setReferenceClass(referenceClass);
-      setResourceName(resourceName);
+
+      validateParams(referenceClass, resourceName);
+      this.referenceClass = referenceClass;
+      this.resourceName = resourceName;
    }
 
    public ConfigurationSourceIdentifier(Class<?> referenceClass, String resourceName)
    {
-      setReferenceClass(referenceClass);
-      setResourceName(resourceName);
+      validateParams(referenceClass, resourceName);
+      this.referenceClass = referenceClass;
+      this.resourceName = resourceName;
    }
 
    public Class<?> getReferenceClass()
@@ -73,35 +68,15 @@ public final class ConfigurationSourceIdentifier
       return this.referenceClass;
    }
 
-   public void setReferenceClass(Class<?> referenceClass)
-   {
-      if (referenceClass == null)
-      {
-         logger.warn("The reference class is NULL");
-         throw new IllegalArgumentException("The reference class is NULL");
-      }
-      this.referenceClass = referenceClass;
-   }
-
    public String getResourceName()
    {
       return this.resourceName;
    }
 
-   public void setResourceName(String resourceName)
-   {
-      if (StringUtils.isEmpty(resourceName))
-      {
-         logger.warn("The resourceName class is NULL");
-         throw new IllegalArgumentException("The resource location is NULL");
-      }
-      this.resourceName = resourceName;
-   }
-
    @Override
    public final int hashCode()
    {
-      return new HashCodeBuilder(17,91)
+      return new HashCodeBuilder(17, 91)
             .append(referenceClass)
             .append(resourceName).toHashCode();
    }
@@ -112,18 +87,26 @@ public final class ConfigurationSourceIdentifier
       if (this == obj) return true;
       if (null == obj) return false;
       if (getClass() != obj.getClass()) return false;
-      
-      ConfigurationSourceIdentifier other = (ConfigurationSourceIdentifier)obj;
+
+      ConfigurationSourceIdentifier other = (ConfigurationSourceIdentifier) obj;
       EqualsBuilder equals = new EqualsBuilder();
       equals.append(referenceClass, other.referenceClass);
       equals.append(resourceName, other.resourceName);
-      
+
       return equals.isEquals();
    }
-   
+
    public String toString()
    {
       return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+   }
+
+   private void validateParams(Class<?> referenceClass, String resourceName)
+   {
+      if (referenceClass == null || StringUtils.isBlank(resourceName)) 
+      {
+         throw new IllegalArgumentException("The reference class or resource name is NULL or Blank");
+      }
    }
 
 }

@@ -49,7 +49,7 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
    
    @Autowired
    private ConfigurationInjectionPostProcessor proc;
-   
+
    @Autowired
    private ConfigurableObject obj;
    
@@ -68,15 +68,14 @@ public class ConfigurationInjectionPostProcessorTest extends BaseTestCase implem
    @Test
    public void testPostProcessAfterInitialization()
    {
-      Double v = new Double(5);
-      assertEquals(v, this.proc.postProcessAfterInitialization(v, "name"));
+      assertEquals(5, proc.postProcessAfterInitialization(5, "name"));
    }
    
    /**
     * Test method for {@link net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)}.
     */
    @Test
-   public void testProstProcessBeforeInitialization()
+   public void testPostProcessBeforeInitialization()
    {
       this.proc.postProcessBeforeInitialization(this.obj, "configuredObject");
       this.proc.postProcessBeforeInitialization(this.obj, "configuredObject");

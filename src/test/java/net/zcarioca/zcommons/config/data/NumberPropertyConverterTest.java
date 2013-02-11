@@ -18,18 +18,18 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.ConfigurableNumberEncoding.NumberFormat;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests the {@link NumberPropertyConverter}.
- * 
+ *
  * @author zcarioca
  */
 public class NumberPropertyConverterTest extends BaseConverterTestCase
@@ -46,7 +46,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testByteOutOfRange() throws ConfigurationException
    {
@@ -65,7 +65,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testShortOutOfRange() throws ConfigurationException
    {
@@ -90,7 +90,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testIntegerWithNoNumberFormat() throws ConfigurationException
    {
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(null));
-      
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(567000, converter.convertPropertyValue("567000", beanPropertyInfo).intValue());
@@ -105,7 +105,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testIntegerWithDecimal() throws ConfigurationException
    {
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.DECIMAL));
-      
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(567000, converter.convertPropertyValue("567000", beanPropertyInfo).intValue());
@@ -120,7 +120,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testIntegerWithBinary() throws ConfigurationException
    {
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.BINARY));
-      
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(1, converter.convertPropertyValue("1", beanPropertyInfo).intValue());
@@ -135,7 +135,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testIntegerWithOctal() throws ConfigurationException
    {
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.OCTAL));
-      
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(1, converter.convertPropertyValue("1", beanPropertyInfo).intValue());
@@ -150,8 +150,8 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    @Test
    public void testIntegerWithHex() throws ConfigurationException
    {
-      setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.HEXIDECIMAL));
-      
+      setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.HEX));
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(10, converter.convertPropertyValue("a", beanPropertyInfo).intValue());
@@ -166,8 +166,8 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    @Test
    public void testIntegerWithHexOnClass() throws ConfigurationException
    {
-      setBeanAnnotations(mockAnnotation(Configurable.class), mockNumberFormatAnnotation(NumberFormat.HEXIDECIMAL));
-      
+      setBeanAnnotations(mockAnnotation(Configurable.class), mockNumberFormatAnnotation(NumberFormat.HEX));
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(10, converter.convertPropertyValue("a", beanPropertyInfo).intValue());
@@ -183,8 +183,8 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testIntegerWithHexOverridingClassAnnotation() throws ConfigurationException
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockNumberFormatAnnotation(NumberFormat.BINARY));
-      setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.HEXIDECIMAL));
-      
+      setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.HEX));
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(10, converter.convertPropertyValue("a", beanPropertyInfo).intValue());
@@ -201,7 +201,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockNumberFormatAnnotation(NumberFormat.BINARY));
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(null));
-      
+
       NumberPropertyConverter<Integer> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Integer.class);
       assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).intValue());
       assertEquals(10, converter.convertPropertyValue("10", beanPropertyInfo).intValue());
@@ -212,7 +212,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testIntegerInvalid() throws ConfigurationException
    {
@@ -232,7 +232,7 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testLongInvalid() throws ConfigurationException
    {
@@ -244,14 +244,14 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testFloat() throws ConfigurationException
    {
       NumberPropertyConverter<Float> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Float.class);
-      assertEquals(0f, converter.convertPropertyValue("0", beanPropertyInfo).floatValue(), 0);
-      assertEquals(123.456f, converter.convertPropertyValue("123.456", beanPropertyInfo).floatValue(), 0);
-      assertEquals(-256.99f, converter.convertPropertyValue("-256.99", beanPropertyInfo).floatValue(), 0);
+      assertEquals(0f, converter.convertPropertyValue("0", beanPropertyInfo), 0);
+      assertEquals(123.456f, converter.convertPropertyValue("123.456", beanPropertyInfo), 0);
+      assertEquals(-256.99f, converter.convertPropertyValue("-256.99", beanPropertyInfo), 0);
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testFloatInvalid() throws ConfigurationException
    {
@@ -263,10 +263,10 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testDouble() throws ConfigurationException
    {
       NumberPropertyConverter<Double> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Double.class);
-      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo).doubleValue(), 0);
+      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo), 0);
+      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo), 0);
+      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo), 0);
+      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo), 0);
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
@@ -276,23 +276,23 @@ public class NumberPropertyConverterTest extends BaseConverterTestCase
    public void testDoubleNumberFormatHasNoAffect() throws ConfigurationException
    {
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockNumberFormatAnnotation(NumberFormat.BINARY));
-      
+
       NumberPropertyConverter<Double> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Double.class);
-      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo).doubleValue(), 0);
-      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo).doubleValue(), 0);
+      assertEquals(0, converter.convertPropertyValue("0", beanPropertyInfo), 0);
+      assertEquals(55, converter.convertPropertyValue("55", beanPropertyInfo), 0);
+      assertEquals(123.456, converter.convertPropertyValue("123.456", beanPropertyInfo), 0);
+      assertEquals(-256.99, converter.convertPropertyValue("-256.99", beanPropertyInfo), 0);
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testDoubleInvalid() throws ConfigurationException
    {
       NumberPropertyConverter<Double> converter = NumberPropertyConverter.createNewNumberPropertyConverter(Double.class);
       converter.convertPropertyValue("123.456.789", beanPropertyInfo);
    }
-   
+
 
 }

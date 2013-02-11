@@ -18,29 +18,28 @@
  */
 package net.zcarioca.zcommons.config.util;
 
+import net.zcarioca.zcommons.config.Environment;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.zcarioca.zcommons.config.Environment;
-
 /**
  * A mock {@link Environment}.
- * 
- * 
+ *
  * @author zcarioca
  */
 public class MockEnvironment implements Environment
 {
-   private Map<String, String> env = new HashMap<String, String>();
-   private Map<String, String> sys = new HashMap<String, String>();
-   
+   private final Map<String, String> env = new HashMap<String, String>();
+   private final Map<String, String> sys = new HashMap<String, String>();
+
    public MockEnvironment()
    {
       env.clear();
       env.put("fake-env-prop", "fake env value");
       env.put("APP_ROOT", new File(System.getProperty("java.io.tmpdir"), "app_root").getAbsolutePath());
-      
+
       sys.clear();
       sys.put("fake.system.property", "fake value");
    }
@@ -53,7 +52,7 @@ public class MockEnvironment implements Environment
    {
       return env;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -71,7 +70,7 @@ public class MockEnvironment implements Environment
    {
       return getEnvVariable(envVar, null);
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -87,13 +86,12 @@ public class MockEnvironment implements Environment
    @Override
    public String getEnvVariable(String envVar, String defaultValue)
    {
-      if (env.containsKey(envVar)) 
-      {
+      if (env.containsKey(envVar)) {
          return env.get(envVar);
       }
       return defaultValue;
    }
-   
+
    /**
     * {@inheritDoc}
     */

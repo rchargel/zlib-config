@@ -50,7 +50,7 @@ public class FileWatchListenerTest extends BaseTestCase
    }
    
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#FileWatchListener()}.
+    * Test method for {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#addFile(java.io.File, net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier)}.
     */
    @Test
    public void testAddFile()
@@ -66,7 +66,7 @@ public class FileWatchListenerTest extends BaseTestCase
    }
    
    /**
-    * Test method for {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#FileWatchListener()}.
+    * Test method for {@link net.zcarioca.zcommons.config.source.spi.FilesystemConfigurationSourceServiceProvider.FileWatchListener#getMappedFiles()}.
     */
    @Test(expected = UnsupportedOperationException.class)
    public void testImmutableMappedFiles()

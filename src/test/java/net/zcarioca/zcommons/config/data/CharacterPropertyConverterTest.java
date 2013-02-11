@@ -18,22 +18,21 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 /**
  * Tests the {@link CharacterPropertyConverter}.
- * 
- * 
+ *
  * @author zcarioca
  */
 public class CharacterPropertyConverterTest extends BaseConverterTestCase
 {
-   CharacterPropertyConverter converter;
+   private CharacterPropertyConverter converter;
 
    /**
     * @throws java.lang.Exception

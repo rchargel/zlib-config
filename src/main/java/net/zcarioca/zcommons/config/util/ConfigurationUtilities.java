@@ -18,16 +18,6 @@
  */
 package net.zcarioca.zcommons.config.util;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import net.zcarioca.zcommons.config.ConfigurationProcessListener;
 import net.zcarioca.zcommons.config.ConfigurationUpdateListener;
 import net.zcarioca.zcommons.config.data.BeanPropertySetter;
@@ -36,14 +26,22 @@ import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderFactory;
-
 import org.apache.commons.collections.map.MultiValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+
 /**
  * This singleton works as the configuration injection engine.
- * 
+ *
  * @author zcarioca
  */
 public class ConfigurationUtilities
@@ -51,16 +49,17 @@ public class ConfigurationUtilities
    private static final Logger logger = LoggerFactory.getLogger(ConfigurationUtilities.class);
    private static ConfigurationUtilities configUtil = new ConfigurationUtilities();
    
-   private MultiValueMap beanSourceMap;
-   private Set<ConfigurationProcessListener> procListeners;
-   private Set<ConfigurationUpdateListener> updateListeners;
+   private final MultiValueMap beanSourceMap;
+   private final Set<ConfigurationProcessListener> processListeners;
+   private final Set<ConfigurationUpdateListener> updateListeners;
+
    private PropertiesBuilderFactory propertiesBuilderFactory = new PropertiesBuilderFactory();
-   
+
    private boolean reconfigureOnUpdateEnabled;
 
    /**
     * Gets an instance of this singleton.
-    * 
+    *
     * @return Returns an instance of the singleton.
     */
    public static ConfigurationUtilities getInstance()
@@ -70,9 +69,8 @@ public class ConfigurationUtilities
 
    /**
     * Configures the supplied bean.
-    * 
-    * @param bean
-    *           The bean to configure.
+    *
+    * @param bean The bean to configure.
     */
    public void configureBean(Object bean) throws ConfigurationException
    {
@@ -81,45 +79,42 @@ public class ConfigurationUtilities
 
    /**
     * Configures the supplied bean.
-    * 
-    * @param bean
-    *           The bean to configure.
-    * @param invokePostConstruct
-    *           Whether to invoke any &#64;PostConstruct methods.
+    *
+    * @param bean                The bean to configure.
+    * @param invokePostConstruct Whether to invoke any &#64;PostConstruct methods.
     */
    public void configureBean(Object bean, boolean invokePostConstruct) throws ConfigurationException
    {
-      if(bean == null)
-      {
+      if (bean == null) {
          logger.warn("Bean is NULL");
          throw new IllegalArgumentException("The bean is NULL");
       }
       invokeStartConfig(bean);
 
       configureBeanObject(bean);
-      if(invokePostConstruct)
-      {
+      if (invokePostConstruct) {
          invokePostConstruct(bean);
       }
 
       invokeCompleteConfig(bean);
    }
-   
+
    /**
     * Forces all of the beans that inherited their configuration from the given {@link ConfigurationSourceIdentifier} to be reconfigured.
     * Messages are all sent to any registered {@link ConfigurationUpdateListener}.
+    *
     * @param sourceId The {@link ConfigurationSourceIdentifier}.
-    * 
     * @throws ConfigurationException if there is an error configuring any of the associated beans.
     */
    @SuppressWarnings("unchecked")
    public void runReconfiguration(ConfigurationSourceIdentifier sourceId) throws ConfigurationException
    {
-      if (isReconfigureOnUpdateEnabled()) {
+      if (isReconfigureOnUpdateEnabled()) 
+      {
          synchronized (this.beanSourceMap) 
          {
-            Collection<Object> beans = (Collection<Object>)this.beanSourceMap.remove(sourceId);
-            for (Object bean : beans)
+            Collection<Object> beans = (Collection<Object>) this.beanSourceMap.remove(sourceId);
+            for (Object bean : beans) 
             {
                invokeStartUpdate(bean);
                configureBeanObject(bean);
@@ -128,18 +123,20 @@ public class ConfigurationUtilities
          }
       }
    }
-   
+
    /**
     * Gets the {@link PropertiesBuilderFactory} for configuring the system.
+    *
     * @return Returns the {@link PropertiesBuilderFactory} for this configuration.
     */
    public PropertiesBuilderFactory getPropertiesBuilderFactory()
    {
       return this.propertiesBuilderFactory;
    }
-   
+
    /**
     * Sets the {@link PropertiesBuilderFactory} for the configuration.
+    *
     * @param propertiesBuilderFactory The {@link PropertiesBuilderFactory} to use.
     */
    public void setPropertiesBuilderFactory(PropertiesBuilderFactory propertiesBuilderFactory)
@@ -149,27 +146,22 @@ public class ConfigurationUtilities
 
    /**
     * Loads a properties map for a class and resource location.
-    * 
-    * @param referenceClass
-    *           The reference class.
-    * @param resourceLocation
-    *           The resource file to load.
-    * 
+    *
+    * @param referenceClass   The reference class.
+    * @param resourceLocation The resource file to load.
     * @return Returns a properties map.
-    * 
-    * @throws ConfigurationException
-    *            if the resource file cannot be found, read, or parsed.
+    * @throws ConfigurationException if the resource file cannot be found, read, or parsed.
     */
    public Properties loadProperties(Class<?> referenceClass, String resourceLocation) throws ConfigurationException
    {
-      try
+      try 
       {
          ConfigurationSourceIdentifier sourceId = new ConfigurationSourceIdentifier(referenceClass, resourceLocation);
          ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(sourceId);
 
          return provider.getProperties(sourceId, getPropertiesBuilderFactory());
-      }
-      catch(Throwable t)
+      } 
+      catch (Throwable t) 
       {
          throw new ConfigurationException("Could not load the properties", t);
       }
@@ -177,25 +169,23 @@ public class ConfigurationUtilities
 
    /**
     * Sets the properties of a bean with the given properties map;
-    * 
-    * @param bean
-    *           The bean to configure.
-    * @param properties
-    *           The properties to set.
+    *
+    * @param bean       The bean to configure.
+    * @param properties The properties to set.
     */
-   public void setProperties(Object bean, Properties properties) throws ConfigurationException
+   void setProperties(Object bean, Properties properties) throws ConfigurationException
    {
       BeanPropertySetterFactory bpsFactory = new BeanPropertySetterFactory();
       Collection<BeanPropertySetter> setters = bpsFactory.getPropertySettersForBean(bean);
 
-      for(BeanPropertySetter setter: setters)
+      for (BeanPropertySetter setter : setters) 
       {
          setter.setProperty(properties);
       }
    }
-   
+
    @PreDestroy
-   public void invokePreDestroyAll() throws ConfigurationException
+   public void invokePreDestroyAll()
    {
       ConfigurationSourceProviderFactory.getInstance().clearAssociations();
    }
@@ -203,63 +193,60 @@ public class ConfigurationUtilities
    /**
     * Searches the bean for any methods annotated with &#64;PostConstruct for
     * immediate invocation.
-    * 
-    * @param bean
-    *           The bean to process
+    *
+    * @param bean The bean to process
     */
-   public void invokePostConstruct(Object bean) throws ConfigurationException
+   void invokePostConstruct(Object bean) throws ConfigurationException
    {
       Class<?> beanClass = bean.getClass();
 
-      do
+      do 
       {
-         for(Method method: beanClass.getDeclaredMethods())
+         for (Method method : beanClass.getDeclaredMethods()) 
          {
-            if(method.isAnnotationPresent(PostConstruct.class))
+            if (method.isAnnotationPresent(PostConstruct.class)) 
             {
                Type[] types = method.getGenericParameterTypes();
-               if(types.length == 0)
+               if (types.length == 0) 
                {
                   // cannot be called on method that takes arguments
-                  try
+                  try 
                   {
-                     method.invoke(bean, (Object[])null);
-                  }
-                  catch(Exception exc)
+                     method.invoke(bean, (Object[]) null);
+                  } 
+                  catch (Exception exc) 
                   {
-                     throw new ConfigurationException(String.format("Could not call method %s on the class %s", 
+                     throw new ConfigurationException(String.format("Could not call method %s on the class %s",
                            method.getName(), bean.getClass().getName()), exc);
                   }
                }
             }
          }
       }
-      while((beanClass = beanClass.getSuperclass()) != null);
+      while ((beanClass = beanClass.getSuperclass()) != null);
    }
 
    /**
     * Adds a {@link ConfigurationProcessListener} to the listener queue.
-    * 
-    * @param listener
-    *           The listener to add.
+    *
+    * @param listener The listener to add.
     */
    public void addConfigurationProcessListener(ConfigurationProcessListener listener)
    {
-      synchronized(procListeners)
+      synchronized (processListeners) 
       {
-         procListeners.add(listener);
+         processListeners.add(listener);
       }
    }
 
    /**
     * Adds a {@link ConfigurationUpdateListener} to the listener queue.
-    * 
-    * @param listener
-    *           The listener to add.
+    *
+    * @param listener The listener to add.
     */
    public void addConfigurationUpdateListener(ConfigurationUpdateListener listener)
    {
-      synchronized(updateListeners)
+      synchronized (updateListeners) 
       {
          updateListeners.add(listener);
       }
@@ -267,43 +254,35 @@ public class ConfigurationUtilities
 
    /**
     * Removes a {@link ConfigurationProcessListener} from the listener queue.
-    * 
-    * @param listener
-    *           The listener to remove.
-    * 
+    *
+    * @param listener The listener to remove.
     * @return Returns true if the listener was removed, false otherwise.
     */
    public boolean removeConfigurationProcessListener(ConfigurationProcessListener listener)
    {
-      boolean removed = false;
-      synchronized(procListeners)
+      synchronized (processListeners) 
       {
-         removed = this.procListeners.remove(listener);
+         return this.processListeners.remove(listener);
       }
-      return removed;
    }
 
    /**
     * Removes a {@link ConfigurationUpdateListener} from the listener queue.
-    * 
-    * @param listener
-    *           The listener to remove.
-    * 
+    *
+    * @param listener The listener to remove.
     * @return Returns true if the listener was removed, false otherwise.
     */
    public boolean removeConfigurationUpdateListener(ConfigurationUpdateListener listener)
    {
-      boolean removed = false;
-      synchronized(updateListeners)
+      synchronized (updateListeners) 
       {
-         removed = this.updateListeners.remove(listener);
+         return this.updateListeners.remove(listener);
       }
-      return removed;
    }
 
    /**
     * Gets a collection of configuration identifiers that have already been used.
-    * 
+    *
     * @return Returns a collection of {@link ConfigurationSourceIdentifier} that have already been loaded.
     */
    @SuppressWarnings("unchecked")
@@ -311,12 +290,12 @@ public class ConfigurationUtilities
    {
       return this.beanSourceMap.keySet();
    }
-   
+
    public void setReconfigureOnUpdateEnabled(boolean reconfigureOnUpdateEnabled)
    {
       this.reconfigureOnUpdateEnabled = reconfigureOnUpdateEnabled;
    }
-   
+
    public boolean isReconfigureOnUpdateEnabled()
    {
       return this.reconfigureOnUpdateEnabled;
@@ -326,8 +305,8 @@ public class ConfigurationUtilities
    {
       ConfigurationSourceIdentifier sourceId = new ConfigurationSourceIdentifier(bean);
       ConfigurationSourceProvider provider = ConfigurationSourceProviderFactory.getInstance().getConfigurationSourceProvider(sourceId);
-      
-      if (logger.isDebugEnabled())
+
+      if (logger.isDebugEnabled()) 
       {
          logger.debug(String.format("Bean %s of type %s, has the source id %s", bean, bean.getClass(), sourceId));
          logger.debug(String.format("Source ID %s being processed by provider type %s", sourceId, provider.getProviderID()));
@@ -340,12 +319,12 @@ public class ConfigurationUtilities
 
    private void invokeStartConfig(Object bean)
    {
-      if (logger.isDebugEnabled()) 
+      if (logger.isDebugEnabled())
          logger.debug(String.format("Configuration of bean '%s' started", bean.toString()));
-      
-      synchronized(this.procListeners)
+
+      synchronized (this.processListeners) 
       {
-         for(ConfigurationProcessListener listener: this.procListeners)
+         for (ConfigurationProcessListener listener : this.processListeners) 
          {
             listener.startingConfiguration(bean);
          }
@@ -354,12 +333,12 @@ public class ConfigurationUtilities
 
    private void invokeCompleteConfig(Object bean)
    {
-      if (logger.isDebugEnabled()) 
+      if (logger.isDebugEnabled())
          logger.debug(String.format("Configuration of bean '%s' completed", bean.toString()));
-      
-      synchronized(this.procListeners)
+
+      synchronized (this.processListeners) 
       {
-         for(ConfigurationProcessListener listener: this.procListeners)
+         for (ConfigurationProcessListener listener : this.processListeners) 
          {
             listener.completedConfiguration(bean);
          }
@@ -368,12 +347,12 @@ public class ConfigurationUtilities
 
    private void invokeStartUpdate(Object bean)
    {
-      if (logger.isDebugEnabled()) 
+      if (logger.isDebugEnabled())
          logger.debug(String.format("Update of bean '%s' started", bean.toString()));
-      
-      synchronized(updateListeners)
+
+      synchronized (updateListeners) 
       {
-         for(ConfigurationUpdateListener listener: updateListeners)
+         for (ConfigurationUpdateListener listener : updateListeners) 
          {
             listener.startingBeanUpdate(bean);
          }
@@ -382,18 +361,18 @@ public class ConfigurationUtilities
 
    private void invokeCompleteUpdate(Object bean)
    {
-      if (logger.isDebugEnabled()) 
+      if (logger.isDebugEnabled())
          logger.debug(String.format("Update of bean '%s' completed", bean.toString()));
-      
-      synchronized(updateListeners)
+
+      synchronized (updateListeners) 
       {
-         for(ConfigurationUpdateListener listener: updateListeners)
+         for (ConfigurationUpdateListener listener : updateListeners) 
          {
             listener.completedBeanUpdate(bean);
          }
       }
    }
-   
+
    static void resetConfigurationUtilities()
    {
       configUtil = new ConfigurationUtilities();
@@ -401,7 +380,7 @@ public class ConfigurationUtilities
 
    protected ConfigurationUtilities()
    {
-      this.procListeners = new HashSet<ConfigurationProcessListener>();
+      this.processListeners = new HashSet<ConfigurationProcessListener>();
       this.updateListeners = new HashSet<ConfigurationUpdateListener>();
       this.beanSourceMap = new MultiValueMap();
    }

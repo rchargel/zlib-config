@@ -18,18 +18,17 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Converts a String into a Boolean value.
- * 
+ *
  * @author zcarioca
  */
 class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
 {
-   
+
    /**
     * {@inheritDoc}
     */
@@ -38,7 +37,7 @@ class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
    {
       return Boolean.class;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -48,31 +47,31 @@ class BooleanPropertyConverter implements BeanPropertyConverter<Boolean>
       return StringUtils.isBlank(value) ? null : parseBoolean(value.trim());
    }
 
-   protected boolean parseBoolean(String value) throws ConfigurationException
+   private boolean parseBoolean(String value) throws ConfigurationException
    {
       boolean bool = Boolean.parseBoolean(value) ||
             value.equalsIgnoreCase("yes") ||
-            value.equalsIgnoreCase("y") || 
-            value.equalsIgnoreCase("t") || 
+            value.equalsIgnoreCase("y") ||
+            value.equalsIgnoreCase("t") ||
             value.equals("1");
-      
-      if (!bool)
+
+      if (!bool) 
       {
          // test for validity
-         if (!isValidFalse(value))
+         if (isNotValid(value)) 
          {
             throw new ConfigurationException(String.format("Could not parse the value %s as a boolean", value));
          }
       }
       return bool;
    }
-   
-   protected boolean isValidFalse(String value)
+
+   private boolean isNotValid(String value)
    {
-      return value.equalsIgnoreCase("false") ||
+      return !(value.equalsIgnoreCase("false") ||
             value.equalsIgnoreCase("f") ||
-            value.equalsIgnoreCase("no") || 
+            value.equalsIgnoreCase("no") ||
             value.equalsIgnoreCase("n") ||
-            value.equals("0");
+            value.equals("0"));
    }
 }

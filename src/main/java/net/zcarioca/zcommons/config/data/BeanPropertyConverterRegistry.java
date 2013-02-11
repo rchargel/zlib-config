@@ -18,101 +18,99 @@
  */
 package net.zcarioca.zcommons.config.data;
 
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
 /**
- * A registry of value converters. Custom converters should be supplied to this registry. 
- * 
+ * A registry of value converters. Custom converters should be supplied to this registry.
+ *
  * @author zcarioca
  */
 public class BeanPropertyConverterRegistry
 {
    private static BeanPropertyConverterRegistry beanPropertyConverterRegistry;
-   
-   private Map<Class<?>, BeanPropertyConverter<?>> registry;
-   
+
+   private final Map<Class<?>, BeanPropertyConverter<?>> registry;
+
    /**
     * Gets access to the {@link BeanPropertyConverterRegistry}.
-    * 
+    *
     * @return Returns access to the {@link BeanPropertyConverterRegistry}.
     */
    public static BeanPropertyConverterRegistry getRegistry()
    {
-      if (beanPropertyConverterRegistry == null)
+      if (beanPropertyConverterRegistry == null) 
       {
          beanPropertyConverterRegistry = new BeanPropertyConverterRegistry();
       }
       return beanPropertyConverterRegistry;
    }
-   
+
    /**
     * Registers a new {@link BeanPropertyConverter}.
-    * 
+    *
     * @param converter The {@link BeanPropertyConverter} to register.
-    * 
     * @throws IllegalArgumentException if the converter is null.
-    * @throws ConfigurationException if the converter does not return a supported class.
+    * @throws ConfigurationException   if the converter does not return a supported class.
     */
    public void register(BeanPropertyConverter<?> converter) throws ConfigurationException
    {
-      if (converter == null)
+      if (converter == null) 
       {
          throw new IllegalArgumentException("The property converter cannot be null");
       }
-      
+
       Class<?> supportedClass = converter.getSupportedClass();
-      if (supportedClass != null)
+      if (supportedClass != null) 
       {
          this.registry.put(supportedClass, converter);
-      }
-      else
+      } 
+      else 
       {
          throw new ConfigurationException("Cannot use a property converter that does not return a supported class: " + converter.getClass());
       }
    }
-   
+
    /**
     * Gets a {@link BeanPropertyConverter} for the supplied type.
-    * 
+    *
     * @param type The type to convert.
     * @return Returns a {@link BeanPropertyConverter} for the supplied type.
-    * 
     * @throws IllegalArgumentException if the type is null.
     */
-   public BeanPropertyConverter<?> getPropertyConverter(Class<?> type) 
+   public BeanPropertyConverter<?> getPropertyConverter(Class<?> type)
    {
-      if (type == null)
+      if (type == null) 
       {
          throw new IllegalArgumentException("The supplied type cannot be null");
       }
-      
-      if (type.isArray())
+
+      if (type.isArray()) 
       {
          return ArrayPropertyConverter.createNewArrayPropertyConverter(type);
       }
-      
-      if (this.registry.containsKey(normalizedType(type)))
+
+      if (this.registry.containsKey(normalizedType(type))) 
       {
          return this.registry.get(normalizedType(type));
       }
-      
+
       return new GenericPropertyConverter();
    }
-   
+
    private Class<?> normalizedType(Class<?> type)
    {
-      if (type.isPrimitive())
+      if (type.isPrimitive()) 
       {
          return convertFromPrimitiveType(type);
       }
       return type;
    }
-   
+
    private Class<?> convertFromPrimitiveType(Class<?> type)
    {
       if (boolean.class == type)
@@ -129,11 +127,11 @@ public class BeanPropertyConverterRegistry
          return Long.class;
       if (float.class == type)
          return Float.class;
-      
+
       //this is all that's left
       return Double.class;
    }
-   
+
    BeanPropertyConverterRegistry()
    {
       registry = new HashMap<Class<?>, BeanPropertyConverter<?>>();

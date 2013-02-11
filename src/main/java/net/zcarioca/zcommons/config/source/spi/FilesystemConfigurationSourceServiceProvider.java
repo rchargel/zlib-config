@@ -18,20 +18,6 @@
  */
 package net.zcarioca.zcommons.config.source.spi;
 
-import static java.lang.String.format;
-import static net.zcarioca.zcommons.config.ConfigurationConstants.FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
 import net.zcarioca.zcommons.config.Environment;
 import net.zcarioca.zcommons.config.EnvironmentAccessor;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
@@ -39,7 +25,6 @@ import net.zcarioca.zcommons.config.source.ConfigurationSourceIdentifier;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
 import net.zcarioca.zcommons.config.util.PropertiesBuilder;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -50,10 +35,20 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
+import static java.lang.String.format;
+import static net.zcarioca.zcommons.config.ConfigurationConstants.FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
+
 /**
  * A {@link ConfigurationSourceProvider} tasked with pulling configuration
  * information out of the file system.
- * 
+ *
  * @author zcarioca
  */
 public class FilesystemConfigurationSourceServiceProvider extends AbstractConfigurationSourceServiceProvider
@@ -78,17 +73,17 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    {
       this(EnvironmentAccessor.getInstance().getEnvironment());
    }
-   
+
    FilesystemConfigurationSourceServiceProvider(Environment environment)
    {
       this.filesystemConfiguration = new FilesystemConfiguration(environment);
    }
-   
-   public FilesystemConfiguration getFilesystemConfiguration()
+
+   FilesystemConfiguration getFilesystemConfiguration()
    {
       return this.filesystemConfiguration;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -97,10 +92,10 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    {
       return FILESYSTEM_CONFIGURATION_SOURCE_SERVICE_PROVIDER;
    }
-   
+
    /**
     * This provider is marked as a MEDIUM provider.
-    * 
+    * <p/>
     * {@inheritDoc}
     */
    @Override
@@ -113,38 +108,38 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
     * {@inheritDoc}
     */
    @Override
-   public void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier) 
+   public void runPostProcessAction(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
       super.runPostProcessAction(configurationSourceIdentifier);
 
       Class<?> referenceClass = configurationSourceIdentifier.getReferenceClass();
       String resourceName = getResourceName(configurationSourceIdentifier);
 
-      try
+      try 
       {
          File confFile = getConfigurationFile(referenceClass, resourceName);
          getFileWatchListener().addFile(confFile, configurationSourceIdentifier);
-      }
-      catch (ConfigurationException exc)
+      } 
+      catch (ConfigurationException exc) 
       {
          logger.warn("Could not add file to watch list: " + exc.getMessage());
          if (logger.isTraceEnabled())
             logger.trace(exc.getMessage(), exc);
       }
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    public boolean supportsIdentifier(ConfigurationSourceIdentifier configurationSourceIdentifier)
    {
-      try
+      try 
       {
          File file = getConfigurationFile(configurationSourceIdentifier.getReferenceClass(), getResourceName(configurationSourceIdentifier));
          return file.exists();
-      }
-      catch(ConfigurationException exc)
+      } 
+      catch (ConfigurationException exc) 
       {
          return false;
       }
@@ -159,7 +154,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    {
       File file = getConfigurationFile(referenceClass, resourceName);
       InputStream in = null;
-      try
+      try 
       {
          in = new BufferedInputStream(new FileInputStream(file), 4096);
          Properties props = new Properties();
@@ -167,12 +162,12 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
          propertiesBuilder.addAll(props);
 
          return propertiesBuilder.build();
-      }
-      catch (Throwable t)
+      } 
+      catch (Throwable t) 
       {
          throw new ConfigurationException(format("Could not read configuration for %s using reference class %s", resourceName, referenceClass), t);
-      }
-      finally
+      } 
+      finally 
       {
          IOUtils.closeQuietly(in);
       }
@@ -232,18 +227,18 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
          }
       }
    }
-   
+
    public Collection<File> getMonitoredFiles()
    {
       return getFileWatchListener().getMappedFiles();
    }
-   
-   public String getMonitoredConfigurationDirectory() 
+
+   public String getMonitoredConfigurationDirectory()
    {
       try 
       {
          return getFilesystemConfiguration().getConfigurationDirectory().getAbsolutePath();
-      }
+      } 
       catch (IllegalArgumentException exc) 
       {
          logger.warn(format("Could not determine configuration directory: %s", exc.getMessage()));
@@ -255,7 +250,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
    private synchronized static FileWatchListener getFileWatchListener()
    {
-      if (fileWatchListener == null)
+      if (fileWatchListener == null) 
       {
          fileWatchListener = new FileWatchListener(ConfigurationUtilities.getInstance());
       }
@@ -264,22 +259,22 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
    private File getConfigurationFile(Class<?> referenceClass, String resourceName) throws ConfigurationException
    {
-      File file = null;
+      File file;
       Pattern pattern = Pattern.compile(String.format("^%s(\\.properties)?(\\.xml)?$", resourceName), Pattern.CASE_INSENSITIVE);
-      try
+      try 
       {
          File confDir = getFilesystemConfiguration().getConfigurationDirectory();
          file = getConfigurationFileInSubDirs(confDir, referenceClass, pattern);
 
-         if (file == null)
+         if (file == null) 
          {
             file = getFromPattern(confDir, pattern);
          }
-         if (file == null)
+         if (file == null) 
          {
             throw new ConfigurationException(format("Could not find file for %s:%s", referenceClass, resourceName));
          }
-      }
+      } 
       catch (IllegalArgumentException exc) 
       {
          throw new ConfigurationException(format("Could not find file for %s:%s", referenceClass, resourceName), exc);
@@ -292,41 +287,41 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       String path = referenceClass.getPackage().getName().replaceAll("\\.", File.separator);
 
       File filePath = new File(confDir, path);
-      if (!filePath.isDirectory())
+      if (!filePath.isDirectory()) 
       {
          if (logger.isDebugEnabled()) logger.debug(format("Could not find directory %s", filePath));
          return null;
       }
-      
+
       return getFromPattern(filePath, pattern);
    }
-   
+
    private File getFromPattern(File directory, Pattern pattern)
    {
       File[] match = directory.listFiles(new PatternFileFilter(pattern));
-      
+
       return ArrayUtils.isNotEmpty(match) ? match[0] : null;
    }
-   
-   protected static class PatternFileFilter implements FileFilter
+
+   private static class PatternFileFilter implements FileFilter
    {
       private final Pattern pattern;
-      
+
       PatternFileFilter(Pattern pattern)
       {
          this.pattern = pattern;
       }
-      
+
       /**
        * {@inheritDoc}
        */
       @Override
-      public boolean accept(File pathname)
+      public boolean accept(File pathName)
       {
-         return pattern.matcher(pathname.getName()).matches();
+         return pattern.matcher(pathName.getName()).matches();
       }
    }
-   
+
    public static class FilesystemConfiguration
    {
       private final Environment environment;
@@ -334,7 +329,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       private final String confDir;
       private final String rootDirEnvironmentVar;
       private final String rootDir;
-      
+
       FilesystemConfiguration(Environment environment)
       {
          this.environment = environment;
@@ -342,10 +337,10 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
          this.rootDirEnvironmentVar = this.environment.getSystemProperty(ROOT_DIR_ENV_OVERRIDE, DEFAULT_ROOT_DIR_ENV_VAR);
          this.rootDir = this.environment.getSystemProperty(ROOT_DIR_OVERRIDE, null);
       }
-      
+
       /**
        * Gets the current environment.
-       * 
+       *
        * @return Returns the environment.
        */
       Environment getEnvironment()
@@ -356,7 +351,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       /**
        * Gets the root directory. Overrides the value set by the environment
        * variable.
-       * 
+       *
        * @return Returns the root directory, or null.
        */
       String getRootDir()
@@ -366,7 +361,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
       /**
        * Gets the root directory environment variable. Defaults to 'APP_DIR'.
-       * 
+       *
        * @return Returns the root directory environment variable.
        */
       String getRootDirEnvironmentVar()
@@ -376,7 +371,7 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
       /**
        * Gets the configuration sub-directory. Defaults to 'conf'.
-       * 
+       *
        * @return Returns the configuration sub-directory.
        */
       String getConfDir()
@@ -386,17 +381,17 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
       /**
        * Gets the directory containing the configuration files.
-       * 
+       *
        * @return Returns the directory containing the configuration files.
        */
       public File getConfigurationDirectory()
       {
-         File rootDir = null;
-         if (StringUtils.isNotBlank(getRootDir()))
+         File rootDir;
+         if (StringUtils.isNotBlank(getRootDir())) 
          {
             rootDir = new File(getRootDir());
-         }
-         else if (StringUtils.isNotBlank(getRootDirEnvironmentVar()))
+         } 
+         else if (StringUtils.isNotBlank(getRootDirEnvironmentVar())) 
          {
             String rootDirEnvVar = getEnvironment().getEnvVariable(getRootDirEnvironmentVar());
             if (StringUtils.isBlank(rootDirEnvVar))
@@ -404,20 +399,20 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
                throw new IllegalArgumentException(format("There is no value for the environment variable '%s'.", getRootDirEnvironmentVar()));
             }
             rootDir = new File(rootDirEnvVar);
-         }
-         else
+         } 
+         else 
          {
             throw new IllegalArgumentException(format("There is neither an value set for the environment variable '%s', nor has a root directory been set via the system override.",
                   getRootDirEnvironmentVar()));
          }
 
          File confDir = rootDir;
-         if (StringUtils.isNotBlank(getConfDir()))
+         if (StringUtils.isNotBlank(getConfDir())) 
          {
             confDir = new File(rootDir, getConfDir());
          }
 
-         if (!confDir.exists())
+         if (!confDir.exists()) 
          {
             throw new IllegalArgumentException(format("Cannot find the directory '%s'.", confDir));
          }
@@ -429,16 +424,16 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
    {
       private final Map<File, ConfigurationSourceIdentifier> mapper;
       private final ConfigurationUtilities configurationUtilities;
-      
+
       FileWatchListener(ConfigurationUtilities configurationUtilities)
       {
          this.mapper = new HashMap<File, ConfigurationSourceIdentifier>();
          this.configurationUtilities = configurationUtilities;
       }
-      
+
       public void clear()
       {
-         synchronized (this.mapper)
+         synchronized (this.mapper) 
          {
             this.mapper.clear();
          }
@@ -446,23 +441,26 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
       public void addFile(File file, ConfigurationSourceIdentifier configurationSourceIdentifier)
       {
-         if (file == null) throw new IllegalArgumentException("There was no file provided to the file watch listener");
-         if (configurationSourceIdentifier == null) throw new IllegalArgumentException(format("The file %s was not provided a configuration source identifier", file.getAbsoluteFile()));
-         
-         synchronized(this.mapper) 
+         if (file == null) 
+            throw new IllegalArgumentException("There was no file provided to the file watch listener");
+         if (configurationSourceIdentifier == null)
+            throw new IllegalArgumentException(format("The file %s was not provided a configuration source identifier", file.getAbsoluteFile()));
+
+         synchronized (this.mapper) 
          {
             this.mapper.put(file, configurationSourceIdentifier);
          }
       }
-      
+
       /**
        * Gets an immutable collection of the files in this map.
+       *
        * @return Returns an immutable collection.
        */
       @SuppressWarnings("unchecked")
       public Collection<File> getMappedFiles()
       {
-         synchronized(this.mapper)
+         synchronized (this.mapper) 
          {
             return CollectionUtils.unmodifiableCollection(this.mapper.keySet());
          }
@@ -483,9 +481,9 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
       @Override
       public void onFileDelete(File file)
       {
-         synchronized (this.mapper)
+         synchronized (this.mapper) 
          {
-            if (this.mapper.containsKey(file))
+            if (this.mapper.containsKey(file)) 
             {
                logger.info(format("The file '%s' has been deleted", file));
                this.mapper.remove(file);
@@ -531,13 +529,13 @@ public class FilesystemConfigurationSourceServiceProvider extends AbstractConfig
 
       private void resetProperties(File file)
       {
-         if (this.mapper.containsKey(file))
+         if (this.mapper.containsKey(file)) 
          {
-            try
+            try 
             {
                this.configurationUtilities.runReconfiguration(this.mapper.get(file));
-            }
-            catch (ConfigurationException exc)
+            } 
+            catch (ConfigurationException exc) 
             {
                logger.warn(format("Could not reset properties on the file %s", file), exc);
             }

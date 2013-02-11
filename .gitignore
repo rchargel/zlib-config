@@ -10,3 +10,5 @@ tmp/
 .externalToolBuilders/
 .launch
 .buildpath
+.idea/
+*.iml

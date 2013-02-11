@@ -18,28 +18,26 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.junit.Assert.*;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the {@link GenericPropertyConverter}.
- * 
- * 
+ *
  * @author zcarioca
  */
 public class GenericPropertyConverterTest extends BaseConverterTestCase
 {
-   
-   GenericPropertyConverter converter;
+
+   private GenericPropertyConverter converter;
 
    /**
     * @throws java.lang.Exception
@@ -54,7 +52,7 @@ public class GenericPropertyConverterTest extends BaseConverterTestCase
    public void testConvertProperty1() throws ConfigurationException
    {
       setPropertyType(File.class);
-      
+
       assertEquals(new File("/tmp/test.txt"), converter.convertPropertyValue("/tmp/test.txt", beanPropertyInfo));
    }
 
@@ -62,7 +60,7 @@ public class GenericPropertyConverterTest extends BaseConverterTestCase
    public void testConvertProperty2() throws ConfigurationException
    {
       setPropertyType(SimpleDateFormat.class);
-      
+
       assertEquals(new SimpleDateFormat("yyyy"), converter.convertPropertyValue("yyyy", beanPropertyInfo));
    }
 
@@ -70,7 +68,7 @@ public class GenericPropertyConverterTest extends BaseConverterTestCase
    public void testConvertProperty3() throws ConfigurationException
    {
       setPropertyType(BigInteger.class);
-      
+
       assertEquals(new BigInteger("1000"), converter.convertPropertyValue("1000", beanPropertyInfo));
    }
 

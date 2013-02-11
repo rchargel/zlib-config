@@ -18,28 +18,27 @@
  */
 package net.zcarioca.zcommons.config.data;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
 import net.zcarioca.zcommons.config.Configurable;
 import net.zcarioca.zcommons.config.ConfigurableAttribute;
 import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
+
 /**
  * Tests the {@link DatePropertyConverter}.
- * 
- * 
+ *
  * @author zcarioca
  */
 public class DatePropertyConverterTest extends BaseConverterTestCase
 {
-   DatePropertyConverter converter;
+   private DatePropertyConverter converter;
 
    /**
     * @throws java.lang.Exception
@@ -49,17 +48,17 @@ public class DatePropertyConverterTest extends BaseConverterTestCase
    {
       converter = new DatePropertyConverter();
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings({ "unchecked", "rawtypes" })
+   @SuppressWarnings({"unchecked", "rawtypes"})
    protected void setupBeanPropertyInfo()
    {
       super.setupBeanPropertyInfo();
       when(beanPropertyInfo.getPropertyName()).thenReturn("myDateProperty");
-      when(beanPropertyInfo.getBeanType()).thenReturn((Class)Object.class);
+      when(beanPropertyInfo.getBeanType()).thenReturn((Class) Object.class);
    }
 
    @Test(expected = ConfigurationException.class)
@@ -67,12 +66,12 @@ public class DatePropertyConverterTest extends BaseConverterTestCase
    {
       converter.convertPropertyValue("2010", beanPropertyInfo);
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testNullDateFormat() throws ConfigurationException
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockConfigurableDateFormat(null));
-      
+
       converter.convertPropertyValue("2010", beanPropertyInfo);
    }
 
@@ -80,7 +79,7 @@ public class DatePropertyConverterTest extends BaseConverterTestCase
    public void testInvalidDateFormat() throws ConfigurationException
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockConfigurableDateFormat("this isn't a real date format"));
-      
+
       converter.convertPropertyValue("2010", beanPropertyInfo);
    }
 
@@ -88,45 +87,45 @@ public class DatePropertyConverterTest extends BaseConverterTestCase
    public void testInvalidDate() throws ConfigurationException
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockConfigurableDateFormat("yyyy"));
-      
+
       converter.convertPropertyValue("This is not a parsable date", beanPropertyInfo);
    }
-   
+
    @Test
    public void testConvertPropertyValue() throws ConfigurationException
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockConfigurableDateFormat("yyyy"));
-      
+
       assertEquals(createDate("2010", "yyyy"), converter.convertPropertyValue("2010", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(" ", beanPropertyInfo));
       assertNull(converter.convertPropertyValue("", beanPropertyInfo));
       assertNull(converter.convertPropertyValue(null, beanPropertyInfo));
    }
-   
+
    @Test
    public void testConvertPropertyValueAnnotationAtField() throws ConfigurationException
    {
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockConfigurableDateFormat("yyyy"));
-      
+
       assertEquals(createDate("2010", "yyyy"), converter.convertPropertyValue("2010", beanPropertyInfo));
    }
-   
+
    @Test
    public void testConvertPropertyValueAnnotationAtFieldOverridesBeanAnnotation() throws ConfigurationException
    {
       setBeanAnnotations(mockAnnotation(Configurable.class), mockConfigurableDateFormat("yyyy"));
       setPropertyAnnotations(mockAnnotation(ConfigurableAttribute.class), mockConfigurableDateFormat("yyyyMMdd"));
-      
+
       assertEquals(createDate("20101223", "yyyyMMdd"), converter.convertPropertyValue("20101223", beanPropertyInfo));
    }
-   
+
    private Date createDate(String date, String format)
    {
-      try
+      try 
       {
          return new SimpleDateFormat(format).parse(date);
-      }
-      catch (Exception exc)
+      } 
+      catch (Exception exc) 
       {
          return null;
       }

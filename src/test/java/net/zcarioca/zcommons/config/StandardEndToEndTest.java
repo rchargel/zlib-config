@@ -18,9 +18,14 @@
  */
 package net.zcarioca.zcommons.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
+import net.zcarioca.zcommons.config.util.AnotherConfigurableObject;
+import net.zcarioca.zcommons.config.util.ConfigurableObject;
+import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
+import net.zcarioca.zcommons.config.util.MockConfigurableObject;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,29 +33,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import net.zcarioca.zcommons.config.exceptions.ConfigurationException;
-import net.zcarioca.zcommons.config.util.AnotherConfigurableObject;
-import net.zcarioca.zcommons.config.util.ConfigurableObject;
-import net.zcarioca.zcommons.config.util.ConfigurationUtilities;
-import net.zcarioca.zcommons.config.util.MockConfigurableObject;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * This is an end-to-end test.
- * 
+ *
  * @author zcarioca
  */
 public class StandardEndToEndTest extends BaseTestCase
 {
-   ConfigurableObject configurableObject;
-   
-   MockConfigurableObject mockConfigurableObject;
-   
-   AnotherConfigurableObject anotherConfigurableObject;
-   
+   private ConfigurableObject configurableObject;
+
+   private MockConfigurableObject mockConfigurableObject;
+
+   private AnotherConfigurableObject anotherConfigurableObject;
+
    @BeforeClass
    public static void setupFilesystem()
    {
@@ -59,31 +56,31 @@ public class StandardEndToEndTest extends BaseTestCase
       Properties props = new Properties();
       props.put("value.1", "This is the first value");
       props.put("value.2", "This is the second value");
-      
+
       try 
       {
          OutputStream out = new FileOutputStream(new File(getConfDir(), "test.properties"));
-      
+
          props.store(out, "this is a comment");
-      }
-      catch (IOException exc)
+      } 
+      catch (IOException exc) 
       {
          //do nothing
       }
    }
-   
+
    @Before
    public void setup() throws ConfigurationException
    {
       configurableObject = new ConfigurableObject();
       mockConfigurableObject = new MockConfigurableObject();
       anotherConfigurableObject = new AnotherConfigurableObject();
-      
+
       ConfigurationUtilities.getInstance().configureBean(configurableObject, true);
       ConfigurationUtilities.getInstance().configureBean(mockConfigurableObject, true);
       ConfigurationUtilities.getInstance().configureBean(anotherConfigurableObject, true);
    }
-   
+
    @Test
    public void testConfigurationOfConfigurableObject()
    {
@@ -107,12 +104,12 @@ public class StandardEndToEndTest extends BaseTestCase
       assertEquals(123.56, mockConfigurableObject.getFloatingPointNumber(), 0);
       assertFalse(mockConfigurableObject.getTrueFalse());
       assertEquals("Hello Z-Carioca!", mockConfigurableObject.getMessage());
-      assertEquals((byte)120, mockConfigurableObject.getMyByte());
+      assertEquals((byte) 120, mockConfigurableObject.getMyByte());
       assertEquals('s', mockConfigurableObject.getaCharacter());
       assertEquals(146.56, mockConfigurableObject.getBigNum(), 0);
       assertEquals("This is a simple property message", mockConfigurableObject.getPropMessage());
    }
-   
+
    @Test
    public void testMockConfigurationOfConfigurableObject()
    {
@@ -136,12 +133,12 @@ public class StandardEndToEndTest extends BaseTestCase
       assertEquals(123.56, configurableObject.getFloatingPointNumber(), 0);
       assertTrue(configurableObject.getTrueFalse());
       assertEquals("Hello Z Carioca!", configurableObject.getMessage());
-      assertEquals((byte)120, configurableObject.getMyByte());
+      assertEquals((byte) 120, configurableObject.getMyByte());
       assertEquals('S', configurableObject.getaCharacter());
       assertEquals(145.56, configurableObject.getBigNum(), 0);
       assertEquals("There is a field which states: This is a simple message - 0.34 ${along}", configurableObject.getPropMessage());
    }
-   
+
    @Test
    public void testAnotherConfigurationOfConfigurableObject() throws ConfigurationException
    {
