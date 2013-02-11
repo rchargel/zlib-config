@@ -54,17 +54,40 @@
       </source>
       <p>
         It is also recommended that you provide either Spring 2.5 or later.  This library will work with both Spring 2.5 and Spring 3.x.
+        The following are the list of suggested dependencies to allow autowiring and automatic configuration with Spring.
       </p>
+      <source><![CDATA[...
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+      
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+      
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+      
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+...]]></source>
     </section>
     <section name="Basic Configuration">
       <p>
         The first step is to initialize the ConfigurationInjectionPostProcessor in Spring's
         application context file.  The simplest possible configuration is as follows:
       </p>
-      <source>
-<![CDATA[<bean id="confPostProcessor" 
-      class="net.zcarioca.zcommons.config.spring.ConfigurationInjectionPostProcessor"/>]]>
-      </source>
+      <source><![CDATA[<import resource="classpath:/zlib-config-default-context.xml"/>]]></source>
       <p>
         The next step is to simply annotate your classes and fields.  To do this there are two
         basic annotations, &#64;Configurable and &#64;ConfigurableAttribute.  The 
