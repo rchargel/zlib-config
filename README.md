@@ -21,6 +21,7 @@ ZLIB-CONFIG
     * [Using the Library Without Spring](#using-the-library-without-spring)
 * [Custom Providers](#custom-providers)
     * [Service Provider Interface (SPI)](#service-provider-interface-spi)
+    * [The Interface](#the-interface)
 * [Custom Converters](#custom-converters)
 * [History](#history)
 
@@ -345,6 +346,24 @@ Service Provider Interface (SPI)
 --------------------------------
 
 The Configuration Source Providers follow the SPI pattern in Java. This pattern is designed to allow for replaceable components, where the API for these components is defined within an interface, and the implementations are discovered at runtime. Other notable SPI components are the Java JDBC and JNDI layers. There are really only two things required to build a custom implementation of an SPI service. The first is the interface to extend, the second is a text file located in the META-INF directory of your JAR file.
+
+The Interface
+-------------
+
+In the case of the zlib-config library, the interface in question is net.zcarioca.zcommons.config.source.ConfigurationSourceProvider. This interface defines a number of methods required to retrieve and properties associated to an object.
+
+<dl>
+<dt>getPriorityLevel()</dt>
+<dd>The priority level of a provider determines which providers will act upon an object if multiple providers can support its identifier. The Default provider has a priority of BACKUP, which will only act if no other providers will support an object's identifier. The Filesystem provider has a MEDIUM priority level. The different levels in order of lowest to highest are as follows: BACKUP, LOW, MEDIUM, HIGH, OVERRIDE.</dd>
+<dt>supportsIdentifier(ConfigurationSourceIdentifer)</dt>
+<dd>Determines whether the given identifier can be supported. For instance, the filesystem provider will only return true, if it is configured correctly, and if it can find a configuration file for the provided identifier.</dd>
+<dt>getProviderID()</dt>
+<dd>This method must return a unique identifier for this interface.</dd>
+<dt>getProperties(ConfigurationSourceIdentifier, PropertiesBuilderFactory)</dt>
+<dd>This method maps the provided configuration source identifier to a set of properties. The identifier provides a reference class and a resource location to aid with this mapping.</dd>
+<dt>postInit() and preDestroy()</dt>
+<dd>These two methods are called when the configuration source provider is initialized or destroyed. These can be used for additional configuration or cleanup. It should be noted that configuration source providers are not singletons, and many of the same type can be constructed.</dd>
+</dl>
 
 CUSTOM CONVERTERS
 =================
