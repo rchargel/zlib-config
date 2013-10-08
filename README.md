@@ -1,7 +1,5 @@
-zlib-config
+PURPOSE
 ===========
-
-*Note:* See the [project documentation](http://zcarioca.net/projects/zlib-config/1.5/) for more information.
 
 The zlib-config library is used to simplify the development of applications by removing the common boiler-plate code used to read and initialize project properties. Rather than use the standard method of initializing your classes with properties the old way:
 
@@ -67,3 +65,24 @@ public class MyClass()
    private Calendar endDate;
 }
 ```
+
+USAGE
+=====
+
+Installation
+------------
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>net.zcarioca.zcommons</groupId>
+    <artifactId>zlib-config</artifactId>
+    <version>1.1</version>
+  </dependency>
+</dependencies>
+```
+
+HISTORY
+=======
+
+This library was inspired by James Carroll's Configuration Framework for Spring, which is a proprietary library. While I have based the fundamental concept for this library on his, I have added a few features and changed some of the mechanisms used to retrieve configuration details.
