@@ -7,10 +7,11 @@ ZLIB-CONFIG
     * [Basic Configuration](#basic-configuration)
     * [Annotations](#annotations)
         * [@Configurable](#configurable)
-        * [@ConfigurableAttribute](#ConfigurableAttribute)
-        * [@ConfigurableDateFormat](#ConfigurableDateFormat)
-        * [@ConfigurableNumberEncoding](#ConfigurableNumberEncoding)
+        * [@ConfigurableAttribute](#configurableattribute)
+        * [@ConfigurableDateFormat](#configurabledateformat)
+        * [@ConfigurableNumberEncoding](#configurablenumberencoding)
     * [Standard Configuration Source Providers](#standard-configuration-source-providers)
+* [Custom Providers](#custom-providers)
 * [History](#history)
 
 PURPOSE
@@ -201,6 +202,13 @@ At this point, there is no plan to allow for custom base encodings.
 
 Standard Configuration Source Providers
 ---------------------------------------
+
+As stated in the previous section, there are two configuration source providers that are packaged with this library. There is a default provider, which pulls configuration data out of the classpath, and a filesystem configuration source provider, which pulls the configuration data from files on the server.
+
+To learn about providing custom configuration source providers, for example a provider that pulls its configuration data from database tables, or from a network storage system, see the [custom provider tutorial](#custom-providers).
+
+CUSTOM PROVIDERS
+================
 
 
 
