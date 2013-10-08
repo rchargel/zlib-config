@@ -20,6 +20,7 @@ ZLIB-CONFIG
     * [Variable Substitution](#variable-substitution)
     * [Using the Library Without Spring](#using-the-library-without-spring)
 * [Custom Providers](#custom-providers)
+    * [Service Provider Interface (SPI)](#service-provider-interface-spi)
 * [Custom Converters](#custom-converters)
 * [History](#history)
 
@@ -340,6 +341,10 @@ confUtils.configureBean(myConf, true); // call @PostConstruct method(s)
 CUSTOM PROVIDERS
 ================
 
+Service Provider Interface (SPI)
+--------------------------------
+
+The Configuration Source Providers follow the SPI pattern in Java. This pattern is designed to allow for replaceable components, where the API for these components is defined within an interface, and the implementations are discovered at runtime. Other notable SPI components are the Java JDBC and JNDI layers. There are really only two things required to build a custom implementation of an SPI service. The first is the interface to extend, the second is a text file located in the META-INF directory of your JAR file.
 
 CUSTOM CONVERTERS
 =================
