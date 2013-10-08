@@ -6,6 +6,10 @@ ZLIB-CONFIG
     * [Installation](#installation)
     * [Basic Configuration](#basic-configuration)
     * [Annotations](#annotations)
+        * [@Configurable](#configurable)
+        * [@ConfigurableAttribute](#ConfigurableAttribute)
+        * [@ConfigurableDateFormat](#ConfigurableDateFormat)
+        * [@ConfigurableNumberEncoding](#ConfigurableNumberEncoding)
     * [Standard Configuration Source Providers](#standard-configuration-source-providers)
 * [History](#history)
 
