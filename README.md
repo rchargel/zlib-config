@@ -156,7 +156,7 @@ public class MyConfigurableClass
 
 In the above example, the configuration injector will automatically find the Properties associated to that class, and insert a String with the property name `objectId` and a URL with the property name `serverUrl`.
 
-*NOTE:* Spring will not automatically wire your classes annotated with `@Configurable` as Spring Beans, unless Spring is expressly told to do so. For instance the following class would be wired up as a bean and pre-configured by Spring.
+**NOTE:** Spring will not automatically wire your classes annotated with `@Configurable` as Spring Beans, unless Spring is expressly told to do so. For instance the following class would be wired up as a bean and pre-configured by Spring.
 
 ```java
 package my.application;
@@ -239,9 +239,13 @@ Also, if both the default and filesystem configuration source providers can conf
 
 The following system properties can be used to override the default settings of this provider.
 
-| Java System Property      | Default Value |  Description |
-| --------------------------| ------------- | ------------ |
-| config.file.rootDirEnvVar | APP_ROOT      | This is the name of the environment variable which defines the root directory of the configuration. |
+| Java System Property      | Default Value |  Description                                                                                                          |
+| --------------------------| ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| config.file.rootDirEnvVar | APP_ROOT      | This is the name of the environment variable which defines the root directory of the configuration.                   |
+| config.file.confDir       | conf          | This is the name of directory, within the application root where configuration files will be located. If set to null or blank, the root application directory will be used. For example, if no changes are made to the default behavior, the provider will look for configuration files in the directory $APP_ROOT/conf. |
+| config.file.rootDir       | null          | The root directory for your application. If set, this value will remove the need for setting an environment variable. |
+
+**NOTE:** the filesystem configuration source provider will watch your configuration files, and if changes are made, it has the ability to reconfigure configurable classes during runtime.
 
 CUSTOM PROVIDERS
 ================
