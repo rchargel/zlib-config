@@ -260,7 +260,9 @@ Advanced Configuration
 Some implementations of the ConfigurationSourceProvider interface can send alerts if the original configuration data source is updated outside of the context of the application. In this case it is possible to allow the Configuration Utilities to automatically reconfigure your beans. To do this, simply set the reconfigureOnUpdateEnabled flag to true in your application context file:
 
 ```xml
-<bean id="configurationUtilities" class="net.zcarioca.zcommons.config.util.ConfigurationUtilities" factory-method="getInstance">
+<bean id="configurationUtilities" 
+      class="net.zcarioca.zcommons.config.util.ConfigurationUtilities" 
+      factory-method="getInstance">
   <property key="reconfigureOnUpdateEnabled" value="true"/>
 </bean>
 ```
