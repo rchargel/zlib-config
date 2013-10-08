@@ -1,6 +1,10 @@
+ZLIB-CONFIG
+===========
+
 * [Purpose](#purpose)
 * [Usage](#usage)
-* * [Installation](#installation)
+    * [Installation](#installation)
+    * [Basic Configuration](#basic_configuration)
 * [History](#history)
 
 PURPOSE
