@@ -506,3 +506,4 @@ __Snapshot 1.5.1: ...__
 1. Added a static method to ConfigurationUtilities: `ConfigurationUtilities.loadProperties(String filePath)` to simplify reading properties files.
 2. Added a static method to ConfigurationUtilities: `ConfigurationUtilities.configureBean(Object bean, Properties properties)` to simplify configure beans.
 3. Changed the DefaultConfigurationSourceProvider to be able to read properties files from the root of the classpath, as well as the standard location.
+3. Moved primary documentation from the *Maven* site plugin to the README.md.
