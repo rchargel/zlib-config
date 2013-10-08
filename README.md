@@ -22,8 +22,14 @@ ZLIB-CONFIG
 * [Custom Providers](#custom-providers)
     * [Service Provider Interface (SPI)](#service-provider-interface-spi)
     * [The Interface](#the-interface)
+    * [META-INF](#meta-inf)
+    * [Managing Changes to the Configuration Source](#managing-changes-to-the-configuration-source)
 * [Custom Converters](#custom-converters)
+    * [The BeanPropertyConverter Interface](#the-beanpropertyconverter-interface)
+    * [The Registry](#the-registry)
+* [Frequently Asked Questions](#frequently-asked-questions)
 * [History](#history)
+    * [Changes](#changes)
 
 PURPOSE
 ===========
@@ -365,11 +371,138 @@ In the case of the zlib-config library, the interface in question is net.zcarioc
 <dd>These two methods are called when the configuration source provider is initialized or destroyed. These can be used for additional configuration or cleanup. It should be noted that configuration source providers are not singletons, and many of the same type can be constructed.</dd>
 </dl>
 
+META-INF
+--------
+
+In addition to providing an extension to the `net.zcarioca.zcommons.config.source.ConfigurationSourceProvider` interface, a file must be added to the `/META-INF/services` directory of the completed JAR file. This file must be named *"net.zcarioca.zcommons.config.source.ConfigurationSourceProvider"* and it should have a list, separated by line-feeds, of the fully qualified name of your implementations.
+
+For instance, if you create an implementation of the ConfigurationSourceProvider interface located at *com.organization.config.impl.MyCustomProvider.java*, the following would be files would be required:
+
+__MyCustomProvider.java__
+
+```java
+package com.organization.config.impl;
+
+import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
+
+public MyCustomProvider implements ConfigurationSourceProvider {
+   ....
+}
+```
+
+__net.zcarioca.zcommons.config.source.ConfigurationSourceProvider__
+
+```java
+com.organization.config.impl.MyCustomProvider 
+```
+   
+__File Structure:__
+
+<pre>
+JAR File
+   |____com
+   |     |___organization
+   |              |___config
+   |                     |___impl
+   |                           |___MyCustomProvider.class
+   |
+   |____META-INF
+            |___services
+                   |___net.zcarioca.zcommons.config.source.ConfigurationSourceProvider                        
+</pre>
+
+Then, simply put your new JAR file on the classpath, and your source provider will be automatically available when the application is restarted.
+
+Managing Changes to the Configuration Source
+--------------------------------------------
+
+While the zlib-config library does not contain any implementations which manage changes to the source of the configuration data, there is a hook that custom providers can use to request that the configuration injector reconfigure beans when the source data has changed. The ConfigurationUtilities class has a method to allow source providers to send an event stating that a given configuration source identifier has been updated (`configurationUtilities.runReconfiguration(ConfigurationSourceIdentifier)`). The ConfigurationUtilities also maintains a list of configuration update listeners, one of these is the Spring bean post processor, which will reconfigure the beans if the event is received.
+
+```java
+// Inside some block of code in the configuration source
+// an update was received that a configuration file was updated
+
+ConfigurationSourceIdentifier sourceId = .... // the source that was updated
+
+// inform all listeners that this source has been updated
+ConfigurationUtilities.getInstance().configurationUtilities.runReconfiguration(sourceId);
+```
+
 CUSTOM CONVERTERS
 =================
 
+The BeanPropertyConverter Interface
+-----------------------------------
+
+Properties are converted using the `com.zcarioca.zcommons.config.data.BeanPropertyConverter` interface. This interface defines only two methods.
+
+<dl>
+<dt>getSupportedClass()</dt>
+<dd>Returns the property type supported by the converter.</dd>
+<dt>convertPropertyValue(String, BeanPropertyInfo)</dt>
+<dd>Uses the BeanPropertyInfo object to convert the string value into the property type supported by this converter.</dd>
+</dl>
+
+The Registry
+------------
+
+Once you have defined a custom converter it must be registered with the BeanPropertyConverterRegistry.
+
+```java
+BeanPropertyConverterRegistry registry = BeanPropertyConverterRegistry.getRegistry();
+registry.register(new MyCustomConverter());      
+```
+
+It's really that simple. The registry is then responsible for supplying the correct converter for your properties.
+
+FREQUENTLY ASKED QUESTIONS
+==========================
+
+<dl>
+<dt>What is the zlib-config library for?</dt>
+<dd>The zlib-config library is a tool which may be combined with the Spring Framework in order to simplify prepopulating classes with data from properties or other configuration sources.</dd>
+<dt>What different sources of configuration data can be used?</dt>
+<dd>Theoretically, anything can be a source of configuration information. By default, this library is packaged with a two Configuration Source Providers that will fetch configuration information out of a properties file in the classpath or the filesystem. However, the Configuration Source Provider follows the Service Provider Interface pattern, and the zlib-config library can discover new providers at runtime in order to fulfill custom requirements. Please see the [tutorial](#custom-providers) for creating new Configuration Source Providers for more information.</dd>
+<dt>Are you planning on providing any other Configuration Source Providers, or will all other's need to be custom built?</dt>
+<dd>For really custom requirements, like database based configuration where table and column structure would have to be defined, it just isn't practical to have a generic provider that could be used by everyone for all scenarios.</dd>
+<dt>Can I use this library without using the Spring Framework?</dt>
+<dd>Yes, this library uses the Service Provider Interface pattern for precisely that reason. Both the SPI framework and the Spring Framework are dependency injection engines, and this library can be used through Spring's autowiring, or programmatically. Please see the section for [using the zlib-config library without Spring](#using-the-library-without-spring).
+<dt>When do the configuration properties get injected into the objects?</dt>
+<dd>When using Spring, the configuration properties will be injected into the class during the Bean Post Processing phase of loading the Spring Application Context. This occurs between the point when the beans are instantiated and when the methods annotated with @PostConstruct are called. This means that any initialization method for your bean should be annotated with the @PostConstruct annotation.</dd>
+<dt>Is there a way to reconfigure beans if the properties file has been modified?</dt>
+<dd>Yes and no. The ConfigurationUtilities class provides a method to send properties update information to a set of Configuration Update Listeners. However, it is up to the Configuration Source Provider implementations to actually call this method if and when the source of the configuration has changed. Please see the tutorial for creating new [Configuration Source Providers](#custom-providers) for more information.</dd>
+<dt>What level of monitoring is built into the zlib-config library?</dt>
+<dd>Because the functionality is mostly active only when the classes are first initialized, there isn't much need to provide monitoring into this framework.</dd>
+</dl>
 
 HISTORY
 =======
 
 This library was inspired by James Carroll's Configuration Framework for Spring, which is a proprietary library. While I have based the fundamental concept for this library on his, I have added a few features and changed some of the mechanisms used to retrieve configuration details.
+
+Changes
+-------
+
+__Release 1.0: 2010-08-22__
+
+1. Cut first official release
+
+__Release 1.5: 2013-02-11__
+
+1. Added a PropertiesBuilder in place of Configuration object. This allows the user to specify properties in any order and still allows for keyword swapping.
+2. Removed the use of ExecutorServices and internal threading. This will allow this library to be used with Application Servers that prefer to manage their own threads. Instead the ConfigurationUtilities object has a "forceReconfigure" method that will reconfigure all of the beans associated to a given source.
+3. Added a PropertiesBuilder factory to increase flexibility of library configurations.
+4. Changed the logging framework to SLF4J. This removes the dependency on Log4J from the user.
+5. Removed unnecessary external dependencies.
+6. Moved to Maven Central Repository in order to remove dependency on an additional repository.
+7. Modified the ConfigurationSourceProviderFactory 'discover' the optimal provider for a ConfigurationSourceItentifier.
+8. Modified the ConfigurationSourceProvider to determine priority so that providers may override each other when necessary.
+9. Added the BeanPropertyConverter and BeanPropertyConverterRegistry to allow developers to create their own converters.
+10. Added the ConfigurableDateFormat to allow configuration of Date and Calendar objects.
+11. Added the ConfigurableNumberFormat to allow number to be represented in properties files in binary, octal, decimal, or hexidecimal.
+
+__Snapshot 1.5.1: ...__
+
+1. Added a static method to ConfigurationUtilities: `ConfigurationUtilities.loadProperties(String filePath)` to simplify reading properties files.
+2. Added a static method to ConfigurationUtilities: `ConfigurationUtilities.configureBean(Object bean, Properties properties)` to simplify configure beans.
+3. Changed the DefaultConfigurationSourceProvider to be able to read properties files from the root of the classpath, as well as the standard location.
