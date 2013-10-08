@@ -73,6 +73,18 @@ public class ConfigurationUtilities
    {
       return configUtil;
    }
+   
+   /**
+    * Utility method to configure a bean with an existing {@link Properties}
+    * object.
+    * 
+    * @param bean The bean to configure.
+    * @param properties The properties.
+    */
+   public static void configureBean(Object bean, Properties properties) throws ConfigurationException
+   {
+      setProperties(bean, properties);
+   }
 
    /**
     * Configures the supplied bean.
@@ -218,7 +230,7 @@ public class ConfigurationUtilities
     * @param bean The bean to configure.
     * @param properties The properties to set.
     */
-   public void setProperties(Object bean, Properties properties) throws ConfigurationException
+   static void setProperties(Object bean, Properties properties) throws ConfigurationException
    {
       BeanPropertySetterFactory bpsFactory = new BeanPropertySetterFactory();
       Collection<BeanPropertySetter> setters = bpsFactory.getPropertySettersForBean(bean);
