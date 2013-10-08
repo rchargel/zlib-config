@@ -1,4 +1,7 @@
-:with_toc_data
+* [Purpose](#purpose)
+* [Usage](#usage)
+* * [Installation](#installation)
+* [History](#history)
 
 PURPOSE
 ===========
