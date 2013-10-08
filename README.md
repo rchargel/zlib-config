@@ -169,17 +169,17 @@ public class MyConfigurableClass
 Annotations
 -----------
 
-*_@Configurable_*
+*__@Configurable__*
 
 The @Configurable annotation may take two parameters, a referenceClass and a resourceName. If either of these two values are not supplied, the default referenceClass is the class which was annotated, and the default reference implementation is lowercase name of the reference class. These two values are used by the ConfigurationSourceProviders to locate the configuration data.
 
-*_@ConfigurableAttribute_*
+*__@ConfigurableAttribute__*
 
 The @ConfigurableAttribute can also take two additional parameters, propertyName and defaultValue. The propertyName will default to the name of the property being annotated (defined by the POJO design pattern). This value of this parameter tells the configuration injector which property maps to the annotated property. This can be used if the property does not match the configured field. The defaultValue will be used only if the property's value cannot be found in the data source. This will not be used if there is a problem injecting the value into the property.
 
 The @ConfigurableAttribute annotation can be placed on either the field, or its getter or setter. Regardless of where the annotation is placed, the configuration injector will always use the setter, if the setter is available (even if the setter is private). In this way it is possible to modify the content of the property, or take further action in relation to the property. If no setter is available the value will be injected directly into the field value.
 
-*_@ConfigurableDateFormat_*
+*__@ConfigurableDateFormat__*
 
 The @ConfigurableDateFormat can be coupled with the @ConfigurableAttribute annotation in order provided the rules to parse properties for java.util.Date and java.util.Calendar objects. This annotation must be provided for either of these two property types, or a ConfigurationException will be thrown.
 
@@ -187,7 +187,7 @@ This annotation can also be placed at the top of the configurable class, if all 
 
 The date format uses the same formatting rules provided by the SimpleDateFormat.
 
-*_@ConfigurableNumberEncoding_*
+*__@ConfigurableNumberEncoding__*
 
 Similar to the @ConfigurableDateFormat, the @ConfigurableNumberEncoding annotation is used as a hint to inform the parser whether the numerical value has been encoded in binary, octal, decimal, or hexidecimal. It will have no effect on floating point numbers. Unlike the date formatting annotation, this annotation is not required, and if not provided, it is assumed that the numbers are encoded as decimal digits.
 
