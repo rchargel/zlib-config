@@ -18,6 +18,7 @@ ZLIB-CONFIG
         * [Adding Configuration Source Providers](#adding-configuration-source-providers)
     * [Supported Property Types](#supported-property-types)
     * [Variable Substitution](#variable-substitution)
+    * [Using the Library Without Spring](#using-the-library-without-spring)
 * [Custom Providers](#custom-providers)
 * [Custom Converters](#custom-converters)
 * [History](#history)
@@ -311,6 +312,29 @@ In order to access these properties within the application, the use can simply a
     </bean>
   </property>
 </bean>
+```
+
+Using the Library Without Spring
+--------------------------------
+
+It is possible to take advantage of this library without the use of Spring. All of the functionality provided by the zlib-config library is available for use programmatically. Most of the main classes are singletons (yes I know it's an over used pattern), and they are accessible via a getInstance() method.
+
+As an example the configurable objects may be passed to the ConfigurationUtilities singleton as follows:
+
+```java
+ConfigurationUtilities confUtils = ConfigurationUtilities.getInstance();
+
+MyConfigClass myConf = new MyConfigClass();
+confUtils.configureBean(myConf);
+```
+      
+There is even a convenience method to automatically call methods annotated with @PostConstruct after the object is configured (which is normally handled by Spring).
+
+```java
+ConfigurationUtilities confUtils = ConfigurationUtilities.getInstance();
+
+MyConfigClass myConf = new MyConfigClass();
+confUtils.configureBean(myConf, true); // call @PostConstruct method(s)
 ```
 
 CUSTOM PROVIDERS
