@@ -225,10 +225,7 @@ public class ConfigurationUtilities
 
       for (BeanPropertySetter setter : setters)
       {
-         if (properties.containsKey(setter.getPropertyKey()))
-         {
-            setter.setProperty(properties);
-         }
+         setter.setProperty(properties);
       }
    }
 

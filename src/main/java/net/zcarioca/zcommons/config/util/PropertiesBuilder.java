@@ -237,12 +237,13 @@ public class PropertiesBuilder
     */
    public PropertiesBuilder readAll(InputStream inputStream) throws IOException
    {
-      if (inputStream != null)
+      if (inputStream == null)
       {
-         Properties props = new Properties();
-         props.load(inputStream);
-         addAll(props);
+         throw new IOException("Empty or NULL input stream");
       }
+      Properties props = new Properties();
+      props.load(inputStream);
+      addAll(props);
       return this;
    }
 
