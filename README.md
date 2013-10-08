@@ -17,6 +17,7 @@ ZLIB-CONFIG
         * [Reconfiguration on Update](#reconfiguration-on-update)
         * [Adding Configuration Source Providers](#adding-configuration-source-providers)
     * [Supported Property Types](#supported-property-types)
+    * [Variable Substitution](#variable-substitution)
 * [Custom Providers](#custom-providers)
 * [Custom Converters](#custom-converters)
 * [History](#history)
@@ -277,6 +278,40 @@ Supported Property Types
 The configuration injector can automatically convert properties into strings, primitive types and their wrappers, and any object which takes a single string as a constructor (eg: `java.io.File` and `java.net.URL`). Using the `@ConfigurableDateFormat`, it is also possible to inject `java.util.Calendar` and `java.util.Date` objects. Additionally, an array of any of the above is also available by providing the values as a comma-separated list.
 
 It is possible to define custom converters for other property types. See the [Custom Converter](#custom-converters) tutorial for more information.
+
+Variable Substitution
+---------------------
+
+The configuration injector will handle the automatic replacement of variables within properties. This is done using the net.zcarioca.zcommons.config.util.PropertiesBuilder class.
+
+```properties
+file.dir=/etc/conf
+file.path=${file.dir}/filename.properties
+```
+      
+The property substitution mechanism can also take advantage of Environment and JVM Properties by assigning a custom net.zcarioca.zcommons.config.util.PropertiesBuilderFactory to the ConfigurationUtilities object. This object allows the user to make these system and environment wide properties available for substitution or use directly in the configuration. As an example the user could have the following runtime command:
+
+```bash
+export APP_HOME="/etc/app/home"
+/usr/bin/java -Dmy.custom.prop="Awesome Property" ......
+```
+      
+In order to access these properties within the application, the use can simply add the following to their Application Context file:
+
+```xml
+<bean id="configurationUtilities" 
+      class="net.zcarioca.zcommons.config.util.ConfigurationUtilities"
+      factory-method="getInstance">
+  <property name="propertiesBuilderFactory">
+    <bean class="net.zcarioca.zcommons.config.util.PropertiesBuilderFactory">
+      <!-- Adds all the environment variables -->
+      <property name="addEnvironmentProperties" value="true"/>
+      <!-- Adds all the JVM variables -->
+      <property name="addSystemProperties" value="true"/>
+    </bean>
+  </property>
+</bean>
+```
 
 CUSTOM PROVIDERS
 ================
