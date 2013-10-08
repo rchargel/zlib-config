@@ -1,3 +1,6 @@
+* auto-gen TOC:
+{:toc}
+
 PURPOSE
 ===========
 
@@ -72,6 +75,8 @@ USAGE
 Installation
 ------------
 
+Adding this library to your maven project is as simple as adding the following to your dependencies set:
+
 ```xml
 <dependencies>
   <dependency>
@@ -81,6 +86,60 @@ Installation
   </dependency>
 </dependencies>
 ```
+
+It is also recommended that you provide either Spring 2.5 or later. This library will work with both Spring 2.5 and Spring 3.x. The following are the list of suggested dependencies to allow autowiring and automatic configuration with Spring.
+
+```xml
+...
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>${spring.version}</version>
+   </dependency>
+...
+```
+
+Basic Configuration
+-------------------
+
+The first step is to initialize the ConfigurationInjectionPostProcessor in Spring's application context file. The simplest possible configuration is as follows:
+
+```xml
+<import resource="classpath:/zlib-config-default-context.xml"/>
+```
+
+The next step is to simply annotate your classes and fields. To do this there are two basic annotations, @Configurable and @ConfigurableAttribute. The first of these tells the post processor that this class has been marked for configuration. The second, @ConfigurableAttribute, marks a field for configuration and which property to inject. Additionally, this annotation can be used to define default values for the fields. Here is a simple example:
+
+```java
+package my.application;
+
+@Configurable
+public class MyConfigurableClass 
+{
+   @ConfigurableAttribute
+   private String objectId;
+   
+   @ConfigurableAttribute
+   private URL serverUrl;
+}
+```
+
+In the above example, the configuration injector will automatically find the Properties associated to that class, and insert a String with the property name ```objectId``` and a URL with the property name ```serverUrl```.
 
 HISTORY
 =======
