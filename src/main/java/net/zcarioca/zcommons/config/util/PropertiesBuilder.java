@@ -18,6 +18,8 @@
  */
 package net.zcarioca.zcommons.config.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -220,6 +222,26 @@ public class PropertiesBuilder
       {
          Object val = props.get(key);
          this.addProperty(key.toString(), val != null ? val.toString() : null);
+      }
+      return this;
+   }
+   
+   /**
+    * Reads the properties from the input stream.
+    * 
+    * @param inputStream The input stream.
+    * @return Returns the builder.
+    * 
+    * @throws IOException if an error occurred when reading from the input
+    *         stream.
+    */
+   public PropertiesBuilder readAll(InputStream inputStream) throws IOException
+   {
+      if (inputStream != null)
+      {
+         Properties props = new Properties();
+         props.load(inputStream);
+         addAll(props);
       }
       return this;
    }

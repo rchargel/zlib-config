@@ -81,12 +81,8 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
       InputStream in = null;
       try
       {
-         in = referenceClass.getResourceAsStream(resourceName);
-         Properties props = new Properties();
-         props.load(in);
-         propertiesBuilder.addAll(props);
-
-         return propertiesBuilder.build();
+         in = getResourceAsStream(referenceClass, resourceName);
+         return propertiesBuilder.readAll(in).build();
       }
       catch (Throwable t)
       {
@@ -96,5 +92,15 @@ public class DefaultConfigSourceServiceProvider extends AbstractConfigurationSou
       {
          IOUtils.closeQuietly(in);
       }
+   }
+   
+   private InputStream getResourceAsStream(Class<?> referenceClass, String resourceName) 
+   {
+      InputStream in = referenceClass.getResourceAsStream(resourceName);
+      if (in == null) 
+      {
+         in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
+      }
+      return in;
    }
 }

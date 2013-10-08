@@ -18,6 +18,10 @@
  */
 package net.zcarioca.zcommons.config.util;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -38,6 +42,7 @@ import net.zcarioca.zcommons.config.source.ConfigurationSourceProvider;
 import net.zcarioca.zcommons.config.source.ConfigurationSourceProviderFactory;
 
 import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,6 +157,36 @@ public class ConfigurationUtilities
    {
       this.propertiesBuilderFactory = propertiesBuilderFactory;
    }
+   
+   /**
+    * Reads a properties file into a {@link Properties} object.
+    * 
+    * @param filePath
+    * @return
+    * @throws ConfigurationException
+    */
+   public static Properties loadProperties(String filePath) throws ConfigurationException 
+   {
+      InputStream inputStream = null;
+      try 
+      {
+         inputStream = new BufferedInputStream(new FileInputStream(filePath));
+         
+         PropertiesBuilderFactory factory = new PropertiesBuilderFactory(true, true);
+         return factory.newPropertiesBuilder().readAll(inputStream).build();
+      }
+      catch (IOException exc) 
+      {
+         throw new ConfigurationException("Could not load properties from file: " + filePath, exc);
+      }
+      finally
+      {
+         if (inputStream != null) 
+         {
+            IOUtils.closeQuietly(inputStream);
+         }
+      }
+   }
 
    /**
     * Loads a properties map for a class and resource location.
@@ -183,14 +218,17 @@ public class ConfigurationUtilities
     * @param bean The bean to configure.
     * @param properties The properties to set.
     */
-   void setProperties(Object bean, Properties properties) throws ConfigurationException
+   public void setProperties(Object bean, Properties properties) throws ConfigurationException
    {
       BeanPropertySetterFactory bpsFactory = new BeanPropertySetterFactory();
       Collection<BeanPropertySetter> setters = bpsFactory.getPropertySettersForBean(bean);
 
       for (BeanPropertySetter setter : setters)
       {
-         setter.setProperty(properties);
+         if (properties.containsKey(setter.getPropertyKey()))
+         {
+            setter.setProperty(properties);
+         }
       }
    }
 
