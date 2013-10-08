@@ -13,7 +13,12 @@ ZLIB-CONFIG
     * [Standard Configuration Source Providers](#standard-configuration-source-providers)
         * [Default Configuration Source Provider](#default-configuration-source-provider)
         * [Filesystem Configuration Source Provider](#filesystem-configuration-source-provider)
+    * [Advanced Configuration](#advanced-configuration)
+        * [Reconfiguration on Update](#reconfiguration-on-update)
+        * [Adding Configuration Source Providers](#adding-configuration-source-providers)
+    * [Supported Property Types](#supported-property-types)
 * [Custom Providers](#custom-providers)
+* [Custom Converters](#custom-converters)
 * [History](#history)
 
 PURPOSE
@@ -247,9 +252,36 @@ The following system properties can be used to override the default settings of 
 
 **NOTE:** the filesystem configuration source provider will watch your configuration files, and if changes are made, it has the ability to reconfigure configurable classes during runtime.
 
+Advanced Configuration
+----------------------
+
+### Reconfiguration on Update
+
+Some implementations of the ConfigurationSourceProvider interface can send alerts if the original configuration data source is updated outside of the context of the application. In this case it is possible to allow the Configuration Utilities to automatically reconfigure your beans. To do this, simply set the reconfigureOnUpdateEnabled flag to true in your application context file:
+
+```xml
+<bean id="configurationUtilities" class="net.zcarioca.zcommons.config.util.ConfigurationUtilities" factory-method="getInstance">
+  <property key="reconfigureOnUpdateEnabled" value="true"/>
+</bean>
+```
+
+### Adding Configuration Source Providers
+
+Please see the [tutorial](#custom-providers) for creating new Configuration Source Providers for more information.
+
+Supported Property Types
+------------------------
+
+The configuration injector can automatically convert properties into strings, primitive types and their wrappers, and any object which takes a single string as a constructor (eg: `java.io.File` and `java.net.URL`). Using the `@ConfigurableDateFormat`, it is also possible to inject `java.util.Calendar` and `java.util.Date` objects. Additionally, an array of any of the above is also available by providing the values as a comma-separated list.
+
+It is possible to define custom converters for other property types. See the [Custom Converter](#custom-converters) tutorial for more information.
+
 CUSTOM PROVIDERS
 ================
 
+
+CUSTOM CONVERTERS
+=================
 
 
 HISTORY
