@@ -11,6 +11,8 @@ ZLIB-CONFIG
         * [@ConfigurableDateFormat](#configurabledateformat)
         * [@ConfigurableNumberEncoding](#configurablenumberencoding)
     * [Standard Configuration Source Providers](#standard-configuration-source-providers)
+        * [Default Configuration Source Provider](#default-configuration-source-provider)
+        * [Filesystem Configuration Source Provider](#filesystem-configuration-source-provider)
 * [Custom Providers](#custom-providers)
 * [History](#history)
 
@@ -206,6 +208,36 @@ Standard Configuration Source Providers
 As stated in the previous section, there are two configuration source providers that are packaged with this library. There is a default provider, which pulls configuration data out of the classpath, and a filesystem configuration source provider, which pulls the configuration data from files on the server.
 
 To learn about providing custom configuration source providers, for example a provider that pulls its configuration data from database tables, or from a network storage system, see the [custom provider tutorial](#custom-providers).
+
+### Default Configuration Source Provider
+
+The default configuration source provider loads the configuration data from a properties file located in the classpath. To understand exactly how configuration will be retrieved, let's assume the following configurable class:
+
+```java
+package com.my.application;
+
+@Configurable
+public class MyClass {
+   ...
+}
+```
+        
+The @Configurable annotation will provide a reference class of code.my.application.MyClass, and a resource name of myclass. As a result, the default configuration source provider will attempt to locate the configuration file at classpath:/com/my/package/myclass.properties. If it cannot locate the file, a Configuration Exception will be thrown.
+
+With this implementation it is also possible to provide relative paths to the configuration data. For instance the following could have been provided, @Configurable(resourceName = "/log4j"). In this case, the properties file would be located at classpath:/log4j.properties.
+
+### Filesystem Configuration Source Provider
+
+The filesystem configuration source provider will load the properties file out of the file system, by looking in the directory ${APP_ROOT}/conf, where APP_ROOT is defined by a configurable environment variable. Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive) in the following locations:
+
+* ${APP_ROOT}/conf/com/my/application/
+* ${APP_ROOT}/conf/
+
+It will also look for files with no extension, or a .properties and .xml file extension. The first file the provider sees that matches its criteria will be used. Again, if no file can be found, a ConfigurationException will be thrown.
+
+Also, if both the default and filesystem configuration source providers can configure the same class, the filesystem provider will take priority. For more on priorities see the custom [configuration source provider tutorial](#custom-providers).
+
+The following system properties can be used to override the default settings of this provider.
 
 CUSTOM PROVIDERS
 ================
