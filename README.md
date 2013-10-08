@@ -228,7 +228,7 @@ With this implementation it is also possible to provide relative paths to the co
 
 ### Filesystem Configuration Source Provider
 
-The filesystem configuration source provider will load the properties file out of the file system, by looking in the directory ${APP_ROOT}/conf, where APP_ROOT is defined by a configurable environment variable. Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive) in the following locations:
+The filesystem configuration source provider will load the properties file out of the file system, by looking in the directory `${APP_ROOT}/conf`, where APP_ROOT is defined by a configurable environment variable. Given the same class, the file-system provider will search for a file matching the resource name (case-insensitive) in the following locations:
 
 * ${APP_ROOT}/conf/com/my/application/
 * ${APP_ROOT}/conf/
@@ -238,6 +238,10 @@ It will also look for files with no extension, or a .properties and .xml file ex
 Also, if both the default and filesystem configuration source providers can configure the same class, the filesystem provider will take priority. For more on priorities see the custom [configuration source provider tutorial](#custom-providers).
 
 The following system properties can be used to override the default settings of this provider.
+
+| Java System Property      | Default Value |  Description |
+| --------------------------| ------------- | ------------ |
+| config.file.rootDirEnvVar | APP_ROOT      | This is the name of the environment variable which defines the root directory of the configuration. |
 
 CUSTOM PROVIDERS
 ================
