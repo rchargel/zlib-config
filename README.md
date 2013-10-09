@@ -501,7 +501,7 @@ __Release 1.5: 2013-02-11__
 10. Added the ConfigurableDateFormat to allow configuration of Date and Calendar objects.
 11. Added the ConfigurableNumberFormat to allow number to be represented in properties files in binary, octal, decimal, or hexidecimal.
 
-__Release 1.5.1: 2013-10-09__
+__Release 1.5.2: 2013-10-09__
 
 1. Added a static method to ConfigurationUtilities: `ConfigurationUtilities.loadProperties(String filePath)` to simplify reading properties files.
 2. Added a static method to ConfigurationUtilities: `ConfigurationUtilities.configureBean(Object bean, Properties properties)` to simplify bean configuration.
