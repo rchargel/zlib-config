@@ -37,12 +37,6 @@
     <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
     <wagon.ssh.version>2.3</wagon.ssh.version>
   </properties>
-  <distributionManagement>
-    <site>
-      <id>zcarioca.net</id>
-      <url>scp://zcarioca.net/var/www/projects/${project.artifactId}/${project.version}/</url>
-    </site>
-  </distributionManagement>
   <licenses>
     <license>
       <name>GPL</name>
@@ -54,7 +48,6 @@
     <connection>scm:git:git@github.com:rchargel/zlib-config.git</connection>
     <developerConnection>scm:git:git@github.com:rchargel/zlib-config.git</developerConnection>
     <url>https://github.com/rchargel/zlib-config</url>
-    <tag>zlib-config-1.5.1</tag>
   </scm>
   <organization>
     <name>zcarioca.net</name>
