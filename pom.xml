@@ -54,7 +54,7 @@
     <connection>scm:git:git@github.com:rchargel/zlib-config.git</connection>
     <developerConnection>scm:git:git@github.com:rchargel/zlib-config.git</developerConnection>
     <url>https://github.com/rchargel/zlib-config</url>
-    <tag>HEAD</tag>
+    <tag>zlib-config-1.5.1</tag>
   </scm>
   <organization>
     <name>zcarioca.net</name>
